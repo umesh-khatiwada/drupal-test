@@ -893,12 +893,12 @@ $database_port = getenv('DATABASE_PORT');
 
 // Create the database configuration array
 $databases['default']['default'] = array(
-    'database' => $database_name,
-    'username' => $database_username,
-    'password' => $database_password,
-    'prefix' => $database_prefix,
-    'host' => $database_host,
-    'port' => $database_port,
+    'database' => 'root',
+    'username' => 'root',
+    'password' => 'V067YDAgM2obFUEO1UsaH08rUNiGRYIS',
+    'prefix' => 'dryn_',
+    'host' => 'ex99ej.stackhero-network.com',
+    'port' => '3306',
     'isolation_level' => '',
     'driver' => 'mysql',
     'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
