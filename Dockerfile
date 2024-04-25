@@ -1,10 +1,10 @@
 FROM php:8.2
 ENV DEBIAN_FRONTEND=noninteractive \
-    DATABASE_NAME=mariadb \
-    DATABASE_USERNAME=mariadb \
-    DATABASE_PASSWORD=test123 \
+    DATABASE_NAME=root \
+    DATABASE_USERNAME=root \
+    DATABASE_PASSWORD=V067YDAgM2obFUEO1UsaH08rUNiGRYIS \
     DATABASE_PREFIX=dryn_ \
-    DATABASE_HOST=zerone-addon-10364-101-mariadb.zerone-4950-10364.svc.cluster.local \
+    DATABASE_HOST=ex99ej.stackhero-network.com \
     DATABASE_PORT=3306
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data ./
