@@ -31,8 +31,6 @@ RUN apt-get update && \
     apache2 \
     unzip
 
-# Expose port 80
-EXPOSE 80
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -41,4 +39,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN if [ -f 'composer.json' ]; then composer update --ignore-platform-req=ext-dom; fi
 
 # Start Apache in the foreground
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+#CMD ["apache2ctl", "-D", "FOREGROUND"]
