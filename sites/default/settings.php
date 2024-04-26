@@ -893,11 +893,11 @@ $database_port = getenv('DATABASE_PORT');
 
 // Create the database configuration array
 $databases['default']['default'] = array(
-    'database' => 'root',
-    'username' => 'root',
-    'password' => 'V067YDAgM2obFUEO1UsaH08rUNiGRYIS',
+    'database' => 'hamrohr_drup570',
+    'username' => 'hamrohr_drup570',
+    'password' => 'Test123123$$',
     'prefix' => 'dryn_',
-    'host' => 'ex99ej.stackhero-network.com',
+    'host' => '69.57.172.21',
     'port' => '3306',
     'isolation_level' => '',
     'driver' => 'mysql',
