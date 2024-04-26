@@ -38,5 +38,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Run composer install if composer.json is present
 RUN if [ -f 'composer.json' ]; then composer update --ignore-platform-req=ext-dom; fi
 
+EXPOSE 8080
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
