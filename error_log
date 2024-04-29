@@ -1,1 +1,51 @@
 [25-Apr-2024 02:06:29 UTC] PHP Warning:  Constant PASSWORD_DEFAULT already defined in /home/hamrohr/public_html/update_pass.php on line 17
+[25-Apr-2024 07:08:02 UTC] Drupal\Core\Database\DatabaseAccessDeniedException: SQLSTATE[28000] [1045] Access denied for user 'hamrohr'@'localhost' (using password: NO) in /home/hamrohr/public_html/core/modules/mysql/src/Driver/Database/mysql/Connection.php on line 207 #0 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(464): Drupal\mysql\Driver\Database\mysql\Connection::open()
+#1 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(195): Drupal\Core\Database\Database::openConnection()
+#2 [internal function]: Drupal\Core\Database\Database::getConnection()
+#3 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(79): call_user_func_array()
+#4 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#5 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(219): Drupal\Component\DependencyInjection\Container->get()
+#6 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(62): Drupal\Component\DependencyInjection\PhpArrayContainer->resolveServicesAndParameters()
+#7 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#8 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(554): Drupal\Component\DependencyInjection\Container->get()
+#9 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(928): Drupal\Core\DrupalKernel->getCachedContainerDefinition()
+#10 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(494): Drupal\Core\DrupalKernel->initializeContainer()
+#11 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(702): Drupal\Core\DrupalKernel->boot()
+#12 /home/hamrohr/public_html/index.php(19): Drupal\Core\DrupalKernel->handle()
+#13 {main}
+[26-Apr-2024 10:31:43 UTC] Drupal\Core\Database\DatabaseConnectionRefusedException: SQLSTATE[HY000] [2002] Can't connect to MySQL server on 'ex99ej.stackhero-network.com' (110) [Tip: This message normally means that there is no MySQL server running on the system or that you are using an incorrect host name or port number when trying to connect to the server. You should also check that the TCP/IP port you are using has not been blocked by a firewall or port blocking service.]  in /home/hamrohr/public_html/core/modules/mysql/src/Driver/Database/mysql/Connection.php on line 201 #0 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(464): Drupal\mysql\Driver\Database\mysql\Connection::open()
+#1 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(195): Drupal\Core\Database\Database::openConnection()
+#2 [internal function]: Drupal\Core\Database\Database::getConnection()
+#3 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(79): call_user_func_array()
+#4 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#5 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(219): Drupal\Component\DependencyInjection\Container->get()
+#6 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(62): Drupal\Component\DependencyInjection\PhpArrayContainer->resolveServicesAndParameters()
+#7 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#8 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(554): Drupal\Component\DependencyInjection\Container->get()
+#9 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(928): Drupal\Core\DrupalKernel->getCachedContainerDefinition()
+#10 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(494): Drupal\Core\DrupalKernel->initializeContainer()
+#11 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(702): Drupal\Core\DrupalKernel->boot()
+#12 /home/hamrohr/public_html/index.php(19): Drupal\Core\DrupalKernel->handle()
+#13 {main}
+[26-Apr-2024 10:39:21 UTC] Drupal\Core\Database\DatabaseConnectionRefusedException: SQLSTATE[HY000] [2002] Can't connect to MySQL server on 'ex99ej.stackhero-network.com' (110) [Tip: This message normally means that there is no MySQL server running on the system or that you are using an incorrect host name or port number when trying to connect to the server. You should also check that the TCP/IP port you are using has not been blocked by a firewall or port blocking service.]  in /home/hamrohr/public_html/core/modules/mysql/src/Driver/Database/mysql/Connection.php on line 201 #0 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(464): Drupal\mysql\Driver\Database\mysql\Connection::open()
+#1 /home/hamrohr/public_html/core/lib/Drupal/Core/Database/Database.php(195): Drupal\Core\Database\Database::openConnection()
+#2 [internal function]: Drupal\Core\Database\Database::getConnection()
+#3 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(79): call_user_func_array()
+#4 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#5 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(219): Drupal\Component\DependencyInjection\Container->get()
+#6 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/PhpArrayContainer.php(62): Drupal\Component\DependencyInjection\PhpArrayContainer->resolveServicesAndParameters()
+#7 /home/hamrohr/public_html/core/lib/Drupal/Component/DependencyInjection/Container.php(177): Drupal\Component\DependencyInjection\PhpArrayContainer->createService()
+#8 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(554): Drupal\Component\DependencyInjection\Container->get()
+#9 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(928): Drupal\Core\DrupalKernel->getCachedContainerDefinition()
+#10 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(494): Drupal\Core\DrupalKernel->initializeContainer()
+#11 /home/hamrohr/public_html/core/lib/Drupal/Core/DrupalKernel.php(702): Drupal\Core\DrupalKernel->boot()
+#12 /home/hamrohr/public_html/index.php(19): Drupal\Core\DrupalKernel->handle()
+#13 {main}
+[29-Apr-2024 04:27:38 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 04:27:38 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 04:27:38 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 15:56:45 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 15:56:45 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 15:56:45 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 15:56:45 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
+[29-Apr-2024 15:56:45 UTC] Uncaught PHP Exception Error: "Class "Drupal\bootstrap\Bootstrap" not found" at /home/hamrohr/public_html/themes/bootstrap/bootstrap.theme line 31
