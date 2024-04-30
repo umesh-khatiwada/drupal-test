@@ -41,5 +41,5 @@ RUN if [ -f 'composer.json' ]; then composer update --ignore-platform-req=ext-do
 EXPOSE 80
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
-CMD [ "composer", "update" ]
+RUN composer update --ignore-platform-req=ext-dom
 CMD ["php", "-S", "0.0.0.0:80"]
