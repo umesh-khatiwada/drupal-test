@@ -2,7 +2,8 @@
 FROM ubuntu:22.04
 
 # Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    COMPOSER_ALLOW_SUPERUSER=1
 # Set the ServerName directive globally to suppress AH00558 warning
 # Set working directory
 WORKDIR /var/www/html
@@ -36,10 +37,9 @@ RUN apt-get update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Run composer install if composer.json is present
-RUN if [ -f 'composer.json' ]; then composer update --ignore-platform-req=ext-dom; fi
 
 EXPOSE 80
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
-RUN composer update --ignore-platform-req=ext-dom
+RUN composer update
 CMD ["php", "-S", "0.0.0.0:80"]
