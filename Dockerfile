@@ -33,6 +33,7 @@ RUN apt-get update && \
     unzip
 
 
+RUN touch .env
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -41,5 +42,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 EXPOSE 80
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
+RUN composer install
 RUN composer update
 CMD ["php", "-S", "0.0.0.0:80"]
