@@ -43,4 +43,5 @@ EXPOSE 80
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
 RUN composer install
+RUN composer update
 CMD ["php", "-S", "0.0.0.0:80"]
