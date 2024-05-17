@@ -832,17 +832,6 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
-#$databases['default']['default'] = array (
-#  'database' => 'hamrohr_drup903',
-#  'username' => 'hamrohr_drup903',
-#  'password' => '0[43(gpiSI',
-#  'prefix' => 'drnv_',
-#  'host' => 'localhost',
-#  'port' => '3306',
-#  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
-#  'driver' => 'mysql',
-#  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
-#);
 $database_name = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME');
 $database_username = $_ENV['DATABASE_USERNAME'] ?? getenv('DATABASE_USERNAME');
 $database_password = $_ENV['DATABASE_PASSWORD'] ?? getenv('DATABASE_PASSWORD');
@@ -866,5 +855,4 @@ $databases['default']['default'] = array(
     'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
     'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
 );
-
-$settings['config_sync_directory'] = 'sites/default/files/config_bL434lgAdhwKSSLG_USSUdANV5FDFmMpmXBnibaVvDMwPg0BnfRLSEdTqXC9x4AKKAO6MSUMMA/sync';
+$settings['config_sync_directory'] = 'sites/default/files/config_ULV3PynXHuyUWr8CEZfcNGRwz-VKvG9EI-qgmE-bAOuc0QBf1CQ8uJC3AvaGLzukp_8EJjiydA/sync';
