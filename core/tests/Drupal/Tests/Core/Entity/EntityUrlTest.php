@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Core\Entity;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -105,6 +107,55 @@ class EntityUrlTest extends UnitTestCase {
     $this->expectException(EntityMalformedException::class);
     $this->expectExceptionMessage('The "' . $this->entityTypeId . '" entity cannot have a URI as it does not have an ID');
     $entity->toUrl();
+  }
+
+  /**
+   * Tests the toUrl() method without specifying the $rel parameter.
+   *
+   * It should throw an exception when neither canonical and edit-form link
+   * templates exist if no parameters are passed in.
+   *
+   * @covers ::toUrl
+   */
+  public function testToUrlDefaultException(): void {
+    $values = ['id' => $this->entityId];
+    $entity = $this->getEntity(UrlTestEntity::class, $values);
+    $this->entityType->getUriCallback()->willReturn(NULL);
+
+    $this->expectException(UndefinedLinkTemplateException::class);
+    $this->expectExceptionMessage("Cannot generate default URL because no link template 'canonical' or 'edit-form' was found for the '" . $this->entityTypeId . "' entity type");
+    $entity->toUrl();
+  }
+
+  /**
+   * Tests the toUrl() method without specifying the $rel parameter.
+   *
+   * It should return the edit-form or canonical link templates by default if
+   * they are registered.
+   *
+   * @covers ::toUrl
+   */
+  public function testToUrlDefaultFallback(): void {
+    $values = ['id' => $this->entityId, 'langcode' => $this->langcode];
+    $entity = $this->getEntity(UrlTestEntity::class, $values);
+    $this->registerLinkTemplate('edit-form');
+    /** @var \Drupal\Core\Url $url */
+    $url = $entity->toUrl();
+    $this->assertUrl('entity.test_entity.edit_form', ['test_entity' => $this->entityId], $entity, TRUE, $url);
+
+    $this->registerLinkTemplate('canonical');
+    /** @var \Drupal\Core\Url $url */
+    $url = $entity->toUrl();
+    $this->assertUrl('entity.test_entity.canonical', ['test_entity' => $this->entityId], $entity, TRUE, $url);
+
+    // Register multiple link templates with 2 that share the same path.
+    $this->entityType->getLinkTemplates()->willReturn([
+      'canonical' => "/test-entity/{test_entity}/canonical",
+      'edit-form' => "/test-entity/{test_entity}/edit-form",
+      'foobar' => "/test-entity/{test_entity}/canonical",
+    ]);
+    $url = $entity->toUrl();
+    $this->assertUrl('entity.test_entity.canonical', ['test_entity' => $this->entityId], $entity, TRUE, $url);
   }
 
   /**
@@ -359,6 +410,9 @@ class EntityUrlTest extends UnitTestCase {
     /** @var \Drupal\Core\Url $url */
     $url = $entity->toUrl('canonical');
     $this->assertUrl('<none>', [], $entity, TRUE, $url);
+
+    $url = $entity->toUrl();
+    $this->assertUrl('<none>', [], $entity, TRUE, $url);
   }
 
   /**
@@ -415,15 +469,15 @@ class EntityUrlTest extends UnitTestCase {
    * Returns a mock entity for testing.
    *
    * @param string $class
-   *   The class name to mock. Should be \Drupal\Core\Entity\Entity or a
-   *   subclass.
+   *   The class name to mock. Should be \Drupal\Tests\Core\Entity\UrlTestEntity
+   *   or a subclass.
    * @param array $values
    *   An array of entity values to construct the mock entity with.
    * @param array $methods
    *   (optional) An array of additional methods to mock on the entity object.
    *   The getEntityType() and entityTypeBundleInfo() methods are always mocked.
    *
-   * @return \Drupal\Core\Entity\Entity|\PHPUnit\Framework\MockObject\MockObject
+   * @return \Drupal\Tests\Core\Entity\UrlTestEntity|\PHPUnit\Framework\MockObject\MockObject
    */
   protected function getEntity($class, array $values, array $methods = []) {
     $methods = array_merge($methods, ['getEntityType', 'entityTypeBundleInfo']);
@@ -454,7 +508,7 @@ class EntityUrlTest extends UnitTestCase {
    *   The expected route name of the generated URL.
    * @param array $expected_route_parameters
    *   The expected route parameters of the generated URL.
-   * @param \Drupal\Core\Entity\Entity|\PHPUnit\Framework\MockObject\MockObject $entity
+   * @param \Drupal\Tests\Core\Entity\UrlTestEntity|\PHPUnit\Framework\MockObject\MockObject $entity
    *   The entity that is expected to be set as a URL option.
    * @param bool $has_language
    *   Whether or not the URL is expected to have a language option.

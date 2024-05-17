@@ -111,9 +111,16 @@ abstract class ArgumentPluginBase extends HandlerBase implements CacheableDepend
   public string $operator;
 
   /**
-   * The argument position.
+   * The title set by argument validation.
    */
-  public int $position;
+  public ?string $validated_title;
+
+  /**
+   * Keyed array by alias of table relations.
+   *
+   * @var string[]
+   */
+  public ?array $tableAliases;
 
   /**
    * Overrides Drupal\views\Plugin\views\HandlerBase:init().
@@ -170,7 +177,6 @@ abstract class ArgumentPluginBase extends HandlerBase implements CacheableDepend
     $options['title'] = ['default' => ''];
     $options['default_argument_type'] = ['default' => 'fixed'];
     $options['default_argument_options'] = ['default' => []];
-    $options['default_argument_skip_url'] = ['default' => FALSE];
     $options['summary_options'] = ['default' => []];
     $options['summary'] = [
       'contains' => [
@@ -598,13 +604,6 @@ abstract class ArgumentPluginBase extends HandlerBase implements CacheableDepend
   public function defaultArgumentForm(&$form, FormStateInterface $form_state) {
     $plugins = Views::pluginManager('argument_default')->getDefinitions();
     $options = [];
-
-    $form['default_argument_skip_url'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Skip default argument for view URL'),
-      '#default_value' => $this->options['default_argument_skip_url'],
-      '#description' => $this->t('Select whether to include this default argument when constructing the URL for this view. Skipping default arguments is useful e.g. in the case of feeds.'),
-    ];
 
     $form['default_argument_type'] = [
       '#prefix' => '<div id="edit-options-default-argument-type-wrapper">',

@@ -23,27 +23,27 @@ class LazyObjectRegistry
     /**
      * @var array<class-string, \ReflectionClass>
      */
-    public static $classReflectors = [];
+    public static array $classReflectors = [];
 
     /**
      * @var array<class-string, array<string, mixed>>
      */
-    public static $defaultProperties = [];
+    public static array $defaultProperties = [];
 
     /**
      * @var array<class-string, list<\Closure>>
      */
-    public static $classResetters = [];
+    public static array $classResetters = [];
 
     /**
      * @var array<class-string, array{get: \Closure, set: \Closure, isset: \Closure, unset: \Closure}>
      */
-    public static $classAccessors = [];
+    public static array $classAccessors = [];
 
     /**
      * @var array<class-string, array{set: bool, isset: bool, unset: bool, clone: bool, serialize: bool, unserialize: bool, sleep: bool, wakeup: bool, destruct: bool, get: int}>
      */
-    public static $parentMethods = [];
+    public static array $parentMethods = [];
 
     public static ?\Closure $noInitializerState = null;
 
@@ -89,27 +89,23 @@ class LazyObjectRegistry
 
     public static function getClassAccessors($class)
     {
-        return \Closure::bind(static function () {
-            return [
-                'get' => static function &($instance, $name, $readonly) {
-                    if (!$readonly) {
-                        return $instance->$name;
-                    }
-                    $value = $instance->$name;
+        return \Closure::bind(static fn () => [
+            'get' => static function &($instance, $name, $readonly) {
+                if (!$readonly) {
+                    return $instance->$name;
+                }
+                $value = $instance->$name;
 
-                    return $value;
-                },
-                'set' => static function ($instance, $name, $value) {
-                    $instance->$name = $value;
-                },
-                'isset' => static function ($instance, $name) {
-                    return isset($instance->$name);
-                },
-                'unset' => static function ($instance, $name) {
-                    unset($instance->$name);
-                },
-            ];
-        }, null, \Closure::class === $class ? null : $class)();
+                return $value;
+            },
+            'set' => static function ($instance, $name, $value) {
+                $instance->$name = $value;
+            },
+            'isset' => static fn ($instance, $name) => isset($instance->$name),
+            'unset' => static function ($instance, $name) {
+                unset($instance->$name);
+            },
+        ], null, \Closure::class === $class ? null : $class)();
     }
 
     public static function getParentMethods($class)

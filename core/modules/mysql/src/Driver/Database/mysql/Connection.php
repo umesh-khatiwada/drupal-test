@@ -2,16 +2,16 @@
 
 namespace Drupal\mysql\Driver\Database\mysql;
 
-use Drupal\Core\Database\DatabaseAccessDeniedException;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
-use Drupal\Core\Database\StatementWrapper;
-use Drupal\Core\Database\Database;
-use Drupal\Core\Database\DatabaseNotFoundException;
-use Drupal\Core\Database\DatabaseException;
 use Drupal\Core\Database\Connection as DatabaseConnection;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Database\DatabaseAccessDeniedException;
 use Drupal\Core\Database\DatabaseConnectionRefusedException;
+use Drupal\Core\Database\DatabaseException;
+use Drupal\Core\Database\DatabaseNotFoundException;
+use Drupal\Core\Database\Query\Condition;
+use Drupal\Core\Database\StatementWrapperIterator;
 use Drupal\Core\Database\SupportsTemporaryTablesInterface;
-use Drupal\Core\Database\TransactionNoActiveException;
+use Drupal\Core\Database\Transaction\TransactionManagerInterface;
 
 /**
  * @addtogroup database
@@ -56,12 +56,17 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
   /**
    * {@inheritdoc}
    */
-  protected $statementWrapperClass = StatementWrapper::class;
+  protected $statementWrapperClass = StatementWrapperIterator::class;
 
   /**
    * Flag to indicate if the cleanup function in __destruct() should run.
    *
    * @var bool
+   *
+   * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. There's no
+   *    replacement.
+   *
+   * @see https://www.drupal.org/node/3349345
    */
   protected $needsCleanup = FALSE;
 
@@ -103,15 +108,18 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
     // @see https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html#sqlmode_ansi_quotes
     $ansi_quotes_modes = ['ANSI_QUOTES', 'ANSI', 'DB2', 'MAXDB', 'MSSQL', 'ORACLE', 'POSTGRESQL'];
     $is_ansi_quotes_mode = FALSE;
-    foreach ($ansi_quotes_modes as $mode) {
-      // None of the modes in $ansi_quotes_modes are substrings of other modes
-      // that are not in $ansi_quotes_modes, so a simple stripos() does not
-      // return false positives.
-      if (stripos($connection_options['init_commands']['sql_mode'], $mode) !== FALSE) {
-        $is_ansi_quotes_mode = TRUE;
-        break;
+    if (isset($connection_options['init_commands']['sql_mode'])) {
+      foreach ($ansi_quotes_modes as $mode) {
+        // None of the modes in $ansi_quotes_modes are substrings of other modes
+        // that are not in $ansi_quotes_modes, so a simple stripos() does not
+        // return false positives.
+        if (stripos($connection_options['init_commands']['sql_mode'], $mode) !== FALSE) {
+          $is_ansi_quotes_mode = TRUE;
+          break;
+        }
       }
     }
+
     if ($this->identifierQuotes === ['"', '"'] && !$is_ansi_quotes_mode) {
       $this->identifierQuotes = ['`', '`'];
     }
@@ -229,6 +237,11 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
     $connection_options['init_commands'] += [
       'sql_mode' => "SET sql_mode = 'ANSI,TRADITIONAL'",
     ];
+    if (!empty($connection_options['isolation_level'])) {
+      $connection_options['init_commands'] += [
+        'isolation_level' => 'SET SESSION TRANSACTION ISOLATION LEVEL ' . strtoupper($connection_options['isolation_level']),
+      ];
+    }
 
     // Execute initial commands.
     foreach ($connection_options['init_commands'] as $sql) {
@@ -346,7 +359,11 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
     return NULL;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function nextId($existing_id = 0) {
+    @trigger_error('Drupal\Core\Database\Connection::nextId() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Modules should use instead the keyvalue storage for the last used id. See https://www.drupal.org/node/3349345', E_USER_DEPRECATED);
     $this->query('INSERT INTO {sequences} () VALUES ()');
     $new_id = $this->lastInsertId();
     // This should only happen after an import or similar event.
@@ -367,6 +384,7 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
   }
 
   public function nextIdDelete() {
+    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Modules should use instead the keyvalue storage for the last used id. See https://www.drupal.org/node/3349345', E_USER_DEPRECATED);
     // While we want to clean up the table to keep it up from occupying too
     // much storage and memory, we must keep the highest value in the table
     // because InnoDB uses an in-memory auto-increment counter as long as the
@@ -391,106 +409,90 @@ class Connection extends DatabaseConnection implements SupportsTemporaryTablesIn
   }
 
   /**
-   * Overridden to work around issues to MySQL not supporting transactional DDL.
+   * {@inheritdoc}
    */
-  protected function popCommittableTransactions() {
-    // Commit all the committable layers.
-    foreach (array_reverse($this->transactionLayers) as $name => $active) {
-      // Stop once we found an active transaction.
-      if ($active) {
-        break;
-      }
-
-      // If there are no more layers left then we should commit.
-      unset($this->transactionLayers[$name]);
-      if (empty($this->transactionLayers)) {
-        $this->doCommit();
-      }
-      else {
-        // Attempt to release this savepoint in the standard way.
-        try {
-          $this->query('RELEASE SAVEPOINT ' . $name);
-        }
-        catch (DatabaseExceptionWrapper $e) {
-          // However, in MySQL (InnoDB), savepoints are automatically committed
-          // when tables are altered or created (DDL transactions are not
-          // supported). This can cause exceptions due to trying to release
-          // savepoints which no longer exist.
-          //
-          // To avoid exceptions when no actual error has occurred, we silently
-          // succeed for MySQL error code 1305 ("SAVEPOINT does not exist").
-          if ($e->getPrevious()->errorInfo[1] == '1305') {
-            // If one SAVEPOINT was released automatically, then all were.
-            // Therefore, clean the transaction stack.
-            $this->transactionLayers = [];
-            // We also have to explain to PDO that the transaction stack has
-            // been cleaned-up.
-            $this->doCommit();
-          }
-          else {
-            throw $e;
-          }
-        }
-      }
-    }
+  public function exceptionHandler() {
+    return new ExceptionHandler();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function rollBack($savepoint_name = 'drupal_transaction') {
-    // MySQL will automatically commit transactions when tables are altered or
-    // created (DDL transactions are not supported). Prevent triggering an
-    // exception to ensure that the error that has caused the rollback is
-    // properly reported.
-    if (!$this->connection->inTransaction()) {
-      // On PHP 7 $this->connection->inTransaction() will return TRUE and
-      // $this->connection->rollback() does not throw an exception; the
-      // following code is unreachable.
-
-      // If \Drupal\Core\Database\Connection::rollBack() would throw an
-      // exception then continue to throw an exception.
-      if (!$this->inTransaction()) {
-        throw new TransactionNoActiveException();
-      }
-      // A previous rollback to an earlier savepoint may mean that the savepoint
-      // in question has already been accidentally committed.
-      if (!isset($this->transactionLayers[$savepoint_name])) {
-        throw new TransactionNoActiveException();
-      }
-
-      trigger_error('Rollback attempted when there is no active transaction. This can cause data integrity issues.', E_USER_WARNING);
-      return;
-    }
-    return parent::rollBack($savepoint_name);
+  public function select($table, $alias = NULL, array $options = []) {
+    return new Select($this, $table, $alias, $options);
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function doCommit() {
-    // MySQL will automatically commit transactions when tables are altered or
-    // created (DDL transactions are not supported). Prevent triggering an
-    // exception in this case as all statements have been committed.
-    if ($this->connection->inTransaction()) {
-      // On PHP 7 $this->connection->inTransaction() will return TRUE and
-      // $this->connection->commit() does not throw an exception.
-      $success = parent::doCommit();
+  public function insert($table, array $options = []) {
+    return new Insert($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function merge($table, array $options = []) {
+    return new Merge($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function upsert($table, array $options = []) {
+    return new Upsert($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function update($table, array $options = []) {
+    return new Update($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete($table, array $options = []) {
+    return new Delete($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function truncate($table, array $options = []) {
+    return new Truncate($this, $table, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function schema() {
+    if (empty($this->schema)) {
+      $this->schema = new Schema($this);
     }
-    else {
-      // Process the post-root (non-nested) transaction commit callbacks. The
-      // following code is copied from
-      // \Drupal\Core\Database\Connection::doCommit()
-      $success = TRUE;
-      if (!empty($this->rootTransactionEndCallbacks)) {
-        $callbacks = $this->rootTransactionEndCallbacks;
-        $this->rootTransactionEndCallbacks = [];
-        foreach ($callbacks as $callback) {
-          call_user_func($callback, $success);
-        }
-      }
-    }
-    return $success;
+    return $this->schema;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function condition($conjunction) {
+    return new Condition($conjunction);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function driverTransactionManager(): TransactionManagerInterface {
+    return new TransactionManager($this);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function startTransaction($name = '') {
+    return $this->transactionManager()->push($name);
   }
 
 }

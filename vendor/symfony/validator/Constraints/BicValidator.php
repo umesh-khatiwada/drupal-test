@@ -58,11 +58,14 @@ class BicValidator extends ConstraintValidator
 
     private ?PropertyAccessor $propertyAccessor;
 
-    public function __construct(PropertyAccessor $propertyAccessor = null)
+    public function __construct(?PropertyAccessor $propertyAccessor = null)
     {
         $this->propertyAccessor = $propertyAccessor;
     }
 
+    /**
+     * @return void
+     */
     public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Bic) {
@@ -94,16 +97,6 @@ class BicValidator extends ConstraintValidator
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Bic::INVALID_CHARACTERS_ERROR)
-                ->addViolation();
-
-            return;
-        }
-
-        // first 4 letters must be alphabetic (bank code)
-        if (!ctype_alpha(substr($canonicalize, 0, 4))) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $this->formatValue($value))
-                ->setCode(Bic::INVALID_BANK_CODE_ERROR)
                 ->addViolation();
 
             return;
@@ -156,7 +149,7 @@ class BicValidator extends ConstraintValidator
     {
         if (null === $this->propertyAccessor) {
             if (!class_exists(PropertyAccess::class)) {
-                throw new LogicException('Unable to use property path as the Symfony PropertyAccess component is not installed.');
+                throw new LogicException('Unable to use property path as the Symfony PropertyAccess component is not installed. Try running "composer require symfony/property-access".');
             }
             $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
         }

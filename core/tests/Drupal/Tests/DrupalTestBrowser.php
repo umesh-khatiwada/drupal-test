@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests;
 
 use GuzzleHttp\Client;
@@ -89,7 +91,7 @@ class DrupalTestBrowser extends AbstractBrowser {
         'content-md5' => TRUE,
         'content-type' => TRUE,
       ];
-      if (strpos($key, 'http-') === 0) {
+      if (str_starts_with($key, 'http-')) {
         $headers[substr($key, 5)] = $val;
       }
       // CONTENT_* are not prefixed with HTTP_

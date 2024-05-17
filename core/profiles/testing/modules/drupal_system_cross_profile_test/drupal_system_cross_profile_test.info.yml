@@ -4,7 +4,7 @@ description: 'Support module for testing that a module in one profile can be reu
 package: Testing
 # version: VERSION
 
-# Information added by Drupal.org packaging script on 2023-09-20
-version: '10.0.11'
+# Information added by Drupal.org packaging script on 2024-05-01
+version: '10.2.6'
 project: 'drupal'
-datestamp: 1695229012
+datestamp: 1714597793

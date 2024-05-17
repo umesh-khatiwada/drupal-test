@@ -12,6 +12,7 @@ use Drupal\Tests\RequirementsPageTrait;
  * Tests the update script access and functionality.
  *
  * @group Update
+ * @group #slow
  */
 class UpdateScriptTest extends BrowserTestBase {
 
@@ -343,6 +344,7 @@ class UpdateScriptTest extends BrowserTestBase {
    * @dataProvider providerMissingExtension
    */
   public function testMissingExtension(array $core, array $contrib): void {
+    $this->markTestSkipped('Skipped due to major version-specific logic. See https://www.drupal.org/project/drupal/issues/3359322');
     $this->drupalLogin(
       $this->drupalCreateUser(
         [
@@ -546,7 +548,7 @@ class UpdateScriptTest extends BrowserTestBase {
    * Data provider for ::testMissingExtension().
    *
    * @return array[]
-   *   Set of testcases to pass to the test method.
+   *   Set of test cases to pass to the test method.
    */
   public function providerMissingExtension(): array {
     return [

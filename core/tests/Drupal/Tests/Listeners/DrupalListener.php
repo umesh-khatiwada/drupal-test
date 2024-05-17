@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Listeners;
 
 use PHPUnit\Framework\TestListener;
@@ -17,7 +19,6 @@ class DrupalListener implements TestListener {
 
   use TestListenerDefaultImplementation;
   use DrupalComponentTestListenerTrait;
-  use DrupalStandardsListenerTrait;
 
   /**
    * The wrapped Symfony test listener.
@@ -52,11 +53,6 @@ class DrupalListener implements TestListener {
    */
   public function startTest(Test $test): void {
     $this->symfonyListener->startTest($test);
-    // Check for incorrect visibility of the $modules property.
-    $class = new \ReflectionClass($test);
-    if ($class->hasProperty('modules') && !$class->getProperty('modules')->isProtected()) {
-      @trigger_error('The ' . get_class($test) . '::$modules property must be declared protected. See https://www.drupal.org/node/2909426', E_USER_DEPRECATED);
-    }
   }
 
   /**
@@ -65,7 +61,6 @@ class DrupalListener implements TestListener {
   public function endTest(Test $test, float $time): void {
     $this->symfonyListener->endTest($test, $time);
     $this->componentEndTest($test, $time);
-    $this->standardsEndTest($test, $time);
   }
 
 }

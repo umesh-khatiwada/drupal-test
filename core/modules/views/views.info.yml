@@ -1,12 +1,12 @@
 name: Views
 type: module
-description: 'Create customized lists and queries from your database.'
+description: 'Provides a framework to fetch information from the database and to display it in different formats.'
 package: Core
 # version: VERSION
 dependencies:
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2023-09-20
-version: '10.0.11'
+# Information added by Drupal.org packaging script on 2024-05-01
+version: '10.2.6'
 project: 'drupal'
-datestamp: 1695229013
+datestamp: 1714597793

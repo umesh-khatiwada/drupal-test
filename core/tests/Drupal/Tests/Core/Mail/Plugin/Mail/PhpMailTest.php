@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\Tests\Core\Mail\Plugin\Mail;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -46,6 +48,14 @@ class PhpMailTest extends UnitTestCase {
     $this->configFactory = $this->getConfigFactoryStub([
       'system.mail' => [
         'interface' => [],
+        'mailer_dsn' => [
+          'scheme' => 'null',
+          'host' => 'null',
+          'user' => NULL,
+          'password' => NULL,
+          'port' => NULL,
+          'options' => [],
+        ],
       ],
       'system.site' => [
         'mail' => 'test@example.com',
@@ -90,7 +100,6 @@ class PhpMailTest extends UnitTestCase {
 
     $reflection = new \ReflectionClass($mailer);
     $reflection_property = $reflection->getProperty('request');
-    $reflection_property->setAccessible(TRUE);
     $reflection_property->setValue($mailer, $request);
     return $mailer;
   }
@@ -98,7 +107,7 @@ class PhpMailTest extends UnitTestCase {
   /**
    * Tests sending a mail using a From address with a comma in it.
    *
-   * @covers ::testMail
+   * @covers ::mail
    */
   public function testMail() {
     // Setup a mail message.

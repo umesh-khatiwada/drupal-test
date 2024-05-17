@@ -44,9 +44,10 @@
             '.table-filter-text-source, .module-name, .module-description',
           );
           let sourcesConcat = '';
-          // Concatenate the textContent of the elements in the row.
+          // Concatenate the textContent of the elements in the row, with a
+          // space in between.
           sources.forEach((item) => {
-            sourcesConcat += item.textContent;
+            sourcesConcat += ` ${item.textContent}`;
           });
           const textMatch = sourcesConcat.search(re) !== -1;
           $(row).closest('tr').toggle(textMatch);
@@ -61,7 +62,7 @@
 
           // Note that we first open all <details> to be able to use ':visible'.
           // Mark the <details> elements that were closed before filtering, so
-          // they can be reclosed when filtering is removed.
+          // they can be closed again when filtering is removed.
           $details
             .not('[open]')
             .attr('data-drupal-system-state', 'forced-open');
@@ -71,9 +72,11 @@
           $details.attr('open', true).each(hidePackageDetails);
 
           Drupal.announce(
-            Drupal.t('!modules modules are available in the modified list.', {
-              '!modules': $rowsAndDetails.find('tbody tr:visible').length,
-            }),
+            Drupal.formatPlural(
+              $rowsAndDetails.filter('tbody tr:visible').length,
+              '1 module is available in the modified list.',
+              '@count modules are available in the modified list.',
+            ),
           );
         } else if (searching) {
           searching = false;
@@ -100,7 +103,7 @@
         $details = $rowsAndDetails.filter('.package-listing');
 
         $(input).on({
-          keyup: debounce(filterModuleList, 200),
+          input: debounce(filterModuleList, 200),
           keydown: preventEnterKey,
         });
       }

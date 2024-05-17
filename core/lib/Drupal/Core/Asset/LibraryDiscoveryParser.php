@@ -220,7 +220,7 @@ class LibraryDiscoveryParser {
               if ($source[1] !== '/') {
                 $source = substr($source, 1);
                 // Non core provided libraries can be in multiple locations.
-                if (strpos($source, 'libraries/') === 0) {
+                if (str_starts_with($source, 'libraries/')) {
                   $path_to_source = $this->librariesDirectoryFileFinder->find(substr($source, 10));
                   if ($path_to_source) {
                     $source = $path_to_source;
@@ -404,6 +404,7 @@ class LibraryDiscoveryParser {
           if (isset($library['deprecated'])) {
             $override_message = sprintf('Theme "%s" is overriding a deprecated library.', $extension);
             $library_deprecation = str_replace('%library_id%', "$extension/$library_name", $library['deprecated']);
+            // phpcs:ignore Drupal.Semantics.FunctionTriggerError
             @trigger_error("$override_message $library_deprecation", E_USER_DEPRECATED);
           }
           // Active theme defines an override for this library.

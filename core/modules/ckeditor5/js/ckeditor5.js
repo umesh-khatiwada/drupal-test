@@ -116,6 +116,10 @@
       });
     }
 
+    if (config === null) {
+      return null;
+    }
+
     return Object.entries(config).reduce((processed, [key, value]) => {
       if (typeof value === 'object') {
         // Check for null values.
@@ -251,7 +255,7 @@
    * To ensure they have higher specificity and are not reset too aggressively.
    *
    * @param {CSSRule} rule
-   *  A single CSS rule to be analysed and changed if necessary.
+   *  A single CSS rule to be analyzed and changed if necessary.
    */
   function ckeditor5SelectorProcessing(rule) {
     // Handle nested rules in @media, @support, etc.
@@ -322,7 +326,6 @@
         `${prefix} .ck.ck-content * {display:revert;background:revert;color:initial;padding:revert;}`,
         `${prefix} .ck.ck-content li {display:list-item}`,
         `${prefix} .ck.ck-content ol li {list-style-type: decimal}`,
-        `${prefix} .ck[contenteditable], ${prefix} .ck[contenteditable] * {-webkit-user-modify: read-write;-moz-user-modify: read-write;}`,
       ];
 
       const prefixedCss = [...addedCss].join('\n');
@@ -370,14 +373,65 @@
 
       ClassicEditor.create(element, editorConfig)
         .then((editor) => {
+          /**
+           * Injects a temporary <p> into CKEditor and then calculates the entire
+           * height of the amount of the <p> tags from the passed in rows value.
+           *
+           * This takes into account collapsing margins, and line-height of the
+           * current theme.
+           *
+           * @param {number} - the number of rows.
+           *
+           * @returns {number} - the height of a div in pixels.
+           */
+          function calculateLineHeight(rows) {
+            const element = document.createElement('p');
+            element.setAttribute('style', 'visibility: hidden;');
+            element.innerHTML = '&nbsp;';
+            editor.ui.view.editable.element.append(element);
+
+            const styles = window.getComputedStyle(element);
+            const height = element.clientHeight;
+            const marginTop = parseInt(styles.marginTop, 10);
+            const marginBottom = parseInt(styles.marginBottom, 10);
+            const mostMargin =
+              marginTop >= marginBottom ? marginTop : marginBottom;
+
+            element.remove();
+            return (
+              (height + mostMargin) * (rows - 1) +
+              marginTop +
+              height +
+              marginBottom
+            );
+          }
+
           // Save a reference to the initialized instance.
           Drupal.CKEditor5Instances.set(id, editor);
+
+          // Set the minimum height of the editable area to correspond with the
+          // value of the number of rows. We attach this custom property to
+          // the `.ck-editor` element, as that doesn't get its inline styles
+          // cleared on focus. The editable element is then set to use this
+          // property within the stylesheet.
+          const rows = editor.sourceElement.getAttribute('rows');
+          editor.ui.view.editable.element
+            .closest('.ck-editor')
+            .style.setProperty(
+              '--ck-min-height',
+              `${calculateLineHeight(rows)}px`,
+            );
 
           // CKEditor 4 had a feature to remove the required attribute
           // see: https://www.drupal.org/project/drupal/issues/1954968
           if (element.hasAttribute('required')) {
             required.add(id);
             element.removeAttribute('required');
+          }
+
+          // If the textarea is disabled, enable CKEditor's read-only mode.
+          if (element.hasAttribute('disabled')) {
+            editor.enableReadOnlyMode('ckeditor5_disabled');
           }
 
           // Integrate CKEditor 5 viewport offset with Drupal displace.
@@ -393,22 +447,9 @@
           editor.model.document.on('change:data', () => {
             const callback = callbacks.get(id);
             if (callback) {
-              if (editor.plugins.has('SourceEditing')) {
-                // If the change:data is being called while in source editing
-                // mode, it means that the form is being submitted. To avoid
-                // race conditions, in this case the callback gets called
-                // without decorating the callback with debounce.
-                // @see https://www.drupal.org/i/3229174
-                // @see Drupal.editorDetach
-                if (editor.plugins.get('SourceEditing').isSourceEditingMode) {
-                  callback();
-                  return;
-                }
-              }
-
               // Marks the field as changed.
               // @see Drupal.editorAttach
-              debounce(callback, 400)();
+              callback();
             }
           });
 
@@ -480,7 +521,7 @@
      *   Callback called with the value of the editor.
      */
     onChange(element, callback) {
-      callbacks.set(getElementId(element), callback);
+      callbacks.set(getElementId(element), debounce(callback, 400, true));
     },
 
     /**
@@ -520,7 +561,7 @@
             const callback = callbacks.get(id);
             if (callback) {
               // Allow modules to update EditorModel by providing the current data.
-              debounce(callback, 400)(editor.getData());
+              callback(editor.getData());
             }
           });
         })
@@ -587,7 +628,7 @@
 
   // Redirect on hash change when the original hash has an associated CKEditor 5.
   function redirectTextareaFragmentToCKEditor5Instance() {
-    const hash = window.location.hash.substr(1);
+    const hash = window.location.hash.substring(1);
     const element = document.getElementById(hash);
     if (element) {
       const editorID = getElementId(element);

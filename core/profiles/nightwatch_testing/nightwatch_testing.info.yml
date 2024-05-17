@@ -5,8 +5,9 @@ description: 'Minimal profile for running Nightwatch tests. Includes absolutely 
 hidden: true
 install:
   - js_testing_log_test
+  - nightwatch_theme_install_utility
 
-# Information added by Drupal.org packaging script on 2023-09-20
-version: '10.0.11'
+# Information added by Drupal.org packaging script on 2024-05-01
+version: '10.2.6'
 project: 'drupal'
-datestamp: 1695229012
+datestamp: 1714597793

@@ -133,7 +133,7 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
     if ($entity === NULL) {
       return '';
     }
-    $entity = $this->getEntityTranslation($this->getEntity($values), $values);
+    $entity = $this->getEntityTranslationByRelationship($entity, $values);
     $build = [];
     $access = $entity->access('view', NULL, TRUE);
     $build['#access'] = $access;
@@ -165,7 +165,7 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
     foreach ($view_displays as $view_display) {
       $tags[] = $view_display->getCacheTags();
     }
-    return array_merge([], ...$tags);
+    return array_merge(...$tags);
   }
 
   /**

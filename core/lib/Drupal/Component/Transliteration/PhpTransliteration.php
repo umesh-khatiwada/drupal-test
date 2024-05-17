@@ -2,7 +2,7 @@
 
 namespace Drupal\Component\Transliteration;
 
-// cspell:ignore vibber
+// cspell:ignore Brion Vibber
 
 /**
  * Implements transliteration without using the PECL extensions.
@@ -132,7 +132,7 @@ class PhpTransliteration implements TransliterationInterface {
     // Replace question marks with a unique hash if necessary. This because
     // mb_convert_encoding() replaces all invalid characters with a question
     // mark.
-    if ($unknown_character != '?' && strpos($string, '?') !== FALSE) {
+    if ($unknown_character != '?' && str_contains($string, '?')) {
       $hash = hash('sha256', $string);
       $string = str_replace('?', $hash, $string);
     }
