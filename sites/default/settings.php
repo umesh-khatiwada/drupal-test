@@ -881,16 +881,27 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
-$databases['default']['default'] = array (
-  'database' => 'hamrohr_drup905',
-  'username' => 'hamrohr_drup905',
-  'password' => 'wmupS]52@4',
-  'prefix' => 'drjf_',
-  'host' => 'localhost',
-  'port' => '3306',
-  'isolation_level' => '',
-  'driver' => 'mysql',
-  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
-  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
+$database_name = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME');
+$database_username = $_ENV['DATABASE_USERNAME'] ?? getenv('DATABASE_USERNAME');
+$database_password = $_ENV['DATABASE_PASSWORD'] ?? getenv('DATABASE_PASSWORD');
+$database_prefix = $_ENV['DATABASE_PREFIX'] ?? getenv('DATABASE_PREFIX');
+$database_host = $_ENV['DATABASE_HOST'] ?? getenv('DATABASE_HOST');
+$database_port = $_ENV['DATABASE_PORT'] ?? getenv('DATABASE_PORT');
+
+// Check if any of the environment variables are missing
+
+
+// Create the database configuration array
+$databases['default']['default'] = array(
+    'database' => $database_name,
+    'username' => $database_username,
+    'password' =>  $database_password,
+    'prefix' => $database_prefix,
+    'host' =>  $database_host,
+    'port' =>  $database_port,
+    'isolation_level' => '',
+    'driver' => 'mysql',
+    'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
+    'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
 );
 $settings['config_sync_directory'] = 'sites/default/files/config_4oRPR5Knq9L3kQIJSb87ywsF69WDdViLGQUd7KbDNtyXEvMCIdRtMKiHSb6VdiJUho7t-LwpMw/sync';
