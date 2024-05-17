@@ -41,5 +41,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 EXPOSE 80
 # Start Apache in the foreground
 #CMD ["apache2ctl", "-D", "FOREGROUND"]
-RUN composer update
+RUN composer install
 CMD ["php", "-S", "0.0.0.0:80"]
