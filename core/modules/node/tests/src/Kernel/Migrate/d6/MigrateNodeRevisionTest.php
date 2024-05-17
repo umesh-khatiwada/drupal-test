@@ -14,7 +14,7 @@ class MigrateNodeRevisionTest extends MigrateNodeTestBase {
   /**
    * The entity storage for node.
    *
-   * @var \Drupal\Core\Entity\RevisionableStorageInterface
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $nodeStorage;
 

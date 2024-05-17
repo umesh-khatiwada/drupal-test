@@ -24,6 +24,7 @@ class EntityExistsTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->installSchema('system', ['sequences']);
     $this->installEntitySchema('user');
   }
 

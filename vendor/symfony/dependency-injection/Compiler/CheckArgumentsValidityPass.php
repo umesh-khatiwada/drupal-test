@@ -22,8 +22,6 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
  */
 class CheckArgumentsValidityPass extends AbstractRecursivePass
 {
-    protected bool $skipScalars = true;
-
     private bool $throwExceptions;
 
     public function __construct(bool $throwExceptions = true)

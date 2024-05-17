@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Behat\Mink\Element\NodeElement;
@@ -176,14 +174,14 @@ class LayoutBuilderDisableInteractionsTest extends WebDriverTestBase {
   }
 
   /**
-   * Checks if element is not clickable.
+   * Checks if element is unclickable.
    *
    * @param \Behat\Mink\Element\NodeElement $element
    *   Element being checked for.
    *
    * @internal
    */
-  protected function assertElementNotClickable(NodeElement $element): void {
+  protected function assertElementUnclickable(NodeElement $element): void {
     try {
       $element->click();
       $tag_name = $element->getTagName();
@@ -205,11 +203,11 @@ class LayoutBuilderDisableInteractionsTest extends WebDriverTestBase {
 
     $this->assertNotEmpty($assert_session->waitForElement('css', '.block-search'));
     $searchButton = $assert_session->buttonExists('Search');
-    $this->assertElementNotClickable($searchButton);
+    $this->assertElementUnclickable($searchButton);
     $assert_session->linkExists('Take me away');
-    $this->assertElementNotClickable($page->findLink('Take me away'));
+    $this->assertElementUnclickable($page->findLink('Take me away'));
     $iframe = $assert_session->elementExists('css', '#iframe-that-should-be-disabled');
-    $this->assertElementNotClickable($iframe);
+    $this->assertElementUnclickable($iframe);
   }
 
   /**

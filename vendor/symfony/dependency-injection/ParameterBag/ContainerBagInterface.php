@@ -33,8 +33,6 @@ interface ContainerBagInterface extends ContainerInterface
      *
      * @param TValue $value
      *
-     * @return mixed
-     *
      * @psalm-return (TValue is scalar ? array|scalar : array<array|scalar>)
      *
      * @throws ParameterNotFoundException if a placeholder references a parameter that does not exist

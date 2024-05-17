@@ -31,13 +31,4 @@ class SerializationTestNormalizer implements NormalizerInterface {
     return static::$format === $format;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      \stdClass::class => TRUE,
-    ];
-  }
-
 }

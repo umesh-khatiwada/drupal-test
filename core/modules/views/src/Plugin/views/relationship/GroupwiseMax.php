@@ -331,7 +331,7 @@ class GroupwiseMax extends RelationshipPluginBase {
   protected function conditionNamespace($string) {
     $parts = explode(' = ', $string);
     foreach ($parts as &$part) {
-      if (str_contains($part, '.')) {
+      if (strpos($part, '.') !== FALSE) {
         $part = '"' . str_replace('.', $this->subquery_namespace . '".', $part);
       }
     }

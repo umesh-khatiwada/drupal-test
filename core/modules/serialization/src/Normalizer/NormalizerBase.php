@@ -3,15 +3,23 @@
 namespace Drupal\serialization\Normalizer;
 
 use Drupal\Core\Cache\CacheableDependencyInterface;
+use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
 /**
  * Base class for Normalizers.
  */
-abstract class NormalizerBase implements SerializerAwareInterface, CacheableNormalizerInterface {
+abstract class NormalizerBase implements SerializerAwareInterface, CacheableNormalizerInterface, CacheableSupportsMethodInterface {
 
   use SerializerAwareTrait;
+
+  /**
+   * The interface or class that this Normalizer supports.
+   *
+   * @var string|array
+   */
+  protected $supportedInterfaceOrClass;
 
   /**
    * List of formats which supports (de-)normalization.
@@ -30,13 +38,7 @@ abstract class NormalizerBase implements SerializerAwareInterface, CacheableNorm
       return FALSE;
     }
 
-    if (property_exists($this, 'supportedInterfaceOrClass')) {
-      @trigger_error('Defining ' . static::class . '::supportedInterfaceOrClass property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use getSupportedTypes() instead. See https://www.drupal.org/node/3359695', E_USER_DEPRECATED);
-      $supported = (array) $this->supportedInterfaceOrClass;
-    }
-    else {
-      $supported = array_keys($this->getSupportedTypes($format));
-    }
+    $supported = (array) $this->supportedInterfaceOrClass;
 
     return (bool) array_filter($supported, function ($name) use ($data) {
       return $data instanceof $name;
@@ -56,13 +58,7 @@ abstract class NormalizerBase implements SerializerAwareInterface, CacheableNorm
       return FALSE;
     }
 
-    if (property_exists($this, 'supportedInterfaceOrClass')) {
-      @trigger_error('Defining ' . static::class . '::supportedInterfaceOrClass property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use getSupportedTypes() instead. See https://www.drupal.org/node/3359695', E_USER_DEPRECATED);
-      $supported = (array) $this->supportedInterfaceOrClass;
-    }
-    else {
-      $supported = array_keys($this->getSupportedTypes($format));
-    }
+    $supported = (array) $this->supportedInterfaceOrClass;
 
     $subclass_check = function ($name) use ($type) {
       return (class_exists($name) || interface_exists($name)) && is_subclass_of($type, $name, TRUE);
@@ -107,18 +103,7 @@ abstract class NormalizerBase implements SerializerAwareInterface, CacheableNorm
    * {@inheritdoc}
    */
   public function hasCacheableSupportsMethod(): bool {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use getSupportedTypes() instead. See https://www.drupal.org/node/3359695', E_USER_DEPRECATED);
-
     return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      '*' => FALSE,
-    ];
   }
 
 }

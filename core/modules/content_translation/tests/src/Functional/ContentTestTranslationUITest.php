@@ -48,7 +48,6 @@ class ContentTestTranslationUITest extends ContentTranslationUITestBase {
     // Use the entity_test_mul as this has multilingual property support.
     $this->entityTypeId = 'entity_test_mul_changed';
     parent::setUp();
-    $this->doSetup();
   }
 
   /**

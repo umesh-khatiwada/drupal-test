@@ -4,7 +4,7 @@ dependencies:
   module:
     - user
 id: test_field_permission
-label: test_node_revision_vid
+label: null
 module: views
 description: ''
 tag: ''

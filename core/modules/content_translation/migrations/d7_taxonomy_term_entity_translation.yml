@@ -20,6 +20,7 @@ process:
   content_translation_uid: uid
   content_translation_created: created
   changed: changed
+  forum_container: is_container
 destination:
   plugin: entity:taxonomy_term
   translations: true
@@ -29,5 +30,3 @@ migration_dependencies:
     - language
     - d7_entity_translation_settings
     - d7_taxonomy_term
-  optional:
-    - d7_language_content_taxonomy_vocabulary_settings

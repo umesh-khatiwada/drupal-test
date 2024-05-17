@@ -1,5 +1,4 @@
-# cspell:ignore filefield imagelink nodelink nodereference spamspan
-# cspell:ignore userreference
+# cspell:ignore filefield imagelink nodelink spamspan
 id: d6_field_formatter_settings
 label: Field formatter configuration
 migration_tags:

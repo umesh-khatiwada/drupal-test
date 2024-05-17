@@ -2,22 +2,12 @@
 
 namespace Drupal\Core\Database;
 
-@trigger_error('\Drupal\Core\Database\StatementPrefetch is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use \Drupal\Core\Database\StatementPrefetchIterator instead. See https://www.drupal.org/node/3265938', E_USER_DEPRECATED);
-
-use Drupal\Core\Database\Event\StatementExecutionEndEvent;
-use Drupal\Core\Database\Event\StatementExecutionStartEvent;
-
 /**
- * An implementation of StatementInterface that pre-fetches all data.
+ * An implementation of StatementInterface that prefetches all data.
  *
  * This class behaves very similar to a StatementWrapper of a \PDOStatement
  * but as it always fetches every row it is possible to manipulate those
  * results.
- *
- * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use
- *   \Drupal\Core\Database\StatementPrefetchIterator instead.
- *
- * @see https://www.drupal.org/node/3265938
  */
 class StatementPrefetch implements \Iterator, StatementInterface {
 
@@ -182,16 +172,9 @@ class StatementPrefetch implements \Iterator, StatementInterface {
       }
     }
 
-    if ($this->connection->isEventEnabled(StatementExecutionStartEvent::class)) {
-      $startEvent = new StatementExecutionStartEvent(
-        spl_object_id($this),
-        $this->connection->getKey(),
-        $this->connection->getTarget(),
-        $this->getQueryString(),
-        $args ?? [],
-        $this->connection->findCallerFromDebugBacktrace()
-      );
-      $this->connection->dispatchEvent($startEvent);
+    $logger = $this->connection->getLogger();
+    if (!empty($logger)) {
+      $query_start = microtime(TRUE);
     }
 
     // Prepare the query.
@@ -224,16 +207,9 @@ class StatementPrefetch implements \Iterator, StatementInterface {
       $this->columnNames = [];
     }
 
-    if (isset($startEvent) && $this->connection->isEventEnabled(StatementExecutionEndEvent::class)) {
-      $this->connection->dispatchEvent(new StatementExecutionEndEvent(
-        $startEvent->statementObjectId,
-        $startEvent->key,
-        $startEvent->target,
-        $startEvent->queryString,
-        $startEvent->args,
-        $startEvent->caller,
-        $startEvent->time
-      ));
+    if (!empty($logger)) {
+      $query_end = microtime(TRUE);
+      $logger->log($this, $args, $query_end - $query_start, $query_start);
     }
 
     // Initialize the first row in $this->currentRow.
@@ -470,7 +446,7 @@ class StatementPrefetch implements \Iterator, StatementInterface {
   /**
    * {@inheritdoc}
    */
-  public function fetchObject(string $class_name = NULL, array $constructor_arguments = []) {
+  public function fetchObject(string $class_name = NULL, array $constructor_arguments = NULL) {
     if (isset($this->currentRow)) {
       if (!isset($class_name)) {
         // Directly cast to an object to avoid a function call.

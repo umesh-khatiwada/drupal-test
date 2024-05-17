@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\UrlTest.
+ */
 
 namespace Drupal\Tests\Core;
 
@@ -524,7 +527,6 @@ class UrlTest extends UnitTestCase {
    *
    * @covers ::renderAccess
    * @dataProvider accessProvider
-   * @group legacy
    */
   public function testRenderAccess($access) {
     $element = [
@@ -532,20 +534,7 @@ class UrlTest extends UnitTestCase {
     ];
     $this->container->set('current_user', $this->createMock('Drupal\Core\Session\AccountInterface'));
     $this->container->set('access_manager', $this->getMockAccessManager($access));
-    $this->expectDeprecation('Drupal\Core\Url::renderAccess() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3342977');
     $this->assertEquals($access, TestUrl::renderAccess($element));
-  }
-
-  /**
-   * Tests deprecation of toRenderArray() method.
-   *
-   * @covers ::toRenderArray
-   * @group legacy
-   */
-  public function testToRenderArray() {
-    $this->expectDeprecation('Drupal\Core\Url::toRenderArray() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. There is no replacement. See https://www.drupal.org/node/3342977');
-    $url = Url::fromRoute('entity.node.canonical', ['node' => 3]);
-    $this->assertIsArray($url->toRenderArray());
   }
 
   /**

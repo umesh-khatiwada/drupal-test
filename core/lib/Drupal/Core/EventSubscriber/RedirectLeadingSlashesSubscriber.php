@@ -28,7 +28,7 @@ class RedirectLeadingSlashesSubscriber implements EventSubscriberInterface {
     // submits back to the same URI this presents an open redirect
     // vulnerability. Also, Drupal 7 renders the same page for
     // http://www.example.org/foo and http://www.example.org////foo.
-    if (str_contains($path, '//')) {
+    if (strpos($path, '//') !== FALSE) {
       $path = preg_replace('/\/+/', '/', $path);
       $qs = $request->getQueryString();
       if ($qs) {

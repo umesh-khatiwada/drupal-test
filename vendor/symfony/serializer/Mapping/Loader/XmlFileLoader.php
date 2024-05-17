@@ -31,7 +31,7 @@ class XmlFileLoader extends FileLoader
      *
      * @var \SimpleXMLElement[]|null
      */
-    private ?array $classes = null;
+    private $classes;
 
     public function loadClassMetadata(ClassMetadataInterface $classMetadata): bool
     {

@@ -4,7 +4,7 @@ dependencies:
   module:
     - user
 id: test_user_name
-label: test_user_name
+label: ''
 module: views
 description: ''
 tag: ''

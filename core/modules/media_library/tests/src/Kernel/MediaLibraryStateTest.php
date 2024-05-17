@@ -44,6 +44,7 @@ class MediaLibraryStateTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('file');
     $this->installSchema('file', 'file_usage');
+    $this->installSchema('system', 'sequences');
     $this->installEntitySchema('media');
     $this->installConfig([
       'field',

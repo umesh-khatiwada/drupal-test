@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\migrate\Unit\process;
 
 use Drupal\migrate\Plugin\migrate\process\Log;
@@ -17,7 +15,7 @@ class LogTest extends MigrateProcessTestCase {
   /**
    * Tests the Log plugin.
    *
-   * @dataProvider providerTestLog
+   * @dataProvider providerTestLog()
    */
   public function testLog($value, $expected_message) {
     // Test the expected log message.
@@ -34,7 +32,7 @@ class LogTest extends MigrateProcessTestCase {
   /**
    * Provides data for testLog.
    *
-   * @return string[][]
+   * @return \string[][]
    *   An array of test data arrays.
    */
   public function providerTestLog() {

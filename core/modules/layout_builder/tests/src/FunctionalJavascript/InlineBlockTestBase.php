@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Drupal\block_content\Entity\BlockContentType;
@@ -141,8 +139,8 @@ abstract class InlineBlockTestBase extends WebDriverTestBase {
     $page = $this->getSession()->getPage();
     $page->clickLink('Add block');
     $assert_session->assertWaitOnAjaxRequest();
-    $this->assertNotEmpty($assert_session->waitForLink('Create content block'));
-    $this->clickLink('Create content block');
+    $this->assertNotEmpty($assert_session->waitForLink('Create custom block'));
+    $this->clickLink('Create custom block');
     $assert_session->assertWaitOnAjaxRequest();
     $textarea = $assert_session->waitForElement('css', '[name="settings[block_form][body][0][value]"]');
     $this->assertNotEmpty($textarea);
@@ -189,6 +187,7 @@ abstract class InlineBlockTestBase extends WebDriverTestBase {
   protected function assertDialogClosedAndTextVisible($text, $css_locator = NULL) {
     $assert_session = $this->assertSession();
     $assert_session->assertNoElementAfterWait('css', '#drupal-off-canvas');
+    $assert_session->assertWaitOnAjaxRequest();
     $assert_session->elementNotExists('css', '#drupal-off-canvas');
     if ($css_locator) {
       $this->assertNotEmpty($assert_session->waitForElementVisible('css', ".dialog-off-canvas-main-canvas $css_locator:contains('$text')"));

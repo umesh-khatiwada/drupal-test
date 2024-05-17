@@ -60,7 +60,7 @@ class TimestampFormatterTest extends KernelTestBase {
 
     $this->entityType = 'entity_test';
     $this->bundle = $this->entityType;
-    $this->fieldName = $this->randomMachineName();
+    $this->fieldName = mb_strtolower($this->randomMachineName());
 
     $field_storage = FieldStorageConfig::create([
       'field_name' => $this->fieldName,

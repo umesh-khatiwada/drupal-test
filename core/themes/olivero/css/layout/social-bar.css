@@ -11,7 +11,21 @@
  .
  */
 
+/*
+ * Media query breakpoints.
+ * Processed by postcss/postcss-custom-media.
+ */
+
+/* Navigation related breakpoints */
+
+/* Grid related breakpoints */
+
+/* Grid shifts from 6 to 14 columns. */
+
+/* Width of the entire grid maxes out. */
+
 @media (min-width: 75rem) {
+
   .social-bar {
     flex-shrink: 0;
     width: var(--content-left);
@@ -27,10 +41,11 @@
 }
 
 @media (min-width: 75rem) {
+
   .social-bar__inner {
     position: relative;
     width: var(--content-left);
-    padding-block: var(--sp5);
+    padding-block: calc(5 * var(--sp));
     padding-inline-start: 0;
     padding-inline-end: 0;
   }
@@ -39,7 +54,7 @@
     position: fixed;
     inset-block-start: var(--sp6);
     inset-inline-start: 0;
-    height: calc(100vh - var(--sp6));
+    height: calc(100vh - 6 * var(--sp));
   }
 }
 
@@ -48,6 +63,7 @@
 }
 
 @media (min-width: 75rem) {
+
   .rotate > * {
     display: flex;
     align-items: center;
@@ -60,6 +76,7 @@
 }
 
 @media (min-width: 75rem) {
+
   .rotate .contextual {
     inset-inline: 100% auto;
     transform: rotate(90deg); /* LTR */
@@ -84,6 +101,7 @@
 }
 
 @media (min-width: 75rem) {
+
   .rotate {
     position: absolute;
     inset-inline-start: 50%;
@@ -95,6 +113,7 @@
   }
 
   @supports (width: max-content) {
+
     .rotate {
       width: max-content;
     }

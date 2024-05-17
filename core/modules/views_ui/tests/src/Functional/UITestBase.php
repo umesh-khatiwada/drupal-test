@@ -57,7 +57,7 @@ abstract class UITestBase extends ViewTestBase {
     // Create a new view in the UI.
     $default = [];
     $default['label'] = $this->randomMachineName(16);
-    $default['id'] = $this->randomMachineName(16);
+    $default['id'] = strtolower($this->randomMachineName(16));
     $default['description'] = $this->randomMachineName(16);
     $default['page[create]'] = TRUE;
     $default['page[path]'] = $default['id'];
@@ -77,7 +77,7 @@ abstract class UITestBase extends ViewTestBase {
     $url = $this->buildUrl($path, $options);
 
     // Ensure that each nojs page is accessible via ajax as well.
-    if (str_contains($url, '/nojs/')) {
+    if (strpos($url, '/nojs/') !== FALSE) {
       $url = preg_replace('|/nojs/|', '/ajax/', $url, 1);
       $result = $this->drupalGet($url, $options);
       $this->assertSession()->statusCodeEquals(200);

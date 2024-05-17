@@ -18,14 +18,6 @@ class Stable9LibraryOverrideTest extends StableLibraryOverrideTestBase {
     'core/drupal.dialog.off_canvas',
     'layout_builder/drupal.layout_builder',
     'views/views.responsive-grid',
-    'field_ui/drupal.field_ui.manage_fields',
-    'comment/drupal.comment-icon',
-    'file/drupal.file-icon',
-    'text/drupal.text-icon',
-    'link/drupal.link-icon',
-    'media/drupal.media-icon',
-    'options/drupal.options-icon',
-    'telephone/drupal.telephone-icon',
   ];
 
   /**
@@ -71,7 +63,7 @@ class Stable9LibraryOverrideTest extends StableLibraryOverrideTestBase {
           continue;
         }
         // Skip internal libraries.
-        if (str_starts_with($library_name, 'internal.')) {
+        if (substr($library_name, 0, 9) === 'internal.') {
           continue;
         }
         $library_after = $libraries_after[$extension][$library_name];

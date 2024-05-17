@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\EventSubscriber;
 
 use Drupal\Tests\UnitTestCase;
@@ -35,8 +33,6 @@ class PsrResponseSubscriberTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $factory = $this->getMockBuilder('Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface')
       ->disableOriginalConstructor()
       ->getMock();

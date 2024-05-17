@@ -12,7 +12,6 @@ use Drupal\Tests\jsonapi\Traits\CommonCollectionFilterAccessTestPatternsTrait;
  * JSON:API integration test for the "BlockContent" content entity type.
  *
  * @group jsonapi
- * @group #slow
  */
 class BlockContentTest extends ResourceTestBase {
 
@@ -66,36 +65,7 @@ class BlockContentTest extends ResourceTestBase {
    * {@inheritdoc}
    */
   protected function setUpAuthorization($method) {
-    switch ($method) {
-      case 'GET':
-        $this->grantPermissionsToTestedRole([
-          'access block library',
-        ]);
-        break;
-
-      case 'PATCH':
-        $this->grantPermissionsToTestedRole([
-          'administer block types',
-          'administer block content',
-        ]);
-        break;
-
-      case 'POST':
-        $this->grantPermissionsToTestedRole(['access block library', 'create basic block content']);
-        break;
-
-      case 'DELETE':
-        $this->grantPermissionsToTestedRole(['delete any basic block content']);
-        break;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUpRevisionAuthorization($method) {
-    parent::setUpRevisionAuthorization($method);
-    $this->grantPermissionsToTestedRole(['view any basic block content history']);
+    $this->grantPermissionsToTestedRole(['administer blocks']);
   }
 
   /**
@@ -112,7 +82,7 @@ class BlockContentTest extends ResourceTestBase {
       block_content_add_body_field($block_content_type->id());
     }
 
-    // Create a "Llama" content block.
+    // Create a "Llama" custom block.
     $block_content = BlockContent::create([
       'info' => 'Llama',
       'type' => 'basic',
@@ -162,7 +132,8 @@ class BlockContentTest extends ResourceTestBase {
           ],
           'changed' => (new \DateTime())->setTimestamp($this->entity->getChangedTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
           'info' => 'Llama',
-          'revision_created' => (new \DateTime())->setTimestamp((int) $this->entity->getRevisionCreationTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
+          'revision_log' => NULL,
+          'revision_created' => (new \DateTime())->setTimestamp($this->entity->getRevisionCreationTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
           'revision_translation_affected' => TRUE,
           'status' => FALSE,
           'langcode' => 'en',
@@ -205,23 +176,10 @@ class BlockContentTest extends ResourceTestBase {
       'data' => [
         'type' => 'block_content--basic',
         'attributes' => [
-          'info' => 'Drama llama',
+          'info' => 'Dramallama',
         ],
       ],
     ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getExpectedUnauthorizedAccessMessage($method) {
-    return match ($method) {
-      'GET' => "The 'access block library' permission is required.",
-      'PATCH' => "The 'edit any basic block content' permission is required.",
-      'POST' => "The following permissions are required: 'create basic block content' AND 'access block library'.",
-      'DELETE' => "The 'delete any basic block content' permission is required.",
-      default => parent::getExpectedUnauthorizedAccessMessage($method),
-    };
   }
 
   /**
@@ -260,7 +218,7 @@ class BlockContentTest extends ResourceTestBase {
    */
   public function testCollectionFilterAccess() {
     $this->entity->setPublished()->save();
-    $this->doTestCollectionFilterAccessForPublishableEntities('info', NULL, 'administer block content');
+    $this->doTestCollectionFilterAccessForPublishableEntities('info', NULL, 'administer blocks');
   }
 
 }

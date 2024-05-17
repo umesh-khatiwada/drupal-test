@@ -4,8 +4,6 @@ namespace Drupal\Tests\system\Kernel\Plugin\migrate\source\d7;
 
 use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
 
-// cspell:ignore objectid objectindex
-
 /**
  * Tests the menu translation source plugin.
  *

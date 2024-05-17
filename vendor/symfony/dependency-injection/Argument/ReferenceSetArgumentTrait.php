@@ -44,8 +44,6 @@ trait ReferenceSetArgumentTrait
 
     /**
      * @param Reference[] $values The service references to put in the set
-     *
-     * @return void
      */
     public function setValues(array $values)
     {

@@ -5,7 +5,6 @@ namespace Drupal\Tests\file\Functional;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\file\Entity\File;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 
 /**
  * Tests the display of file fields in node and views.
@@ -13,8 +12,6 @@ use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
  * @group file
  */
 class FileFieldDisplayTest extends FileFieldTestBase {
-
-  use FieldUiTestTrait;
 
   /**
    * {@inheritdoc}
@@ -25,7 +22,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
    * Tests normal formatter display on node display.
    */
   public function testNodeDisplay() {
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $type_name = 'article';
     $field_storage_settings = [
       'display_field' => '1',
@@ -131,7 +128,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
    * Tests default display of File Field.
    */
   public function testDefaultFileFieldDisplay() {
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $type_name = 'article';
     $field_storage_settings = [
       'display_field' => '1',
@@ -160,7 +157,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
   public function testDescToggle() {
     $type_name = 'test';
     $field_type = 'file';
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     // Use the UI to add a new content type that also contains a file field.
     $edit = [
       'name' => $type_name,
@@ -168,10 +165,20 @@ class FileFieldDisplayTest extends FileFieldTestBase {
     ];
     $this->drupalGet('admin/structure/types/add');
     $this->submitForm($edit, 'Save and manage fields');
-    $field_edit = [
+    $edit = [
+      'new_storage_type' => $field_type,
+      'field_name' => $field_name,
+      'label' => $this->randomString(),
+    ];
+    $this->drupalGet('/admin/structure/types/manage/' . $type_name . '/fields/add-field');
+    $this->submitForm($edit, 'Save and continue');
+    $this->submitForm([], 'Save field settings');
+    // Ensure the description field is selected on the field instance settings
+    // form. That's what this test is all about.
+    $edit = [
       'settings[description_field]' => TRUE,
     ];
-    $this->fieldUIAddNewField('/admin/structure/types/manage/' . $type_name, $field_name, $this->randomString(), $field_type, [], $field_edit);
+    $this->submitForm($edit, 'Save settings');
     // Add a node of our new type and upload a file to it.
     $file = current($this->drupalGetTestFiles('text'));
     $title = $this->randomString();
@@ -190,7 +197,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
    * Tests description display of File Field.
    */
   public function testDescriptionDefaultFileFieldDisplay() {
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $type_name = 'article';
     $field_storage_settings = [
       'display_field' => '1',
@@ -232,16 +239,6 @@ class FileFieldDisplayTest extends FileFieldTestBase {
 
     $this->drupalGet('node/' . $nid);
     $this->assertSession()->elementTextContains('xpath', '//a[@href="' . $node->{$field_name}->entity->createFileUrl() . '"]', $description);
-
-    // Test that null file size is rendered as "Unknown".
-    $nonexistent_file = File::create([
-      'uri' => 'temporary://' . $this->randomMachineName() . '.txt',
-    ]);
-    $nonexistent_file->save();
-    $node->set($field_name, $nonexistent_file->id());
-    $node->save();
-    $this->drupalGet('node/' . $nid);
-    $this->assertSession()->elementTextEquals('xpath', '//a[@href="' . $node->{$field_name}->entity->createFileUrl() . '"]/../../../td[2]', 'Unknown');
   }
 
 }

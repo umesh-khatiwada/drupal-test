@@ -18,8 +18,6 @@ use Symfony\Component\DependencyInjection\Definition;
  */
 class ResolveEnvPlaceholdersPass extends AbstractRecursivePass
 {
-    protected bool $skipScalars = false;
-
     protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         if (\is_string($value)) {

@@ -35,9 +35,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  *     "mode",
  *     "content",
  *     "hidden",
- *   },
- *   constraints = {
- *     "ImmutableProperties" = {"id", "targetEntityType", "bundle", "mode"},
  *   }
  * )
  */

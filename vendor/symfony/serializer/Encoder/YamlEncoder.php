@@ -42,18 +42,18 @@ class YamlEncoder implements EncoderInterface, DecoderInterface
     public const YAML_INDENT = 'yaml_indent';
     public const YAML_FLAGS = 'yaml_flags';
 
-    private readonly Dumper $dumper;
-    private readonly Parser $parser;
-    private array $defaultContext = [
+    private $dumper;
+    private $parser;
+    private $defaultContext = [
         self::YAML_INLINE => 0,
         self::YAML_INDENT => 0,
         self::YAML_FLAGS => 0,
     ];
 
-    public function __construct(?Dumper $dumper = null, ?Parser $parser = null, array $defaultContext = [])
+    public function __construct(Dumper $dumper = null, Parser $parser = null, array $defaultContext = [])
     {
         if (!class_exists(Dumper::class)) {
-            throw new RuntimeException('The YamlEncoder class requires the "Yaml" component. Try running "composer require symfony/yaml".');
+            throw new RuntimeException('The YamlEncoder class requires the "Yaml" component. Install "symfony/yaml" to use it.');
         }
 
         if (!$dumper) {

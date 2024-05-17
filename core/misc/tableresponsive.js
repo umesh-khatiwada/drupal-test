@@ -37,7 +37,7 @@
           'Show table cells that were hidden to make the table fit within a small screen.',
         ),
       )
-      .on('click', this.eventhandlerToggleColumns.bind(this));
+      .on('click', $.proxy(this, 'eventhandlerToggleColumns'));
 
     this.$table.before(
       $('<div class="tableresponsive-toggle-columns"></div>').append(
@@ -49,7 +49,7 @@
     $(window)
       .on(
         'resize.tableresponsive',
-        this.eventhandlerEvaluateColumnVisibility.bind(this),
+        $.proxy(this, 'eventhandlerEvaluateColumnVisibility'),
       )
       .trigger('resize.tableresponsive');
   }

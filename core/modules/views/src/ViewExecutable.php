@@ -254,7 +254,7 @@ class ViewExecutable {
   public $override_url;
 
   /**
-   * Allow to override the path used for generated URLs.
+   * Allow to override the path used for generated urls.
    *
    * @var string
    */
@@ -1956,12 +1956,23 @@ class ViewExecutable {
 
     if (!isset($args)) {
       $args = $this->args;
+
+      // Exclude arguments that were computed, not passed on the URL.
+      $position = 0;
+      if (!empty($this->argument)) {
+        foreach ($this->argument as $argument) {
+          if (!empty($argument->is_default) && !empty($argument->options['default_argument_skip_url'])) {
+            unset($args[$position]);
+          }
+          $position++;
+        }
+      }
     }
 
     $path = $this->getPath();
 
     // Don't bother working if there's nothing to do:
-    if (empty($path) || (empty($args) && !str_contains($path, '%'))) {
+    if (empty($path) || (empty($args) && strpos($path, '%') === FALSE)) {
       return $display_handler->getUrlInfo();
     }
 

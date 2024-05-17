@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Mail\MailManagerTest.
+ */
 
 namespace Drupal\Tests\Core\Mail;
 
@@ -116,14 +119,6 @@ class MailManagerTest extends UnitTestCase {
     $this->configFactory = $this->getConfigFactoryStub([
       'system.mail' => [
         'interface' => $interface,
-        'mailer_dsn' => [
-          'scheme' => 'null',
-          'host' => 'null',
-          'user' => NULL,
-          'password' => NULL,
-          'port' => NULL,
-          'options' => [],
-        ],
       ],
       'system.site' => [
         'mail' => 'test@example.com',

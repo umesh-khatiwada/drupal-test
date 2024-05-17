@@ -30,6 +30,13 @@ class FieldItemNormalizer extends NormalizerBase implements DenormalizerInterfac
   use SerializedColumnNormalizerTrait;
 
   /**
+   * The interface or class that this Normalizer supports.
+   *
+   * @var string
+   */
+  protected $supportedInterfaceOrClass = FieldItemInterface::class;
+
+  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -198,7 +205,7 @@ class FieldItemNormalizer extends NormalizerBase implements DenormalizerInterfac
     $alternatives = [];
     foreach ($keys as $key) {
       $lev = levenshtein($search_key, $key);
-      if ($lev <= strlen($search_key) / 3 || str_contains($key, $search_key)) {
+      if ($lev <= strlen($search_key) / 3 || strpos($key, $search_key) !== FALSE) {
         $alternatives[] = $key;
       }
     }
@@ -237,18 +244,7 @@ class FieldItemNormalizer extends NormalizerBase implements DenormalizerInterfac
    * {@inheritdoc}
    */
   public function hasCacheableSupportsMethod(): bool {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use getSupportedTypes() instead. See https://www.drupal.org/node/3359695', E_USER_DEPRECATED);
-
     return TRUE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      FieldItemInterface::class => TRUE,
-    ];
   }
 
 }

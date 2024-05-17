@@ -1,58 +1,9 @@
 /**
  * @file
  * Machine name functionality.
- *
- * @internal
  */
 
-(function ($, Drupal, drupalSettings, slugify) {
-  /**
-   * Trims string by a character.
-   *
-   * @param {string} string
-   *   The string to trim.
-   * @param {string} character
-   *   The characters to trim.
-   *
-   * @returns {string}
-   *   A trimmed string.
-   */
-  const trimByChar = (string, character) => {
-    const first = [...string].findIndex((char) => char !== character);
-    const last = [...string].reverse().findIndex((char) => char !== character);
-    return string.substring(first, string.length - last);
-  };
-
-  /**
-   * Transform a human-readable name to a machine name.
-   *
-   * @param {string} source
-   *   A string to transform.
-   * @see trans {object} settings
-   *   The machine name settings for the corresponding field.
-   * @param {string} settings.replace_pattern
-   *   A regular expression (without modifiers) matching disallowed characters
-   *   in the machine name; e.g., '[^a-z0-9]+'.
-   * @param {string} settings.replace
-   *   A character to replace disallowed characters with; e.g., '_' or '-'.
-   * @param {number} settings.maxlength
-   *   The maximum length of the machine name.
-   *
-   * @return {string}
-   *   The machine name string.
-   */
-  const prepareMachineName = (source, settings) => {
-    const rx = new RegExp(settings.replace_pattern, 'g');
-
-    return trimByChar(
-      source
-        .toLowerCase()
-        .replace(rx, settings.replace)
-        .substring(0, settings.maxlength),
-      settings.replace,
-    );
-  };
-
+(function ($, Drupal, drupalSettings) {
   /**
    * Attach the machine-readable name form element behavior.
    *
@@ -90,15 +41,12 @@
     attach(context, settings) {
       const self = this;
       const $context = $(context);
+      let timeout = null;
+      let xhr = null;
 
       function clickEditHandler(e) {
         const data = e.data;
-        data.$wrapper.removeClass('hidden');
-        if (data.$target.attr('data-machine-name-require-when-visible')) {
-          data.$target
-            .attr('required', true)
-            .removeAttr('data-machine-name-require-when-visible');
-        }
+        data.$wrapper.removeClass('visually-hidden');
         data.$target.trigger('focus');
         data.$suffix.hide();
         data.$source.off('.machineName');
@@ -109,11 +57,33 @@
         const options = data.options;
         const baseValue = e.target.value;
 
-        const needsTransliteration = !/^[A-Za-z0-9_\s]*$/.test(baseValue);
-        if (needsTransliteration) {
-          self.showMachineName(self.transliterate(baseValue, options), data);
+        const rx = new RegExp(options.replace_pattern, 'g');
+        const expected = baseValue
+          .toLowerCase()
+          .replace(rx, options.replace)
+          .substr(0, options.maxlength);
+
+        // Abort the last pending request because the label has changed and it
+        // is no longer valid.
+        if (xhr && xhr.readystate !== 4) {
+          xhr.abort();
+          xhr = null;
+        }
+
+        // Wait 300 milliseconds for Ajax request since the last event to update
+        // the machine name i.e., after the user has stopped typing.
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        if (baseValue.toLowerCase() !== expected) {
+          timeout = setTimeout(() => {
+            xhr = self.transliterate(baseValue, options).done((machine) => {
+              self.showMachineName(machine.substr(0, options.maxlength), data);
+            });
+          }, 300);
         } else {
-          self.showMachineName(prepareMachineName(baseValue, options), data);
+          self.showMachineName(expected, data);
         }
       }
 
@@ -140,25 +110,14 @@
         ) {
           return;
         }
-        // Skip processing upon a form validation error on a non-empty
-        // machine name.
-        if (
-          $target.hasClass('error') &&
-          $target[0].value &&
-          $target[0].value.trim().length
-        ) {
+        // Skip processing upon a form validation error on the machine name.
+        if ($target.hasClass('error')) {
           return;
         }
         // Figure out the maximum length for the machine name.
         options.maxlength = $target.attr('maxlength');
         // Hide the form item container of the machine name form element.
-        $wrapper.addClass('hidden');
-        if ($target.attr('required')) {
-          $target
-            .removeAttr('required')
-            .attr('data-machine-name-require-when-visible');
-        }
-
+        $wrapper.addClass('visually-hidden');
         // Initial machine name from the target field default value.
         const machine = $target[0].value;
         // Append the machine name preview to the source field.
@@ -176,7 +135,7 @@
         $suffix.append($preview);
 
         // If the machine name cannot be edited, stop further processing.
-        if ($target[0].disabled) {
+        if ($target.is(':disabled')) {
           return;
         }
 
@@ -192,62 +151,35 @@
         // If no initial value, determine machine name based on the
         // human-readable form element value.
         if (machine === '' && $source[0].value !== '') {
-          if (/^[A-Za-z0-9_\s]*$/.test($source[0].value)) {
+          self.transliterate($source[0].value, options).done((machineName) => {
             self.showMachineName(
-              prepareMachineName($source[0].value, options),
+              machineName.substr(0, options.maxlength),
               eventData,
             );
-          } else {
-            self.showMachineName(machine, eventData);
-          }
+          });
         }
 
         // If it is editable, append an edit link.
         const $link = $(
-          '<span class="admin-link"><button type="button" class="link" aria-label="'
-            .concat(
-              Drupal.t('Edit machine name'),
-              '" data-drupal-selector="'.concat(
-                $target.data('drupal-selector'),
-              ),
-              '-machine-name-admin-link">',
-            )
-            .concat(Drupal.t('Edit'), '</button></span>'),
-        )
-          .on('click', eventData, clickEditHandler)
-          .on('keyup', (e) => {
-            // Avoid propagating a keyup event from the machine name input.
-            if (e.key === 'Enter' || eventData.code === 'Space') {
-              e.preventDefault();
-              e.stopImmediatePropagation();
-              e.target.click();
-            }
-          })
-          .on('keydown', (e) => {
-            if (e.key === 'Enter' || eventData.code === 'Space') {
-              e.preventDefault();
-            }
-          });
+          `<span class="admin-link"><button type="button" class="link">${Drupal.t(
+            'Edit',
+          )}</button></span>`,
+        ).on('click', eventData, clickEditHandler);
         $suffix.append($link);
 
         // Preview the machine name in realtime when the human-readable name
         // changes, but only if there is no machine name yet; i.e., only upon
         // initial creation, not when editing.
         if ($target[0].value === '') {
-          // Listen to the 'change' and 'input' events that are fired
-          // immediately as the user is typing for faster response time. This is
-          // safe because the event handler doesn't include any slow
-          // asynchronous operations (e.g., network requests) that could
-          // accumulate.
           $source
-            .on(
-              'change.machineName input.machineName',
-              eventData,
-              machineNameHandler,
-            )
+            .on('formUpdated.machineName', eventData, machineNameHandler)
             // Initialize machine name preview.
-            .trigger('change.machineName');
+            .trigger('formUpdated.machineName');
         }
+
+        // Add a listener for an invalid event on the machine name input
+        // to show its container and focus it.
+        $target.on('invalid', eventData, clickEditHandler);
       });
     },
 
@@ -281,34 +213,25 @@
      * @param {string} settings.replace_pattern
      *   A regular expression (without modifiers) matching disallowed characters
      *   in the machine name; e.g., '[^a-z0-9]+'.
+     * @param {string} settings.replace_token
+     *   A token to validate the regular expression.
      * @param {string} settings.replace
      *   A character to replace disallowed characters with; e.g., '_' or '-'.
      * @param {number} settings.maxlength
      *   The maximum length of the machine name.
      *
-     * @return {string}
+     * @return {jQuery}
      *   The transliterated source string.
      */
     transliterate(source, settings) {
-      const languageOverrides =
-        drupalSettings.transliteration_language_overrides[
-          drupalSettings.langcode
-        ];
-      const normalizedLanguageOverrides = {};
-      if (languageOverrides) {
-        Object.keys(languageOverrides).forEach((key) => {
-          // Updates the keys from hexadecimal to strings.
-          normalizedLanguageOverrides[String.fromCharCode(key)] =
-            languageOverrides[key];
-        });
-      }
-      slugify.config({
-        separator: settings.replace,
-        allowedChars: settings.replace_pattern,
-        replace: normalizedLanguageOverrides,
+      return $.get(Drupal.url('machine_name/transliterate'), {
+        text: source,
+        langcode: drupalSettings.langcode,
+        replace_pattern: settings.replace_pattern,
+        replace_token: settings.replace_token,
+        replace: settings.replace,
+        lowercase: true,
       });
-
-      return prepareMachineName(slugify(source), settings);
     },
   };
-})(jQuery, Drupal, drupalSettings, slugify);
+})(jQuery, Drupal, drupalSettings);

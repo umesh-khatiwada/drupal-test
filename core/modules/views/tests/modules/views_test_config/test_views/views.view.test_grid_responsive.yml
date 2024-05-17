@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: test_grid_responsive
-label: test_grid_responsive
+label: ''
 module: views
 description: ''
 tag: ''

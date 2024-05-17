@@ -1,5 +1,5 @@
 {
-    "version": "0.2",
+    "version": "0.1",
     "language": "en-US",
     "allowCompoundWords": false,
     "globRoot": ".",
@@ -14,11 +14,7 @@
       "**/LICENSE.txt",
       "../**/LICENSE.txt",
       "modules/**/Migrate*Test.php",
-      "modules/book/tests/fixtures/drupal6.php",
-      "modules/book/tests/fixtures/drupal7.php",
       "modules/ckeditor5/js/build/*",
-      "modules/forum/tests/fixtures/drupal6.php",
-      "modules/forum/tests/fixtures/drupal7.php",
       "modules/media/tests/fixtures/oembed/*",
       "modules/migrate_drupal/tests/fixtures/drupal6.php",
       "modules/migrate_drupal/tests/fixtures/drupal7.php",
@@ -44,32 +40,13 @@
       "\\Wi18n",
       "\\x{[0-9A-F]{4,5}}"
     ],
-    "dictionaries": [
-      "dictionary",
-      "drupal",
-      "companies",
-      "fonts",
-      "html",
-      "php",
-      "softwareTerms"
-    ],
+    "dictionaries": ["drupal","companies", "fonts", "html", "php", "softwareTerms"],
     "dictionaryDefinitions": [
-      {
-        "name": "drupal",
-        "path": "./misc/cspell/drupal-dictionary.txt"
-      },
-      {
-        "name": "dictionary",
-        "path": "./misc/cspell/dictionary.txt"
-      }
-     ],
+      { "name": "drupal", "path": "./misc/cspell/dictionary.txt"}
+    ],
     "flagWords": [
-      "e-mail",
       "grey",
-      "hte",
-      "ist",
-      "please",
-      "queuing"
+      "hte"
     ],
     "overrides": [
       {

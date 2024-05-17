@@ -80,7 +80,7 @@ abstract class MenuLinkContentResourceTestBase extends EntityResourceTestBase {
     return [
       'title' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
       'link' => [

@@ -36,7 +36,7 @@ class BigPipeTestSubscriber implements EventSubscriberInterface {
 
     $attachments = $response->getAttachments();
     if (!isset($attachments['big_pipe_placeholders']) && !isset($attachments['big_pipe_nojs_placeholders'])) {
-      if (str_contains($response->getContent(), static::CONTENT_TRIGGER_EXCEPTION)) {
+      if (strpos($response->getContent(), static::CONTENT_TRIGGER_EXCEPTION) !== FALSE) {
         throw new \Exception('Oh noes!');
       }
     }

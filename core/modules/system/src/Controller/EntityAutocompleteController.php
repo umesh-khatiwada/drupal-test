@@ -77,12 +77,8 @@ class EntityAutocompleteController extends ControllerBase {
    */
   public function handleAutocomplete(Request $request, $target_type, $selection_handler, $selection_settings_key) {
     $matches = [];
-
     // Get the typed string from the URL, if it exists.
-    $input = $request->query->get('q');
-
-    // Check this string for emptiness, but allow any non-empty string.
-    if (is_string($input) && strlen($input)) {
+    if ($input = $request->query->get('q')) {
       $tag_list = Tags::explode($input);
       $typed_string = !empty($tag_list) ? mb_strtolower(array_pop($tag_list)) : '';
 
@@ -101,17 +97,6 @@ class EntityAutocompleteController extends ControllerBase {
         // Disallow access when the selection settings key is not found in the
         // key/value store.
         throw new AccessDeniedHttpException();
-      }
-
-      $entity_type_id = $request->query->get('entity_type');
-      if ($entity_type_id && $this->entityTypeManager()->hasDefinition($entity_type_id)) {
-        $entity_id = $request->query->get('entity_id');
-        if ($entity_id) {
-          $entity = $this->entityTypeManager()->getStorage($entity_type_id)->load($entity_id);
-          if ($entity->access('update')) {
-            $selection_settings['entity'] = $entity;
-          }
-        }
       }
 
       $matches = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, $typed_string);

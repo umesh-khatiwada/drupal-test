@@ -3,10 +3,8 @@
 namespace Drupal\node\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -14,12 +12,13 @@ use Drupal\Core\Url;
 
 /**
  * Provides a 'Syndicate' block that links to the site's RSS feed.
+ *
+ * @Block(
+ *   id = "node_syndicate_block",
+ *   admin_label = @Translation("Syndicate"),
+ *   category = @Translation("System")
+ * )
  */
-#[Block(
-  id: "node_syndicate_block",
-  admin_label: new TranslatableMarkup("Syndicate"),
-  category: new TranslatableMarkup("System")
-)]
 class SyndicateBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
 

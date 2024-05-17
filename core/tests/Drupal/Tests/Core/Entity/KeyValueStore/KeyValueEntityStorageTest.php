@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Entity\KeyValueStore;
 
 use Drupal\Core\Cache\MemoryCache\MemoryCache;
@@ -158,12 +156,9 @@ class KeyValueEntityStorageTest extends UnitTestCase {
       ->willReturn(get_class($this->getMockEntity()));
     $this->setUpKeyValueEntityStorage();
 
-    $hooks = ['test_entity_type_create', 'entity_create'];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(2))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
+      ->withConsecutive(['test_entity_type_create'], ['entity_create']);
     $this->uuidService->expects($this->never())
       ->method('generate');
 
@@ -184,12 +179,9 @@ class KeyValueEntityStorageTest extends UnitTestCase {
       ->willReturn(get_class($this->getMockEntity()));
     $this->setUpKeyValueEntityStorage(NULL);
 
-    $hooks = ['test_entity_type_create', 'entity_create'];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(2))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
+      ->withConsecutive(['test_entity_type_create'], ['entity_create']);
     $this->uuidService->expects($this->never())
       ->method('generate');
 
@@ -212,12 +204,9 @@ class KeyValueEntityStorageTest extends UnitTestCase {
       ->willReturn(get_class($entity));
     $this->setUpKeyValueEntityStorage();
 
-    $hooks = ['test_entity_type_create', 'entity_create'];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(2))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
+      ->withConsecutive(['test_entity_type_create'], ['entity_create']);
     $this->uuidService->expects($this->once())
       ->method('generate')
       ->willReturn('bar');
@@ -257,13 +246,14 @@ class KeyValueEntityStorageTest extends UnitTestCase {
       ->method('toArray')
       ->willReturn($expected);
 
-    $hooks = ['test_entity_type_presave', 'entity_presave', 'test_entity_type_insert', 'entity_insert'];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(4))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
-
+      ->withConsecutive(
+        ['test_entity_type_presave'],
+        ['entity_presave'],
+        ['test_entity_type_insert'],
+        ['entity_insert'],
+      );
     $this->keyValueStore->expects($this->once())
       ->method('set')
       ->with('foo', $expected);
@@ -300,14 +290,14 @@ class KeyValueEntityStorageTest extends UnitTestCase {
       ->willReturn([['id' => 'foo']]);
     $this->keyValueStore->expects($this->never())
       ->method('delete');
-
-    $hooks = ['test_entity_type_presave', 'entity_presave', 'test_entity_type_update', 'entity_update'];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(4))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
-
+      ->withConsecutive(
+        ['test_entity_type_presave'],
+        ['entity_presave'],
+        ['test_entity_type_update'],
+        ['entity_update'],
+      );
     $this->keyValueStore->expects($this->once())
       ->method('set')
       ->with('foo', $expected);
@@ -553,24 +543,20 @@ class KeyValueEntityStorageTest extends UnitTestCase {
 
   /**
    * @covers ::loadRevision
-   * @group legacy
    */
   public function testLoadRevision() {
-    $this->expectDeprecation('Drupal\Core\Entity\KeyValueStore\KeyValueEntityStorage::loadRevision() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use \Drupal\Core\Entity\RevisionableStorageInterface::loadRevision instead. See https://www.drupal.org/node/3294237');
     $this->setUpKeyValueEntityStorage();
 
-    $this->assertNull($this->entityStorage->loadRevision(1));
+    $this->assertSame(NULL, $this->entityStorage->loadRevision(1));
   }
 
   /**
    * @covers ::deleteRevision
-   * @group legacy
    */
   public function testDeleteRevision() {
-    $this->expectDeprecation('Drupal\Core\Entity\KeyValueStore\KeyValueEntityStorage::deleteRevision() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use \Drupal\Core\Entity\RevisionableStorageInterface::deleteRevision instead. See https://www.drupal.org/node/3294237');
     $this->setUpKeyValueEntityStorage();
 
-    $this->assertNull($this->entityStorage->deleteRevision(1));
+    $this->assertSame(NULL, $this->entityStorage->deleteRevision(1));
   }
 
   /**
@@ -582,21 +568,12 @@ class KeyValueEntityStorageTest extends UnitTestCase {
     $entities['bar'] = $this->getMockEntity(EntityBaseTest::class, [['id' => 'bar']]);
     $this->setUpKeyValueEntityStorage();
 
-    $hooks = [
-      'test_entity_type_predelete',
-      'entity_predelete',
-      'test_entity_type_predelete',
-      'entity_predelete',
-      'test_entity_type_delete',
-      'entity_delete',
-      'test_entity_type_delete',
-      'entity_delete',
-    ];
-    $this->moduleHandler->expects($this->exactly(count($hooks)))
+    $this->moduleHandler->expects($this->exactly(8))
       ->method('invokeAll')
-      ->with($this->callback(function (string $hook) use (&$hooks): bool {
-        return array_shift($hooks) === $hook;
-      }));
+      ->withConsecutive(
+        ['test_entity_type_predelete'],
+        ['entity_predelete'],
+      );
 
     $this->keyValueStore->expects($this->once())
       ->method('deleteMultiple')

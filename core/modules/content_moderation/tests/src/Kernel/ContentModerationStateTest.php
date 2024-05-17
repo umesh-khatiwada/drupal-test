@@ -150,7 +150,6 @@ class ContentModerationStateTest extends KernelTestBase {
     $entity->save();
 
     // Revert to the previous (published) revision.
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage */
     $entity_storage = $this->entityTypeManager->getStorage($entity_type_id);
     $previous_revision = $entity_storage->loadRevision(4);
     $previous_revision->isDefaultRevision(TRUE);
@@ -232,7 +231,6 @@ class ContentModerationStateTest extends KernelTestBase {
     // Delete the second revision and check that its content moderation state is
     // removed as well, while the content moderation states for revisions 1 and
     // 3 are kept in place.
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage */
     $entity_storage = $this->entityTypeManager->getStorage($entity_type_id);
     $entity_storage->deleteRevision($revision_2->getRevisionId());
 
@@ -255,7 +253,6 @@ class ContentModerationStateTest extends KernelTestBase {
     $content_moderation_state = ContentModerationState::loadFromModeratedEntity($entity);
     $this->assertNotEmpty($content_moderation_state);
 
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $entity_storage */
     $entity_storage = $this->entityTypeManager->getStorage($entity_type_id);
     $entity_storage->deleteRevision($entity->getRevisionId());
 
@@ -267,7 +264,6 @@ class ContentModerationStateTest extends KernelTestBase {
    * Tests removal of content moderation state entities for preexisting content.
    */
   public function testExistingContentModerationStateDataRemoval() {
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('entity_test_mulrevpub');
 
     $entity = $this->createEntity('entity_test_mulrevpub', 'published', FALSE);
@@ -729,9 +725,6 @@ class ContentModerationStateTest extends KernelTestBase {
         $bundle_entity = $bundle_entity_storage->create([
           $bundle_entity_type->getKey('id') => 'example',
         ]);
-        if ($bundle_entity_type->hasKey('label')) {
-          $bundle_entity->set($bundle_entity_type->getKey('label'), $this->randomMachineName());
-        }
         if ($entity_type_id == 'media') {
           $bundle_entity->set('source', 'test');
           $bundle_entity->save();
@@ -781,7 +774,6 @@ class ContentModerationStateTest extends KernelTestBase {
    *   The reloaded entity.
    */
   protected function reloadEntity(EntityInterface $entity, $revision_id = FALSE) {
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
     $storage->resetCache([$entity->id()]);
     if ($revision_id) {

@@ -4,7 +4,7 @@ dependencies:
   module:
     - entity_test
 id: test_entity_multivalue_basefield
-label: test_entity_multivalue_basefield
+label: ''
 module: views
 description: ''
 tag: ''

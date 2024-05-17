@@ -29,82 +29,82 @@ class SelectExtenderTest extends KernelTestBase {
     return [
       [
         'Drupal\Core\Database\Query\PagerSelectExtender',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         'Drupal\Core\Database\Query\PagerSelectExtender',
       ],
       [
         'Drupal\Core\Database\Query\PagerSelectExtender',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         '\Drupal\Core\Database\Query\PagerSelectExtender',
       ],
       [
         'Drupal\Core\Database\Query\TableSortExtender',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         'Drupal\Core\Database\Query\TableSortExtender',
       ],
       [
         'Drupal\Core\Database\Query\TableSortExtender',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         '\Drupal\Core\Database\Query\TableSortExtender',
       ],
       [
         'Drupal\search\SearchQuery',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         'Drupal\search\SearchQuery',
       ],
       [
         'Drupal\search\SearchQuery',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         '\Drupal\search\SearchQuery',
       ],
       [
         'Drupal\search\ViewsSearchQuery',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         'Drupal\search\ViewsSearchQuery',
       ],
       [
         'Drupal\search\ViewsSearchQuery',
-        'Drupal\CoreFake\Driver\Database\CoreFake',
+        'Drupal\corefake\Driver\Database\corefake',
         '\Drupal\search\ViewsSearchQuery',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\PagerSelectExtender',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\PagerSelectExtender',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         'Drupal\Core\Database\Query\PagerSelectExtender',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\PagerSelectExtender',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\PagerSelectExtender',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         '\Drupal\Core\Database\Query\PagerSelectExtender',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\TableSortExtender',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\TableSortExtender',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         'Drupal\Core\Database\Query\TableSortExtender',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\TableSortExtender',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\TableSortExtender',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         '\Drupal\Core\Database\Query\TableSortExtender',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\SearchQuery',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\SearchQuery',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         'Drupal\search\SearchQuery',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\SearchQuery',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\SearchQuery',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         '\Drupal\search\SearchQuery',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\ViewsSearchQuery',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\ViewsSearchQuery',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         'Drupal\search\ViewsSearchQuery',
       ],
       [
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses\ViewsSearchQuery',
-        'Drupal\core_fake\Driver\Database\CoreFakeWithAllCustomClasses',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses\ViewsSearchQuery',
+        'Drupal\corefake\Driver\Database\corefakeWithAllCustomClasses',
         '\Drupal\search\ViewsSearchQuery',
       ],
     ];
@@ -117,8 +117,8 @@ class SelectExtenderTest extends KernelTestBase {
    */
   public function testExtend(string $expected, string $namespace, string $extend): void {
     $additional_class_loader = new ClassLoader();
-    $additional_class_loader->addPsr4("Drupal\\core_fake\\Driver\\Database\\coreFake\\", __DIR__ . "/../../../../../tests/fixtures/database_drivers/module/core_fake/src/Driver/Database/CoreFake");
-    $additional_class_loader->addPsr4("Drupal\\core_fake\\Driver\\Database\\CoreFakeWithAllCustomClasses\\", __DIR__ . "/../../../../../tests/fixtures/database_drivers/module/core_fake/src/Driver/Database/CoreFakeWithAllCustomClasses");
+    $additional_class_loader->addPsr4("Drupal\\corefake\\Driver\\Database\\corefake\\", __DIR__ . "/../../../../../tests/fixtures/database_drivers/module/corefake/src/Driver/Database/corefake");
+    $additional_class_loader->addPsr4("Drupal\\corefake\\Driver\\Database\\corefakeWithAllCustomClasses\\", __DIR__ . "/../../../../../tests/fixtures/database_drivers/module/corefake/src/Driver/Database/corefakeWithAllCustomClasses");
     $additional_class_loader->register(TRUE);
 
     $mock_pdo = $this->createMock(StubPDO::class);

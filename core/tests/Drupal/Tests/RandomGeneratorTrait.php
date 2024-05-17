@@ -1,15 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests;
 
-use Drupal\TestTools\Random;
+use Drupal\Component\Utility\Random;
 
 /**
  * Provides random generator utility methods.
  */
 trait RandomGeneratorTrait {
+
+  /**
+   * The random generator.
+   *
+   * @var \Drupal\Component\Utility\Random
+   */
+  protected $randomGenerator;
 
   /**
    * Generates a pseudo-random string of ASCII characters of codes 32 to 126.
@@ -30,7 +35,18 @@ trait RandomGeneratorTrait {
    * @see \Drupal\Component\Utility\Random::string()
    */
   public function randomString($length = 8) {
-    return Random::string($length);
+    if ($length < 4) {
+      return $this->getRandomGenerator()->string($length, TRUE, [$this, 'randomStringValidate']);
+    }
+
+    // To prevent the introduction of random test failures, ensure that the
+    // returned string contains a character that needs to be escaped in HTML by
+    // injecting an ampersand into it.
+    $replacement_pos = floor($length / 2);
+    // Remove 2 from the length to account for the ampersand and greater than
+    // characters.
+    $string = $this->getRandomGenerator()->string($length - 2, TRUE, [$this, 'randomStringValidate']);
+    return substr_replace($string, '>&', $replacement_pos, 0);
   }
 
   /**
@@ -43,22 +59,26 @@ trait RandomGeneratorTrait {
    *
    * @return bool
    *   TRUE if the random string is valid, FALSE if not.
-   *
-   * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0.
-   *   Use \Drupal\TestTools\Random::stringValidate() instead.
-   *
-   * @see https://www.drupal.org/node/3358389
    */
   public function randomStringValidate($string) {
-    @trigger_error(__METHOD__ . "() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\TestTools\Random::stringValidate() instead. See https://www.drupal.org/node/3358389", E_USER_DEPRECATED);
+    // Consecutive spaces causes issues for link validation.
+    if (preg_match('/\s{2,}/', $string)) {
+      return FALSE;
+    }
 
-    return Random::stringValidate($string);
+    // Starting or ending with a space means that length might not be what is
+    // expected.
+    if (preg_match('/^\s|\s$/', $string)) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**
    * Generates a unique random string containing letters and numbers.
    *
-   * Do not use this method when testing non validated user input. Instead, use
+   * Do not use this method when testing unvalidated user input. Instead, use
    * \Drupal\Tests\RandomGeneratorTrait::randomString().
    *
    * @param int $length
@@ -70,7 +90,7 @@ trait RandomGeneratorTrait {
    * @see \Drupal\Component\Utility\Random::name()
    */
   protected function randomMachineName($length = 8) {
-    return Random::machineName($length);
+    return $this->getRandomGenerator()->name($length, TRUE);
   }
 
   /**
@@ -86,7 +106,7 @@ trait RandomGeneratorTrait {
    * @see \Drupal\Component\Utility\Random::object()
    */
   public function randomObject($size = 4) {
-    return Random::object($size);
+    return $this->getRandomGenerator()->object($size);
   }
 
   /**
@@ -96,7 +116,10 @@ trait RandomGeneratorTrait {
    *   The random generator.
    */
   protected function getRandomGenerator() {
-    return Random::getGenerator();
+    if (!is_object($this->randomGenerator)) {
+      $this->randomGenerator = new Random();
+    }
+    return $this->randomGenerator;
   }
 
 }

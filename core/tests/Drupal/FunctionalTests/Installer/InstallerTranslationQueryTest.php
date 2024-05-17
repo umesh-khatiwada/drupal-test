@@ -75,13 +75,13 @@ class InstallerTranslationQueryTest extends InstallerTestBase {
    *   Contents for the test .po file.
    */
   protected function getPo($langcode) {
-    return <<<PO
+    return <<<ENDPO
 msgid ""
 msgstr ""
 
 msgid "Save and continue"
 msgstr "Save and continue $langcode"
-PO;
+ENDPO;
   }
 
 }

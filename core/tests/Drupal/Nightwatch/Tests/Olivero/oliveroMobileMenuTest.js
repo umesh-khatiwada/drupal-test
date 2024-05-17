@@ -13,15 +13,9 @@ const buttonSubMenuId = 'primary-menu-item-12';
  * @param {boolean} [tabBackwards] - Hold down the SHIFT key when sending tabs
  */
 const focusTrapCheck = (browser, parentSelector, tabCount, tabBackwards) => {
-  if (tabBackwards === true) {
-    browser.perform(function () {
-      return this.actions().keyDown(browser.Keys.SHIFT);
-    });
-  }
+  if (tabBackwards === true) browser.keys(browser.Keys.SHIFT);
   for (let i = 0; i < tabCount; i++) {
-    browser.perform(function () {
-      return this.actions().sendKeys(browser.Keys.TAB).pause(50);
-    });
+    browser.keys(browser.Keys.TAB).pause(50);
   }
   browser
     .execute(
@@ -35,10 +29,8 @@ const focusTrapCheck = (browser, parentSelector, tabCount, tabBackwards) => {
         browser.assert.ok(result.value);
       },
     )
-    // Release SHIFT key.
-    .perform(function () {
-      return this.actions().keyUp(browser.Keys.SHIFT);
-    });
+    // Release all keys.
+    .keys(browser.Keys.NULL);
 };
 
 module.exports = {
@@ -115,9 +107,7 @@ module.exports = {
       .waitForElementVisible(`[aria-controls="${linkSubMenuId}"]`)
       .click(`[aria-controls="${linkSubMenuId}"]`)
       .waitForElementVisible(`#${linkSubMenuId}`)
-      .perform(function () {
-        return this.actions().sendKeys(browser.Keys.TAB);
-      })
+      .keys(browser.Keys.TAB)
       .pause(50)
       .execute(
         // eslint-disable-next-line func-names, prefer-arrow-callback, no-shadow
@@ -129,9 +119,7 @@ module.exports = {
           browser.assert.ok(result.value);
         },
       )
-      .perform(function () {
-        return this.actions().sendKeys(browser.Keys.ESCAPE);
-      })
+      .keys(browser.Keys.ESCAPE)
       .pause(50)
       .execute(
         // eslint-disable-next-line func-names, prefer-arrow-callback, no-shadow
@@ -148,9 +136,7 @@ module.exports = {
       // Verify functionality on route:<button> button.
       .click(`[aria-controls="${buttonSubMenuId}"]`)
       .waitForElementVisible(`#${buttonSubMenuId}`)
-      .perform(function () {
-        return this.actions().sendKeys(browser.Keys.TAB);
-      })
+      .keys(browser.Keys.TAB)
       .pause(50)
       .execute(
         // eslint-disable-next-line func-names, prefer-arrow-callback, no-shadow
@@ -162,9 +148,7 @@ module.exports = {
           browser.assert.ok(result.value);
         },
       )
-      .perform(function () {
-        return this.actions().sendKeys(browser.Keys.ESCAPE);
-      })
+      .keys(browser.Keys.ESCAPE)
       .pause(50)
       .execute(
         // eslint-disable-next-line func-names, prefer-arrow-callback, no-shadow

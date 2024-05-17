@@ -14,16 +14,12 @@ namespace Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
-use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 /**
  * @author Imad ZAIRIG <imadzairig@gmail.com>
  */
 class JsonValidator extends ConstraintValidator
 {
-    /**
-     * @return void
-     */
     public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof Json) {
@@ -35,12 +31,14 @@ class JsonValidator extends ConstraintValidator
         }
 
         if (!\is_scalar($value) && !$value instanceof \Stringable) {
-            throw new UnexpectedValueException($value, 'string');
+            throw new UnexpectedTypeException($value, 'string');
         }
 
         $value = (string) $value;
 
-        if (!json_validate($value)) {
+        json_decode($value);
+
+        if (\JSON_ERROR_NONE !== json_last_error()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $this->formatValue($value))
                 ->setCode(Json::INVALID_JSON_ERROR)

@@ -3,7 +3,6 @@
 namespace Drupal\language\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -27,8 +26,8 @@ class NegotiationBrowserForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, ConfigurableLanguageManagerInterface $language_manager) {
-    parent::__construct($config_factory, $typedConfigManager);
+  public function __construct(ConfigFactoryInterface $config_factory, ConfigurableLanguageManagerInterface $language_manager) {
+    parent::__construct($config_factory);
     $this->languageManager = $language_manager;
   }
 
@@ -38,7 +37,6 @@ class NegotiationBrowserForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('config.typed'),
       $container->get('language_manager')
     );
   }

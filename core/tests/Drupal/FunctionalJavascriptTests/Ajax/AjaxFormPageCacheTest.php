@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests\Ajax;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -120,7 +118,7 @@ class AjaxFormPageCacheTest extends WebDriverTestBase {
     $this->drupalGet('ajax_validation_test');
     // Changing the value of the textfield will trigger an AJAX
     // request/response.
-    $field = $this->getSession()->getPage()->findField('driver_text');
+    $field = $this->getSession()->getPage()->findField('drivertext');
     $field->setValue('some dumb text');
     $field->blur();
 

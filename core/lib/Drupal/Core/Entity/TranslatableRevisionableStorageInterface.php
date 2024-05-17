@@ -5,7 +5,7 @@ namespace Drupal\Core\Entity;
 /**
  * A storage that supports translatable and revisionable entity types.
  */
-interface TranslatableRevisionableStorageInterface extends RevisionableStorageInterface, TranslatableStorageInterface {
+interface TranslatableRevisionableStorageInterface extends TranslatableStorageInterface, RevisionableStorageInterface {
 
   /**
    * Creates a new revision starting off from the specified entity object.

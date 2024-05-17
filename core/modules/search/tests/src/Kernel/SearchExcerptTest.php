@@ -72,8 +72,7 @@ class SearchExcerptTest extends KernelTestBase {
    *
    * Excerpting should handle keywords that are matched only after going through
    * text analysis. This test passes keywords that match simplified words
-   * and compares them with strings that contain the original un-simplified
-   * word.
+   * and compares them with strings that contain the original unsimplified word.
    */
   public function testSearchExcerptSimplified() {
     $start_time = microtime(TRUE);
@@ -192,7 +191,7 @@ class SearchExcerptTest extends KernelTestBase {
    */
   protected function doSearchExcerpt($keys, $render_array, $langcode = NULL) {
     $render_array = search_excerpt($keys, $render_array, $langcode);
-    $text = (string) \Drupal::service('renderer')->renderPlain($render_array);
+    $text = \Drupal::service('renderer')->renderPlain($render_array);
     // The search_excerpt() function adds some extra spaces -- not
     // important for HTML formatting or this test. Remove these for comparison.
     return preg_replace('| +|', ' ', $text);

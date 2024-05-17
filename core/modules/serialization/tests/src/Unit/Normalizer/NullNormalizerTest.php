@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\serialization\Unit\Normalizer;
 
 use Drupal\serialization\Normalizer\NullNormalizer;
@@ -31,8 +29,6 @@ class NullNormalizerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->normalizer = new NullNormalizer($this->interface);
   }
 

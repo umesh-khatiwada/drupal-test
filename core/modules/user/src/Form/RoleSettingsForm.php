@@ -58,10 +58,8 @@ class RoleSettingsForm extends FormBase {
     ];
     // Do not allow users to set the anonymous or authenticated user roles as
     // the administrator role.
-    $roles = $this->roleStorage->loadMultiple();
-    unset($roles[RoleInterface::ANONYMOUS_ID]);
+    $roles = user_role_names(TRUE);
     unset($roles[RoleInterface::AUTHENTICATED_ID]);
-    $roles = array_map(fn(RoleInterface $role) => $role->label(), $roles);
     $admin_roles = $this->roleStorage->getQuery()
       ->condition('is_admin', TRUE)
       ->execute();

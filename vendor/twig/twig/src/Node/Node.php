@@ -27,6 +27,7 @@ class Node implements \Countable, \IteratorAggregate
     protected $lineno;
     protected $tag;
 
+    private $name;
     private $sourceContext;
 
     /**

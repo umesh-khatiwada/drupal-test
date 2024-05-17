@@ -14,33 +14,6 @@
    */
   let activeItem = Drupal.url(drupalSettings.path.currentPath);
 
-  /**
-   * Maintains active tab in horizontal orientation.
-   */
-  $.fn.drupalToolbarMenuHorizontal = function () {
-    let currentPath = drupalSettings.path.currentPath;
-    const menu = once('toolbar-menu-horizontal', this);
-    if (menu.length) {
-      const $menu = $(menu);
-      if (activeItem) {
-        const count = currentPath.split('/').length;
-        // Find the deepest link with its parent info and start
-        // marking active.
-        for (let i = 0; i < count; i++) {
-          const $menuItem = $menu.find(
-            `a[data-drupal-link-system-path="${currentPath}"]`,
-          );
-          if ($menuItem.length !== 0) {
-            $menuItem.closest('a').addClass('is-active');
-            break;
-          }
-          const lastIndex = currentPath.lastIndexOf('/');
-          currentPath = currentPath.slice(0, lastIndex);
-        }
-      }
-    }
-  };
-
   $.fn.drupalToolbarMenu = function () {
     const ui = {
       handleOpen: Drupal.t('Extend'),
@@ -140,11 +113,7 @@
           });
           $item
             .children('.toolbar-box')
-            .append(
-              $(Drupal.theme('toolbarMenuItemToggle', options))
-                .hide()
-                .fadeIn(150),
-            );
+            .append(Drupal.theme('toolbarMenuItemToggle', options));
         }
       });
     }
@@ -180,7 +149,6 @@
      *   The root of the menu.
      */
     function openActiveItem($menu) {
-      let currentPath = drupalSettings.path.currentPath;
       const pathItem = $menu.find(`a[href="${window.location.pathname}"]`);
       if (pathItem.length && !activeItem) {
         activeItem = window.location.pathname;
@@ -189,36 +157,16 @@
         const $activeItem = $menu
           .find(`a[href="${activeItem}"]`)
           .addClass('menu-item--active');
-        if (pathItem.length === 0 && activeItem) {
-          const count = currentPath.split('/').length;
-          // Find the deepest link with its parent info and start
-          // marking active.
-          for (let i = 0; i < count; i++) {
-            const $menuItem = $menu.find(
-              `a[data-drupal-link-system-path="${currentPath}"]`,
-            );
-            if ($menuItem.length !== 0) {
-              const $activeTrail = $menuItem
-                .parentsUntil('.root', 'li')
-                .addClass('menu-item--active-trail');
-              toggleList($activeTrail, true);
-              break;
-            }
-            const lastIndex = currentPath.lastIndexOf('/');
-            currentPath = currentPath.slice(0, lastIndex);
-          }
-        } else {
-          const $activeTrail = $activeItem
-            .parentsUntil('.root', 'li')
-            .addClass('menu-item--active-trail');
-          toggleList($activeTrail, true);
-        }
+        const $activeTrail = $activeItem
+          .parentsUntil('.root', 'li')
+          .addClass('menu-item--active-trail');
+        toggleList($activeTrail, true);
       }
     }
 
     // Return the jQuery object.
     return this.each(function (selector) {
-      const menu = once('toolbar-menu-vertical', this);
+      const menu = once('toolbar-menu', this);
       if (menu.length) {
         const $menu = $(menu);
         // Bind event handlers.

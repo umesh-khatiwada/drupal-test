@@ -31,25 +31,11 @@ class ContentTranslationMetadataFieldsTest extends ContentTranslationTestBase {
   protected static $modules = ['language', 'content_translation', 'node'];
 
   /**
-   * {@inheritdoc}
+   * The profile to install as a basis for testing.
+   *
+   * @var string
    */
-  protected $defaultTheme = 'stark';
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setupBundle() {
-    parent::setupBundle();
-    $this->createContentType(['type' => $this->bundle]);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-    $this->doSetup();
-  }
+  protected $profile = 'standard';
 
   /**
    * Tests skipping setting non translatable metadata fields.

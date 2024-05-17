@@ -6,7 +6,6 @@ use Drupal\Tests\rest\Functional\BasicAuthResourceTestTrait;
 
 /**
  * @group rest
- * @group #slow
  */
 class TermJsonBasicAuthTest extends TermResourceTestBase {
 

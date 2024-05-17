@@ -2,11 +2,8 @@
 
 namespace Drupal\user\Plugin\Condition;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Condition\ConditionPluginBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\user\Entity\Role;
-use Drupal\user\RoleInterface;
 
 /**
  * Provides a 'User Role' condition.
@@ -29,7 +26,7 @@ class UserRole extends ConditionPluginBase {
       '#type' => 'checkboxes',
       '#title' => $this->t('When the user has the following roles'),
       '#default_value' => $this->configuration['roles'],
-      '#options' => array_map(fn(RoleInterface $role) => Html::escape($role->label()), Role::loadMultiple()),
+      '#options' => array_map('\Drupal\Component\Utility\Html::escape', user_role_names()),
       '#description' => $this->t('If you select no roles, the condition will evaluate to TRUE for all users.'),
     ];
     return parent::buildConfigurationForm($form, $form_state);
@@ -57,8 +54,7 @@ class UserRole extends ConditionPluginBase {
    */
   public function summary() {
     // Use the role labels. They will be sanitized below.
-    $roles = array_map(fn(RoleInterface $role) => $role->label(), Role::loadMultiple());
-    $roles = array_intersect_key($roles, $this->configuration['roles']);
+    $roles = array_intersect_key(user_role_names(), $this->configuration['roles']);
     if (count($roles) > 1) {
       $roles = implode(', ', $roles);
     }

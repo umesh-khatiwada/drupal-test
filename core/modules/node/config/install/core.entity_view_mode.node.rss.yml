@@ -5,6 +5,5 @@ dependencies:
     - node
 id: node.rss
 label: RSS
-description: ''
 targetEntityType: node
 cache: true

@@ -5,7 +5,7 @@ dependencies:
     - node
     - user
 id: test_argument_validation
-label: test_argument_validation
+label: ''
 module: views
 description: 'This view is used to test the argument validator schema.'
 tag: ''
@@ -64,6 +64,7 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true
@@ -100,6 +101,7 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true
@@ -140,6 +142,7 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true
@@ -186,6 +189,7 @@ display:
           title: ''
           default_argument_type: node
           default_argument_options: {  }
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true

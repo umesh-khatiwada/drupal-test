@@ -9,7 +9,6 @@ use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Routing\RedirectDestinationInterface;
-use Drupal\user\Entity\Role;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -124,10 +123,14 @@ class UserListBuilder extends EntityListBuilder {
     ];
     $row['status'] = $entity->isActive() ? $this->t('active') : $this->t('blocked');
 
-    $roles = Role::loadMultiple($entity->getRoles());
-    unset($roles[RoleInterface::ANONYMOUS_ID]);
+    $roles = user_role_names(TRUE);
     unset($roles[RoleInterface::AUTHENTICATED_ID]);
-    $users_roles = array_map(fn(RoleInterface $role) => $role->label(), $roles);
+    $users_roles = [];
+    foreach ($entity->getRoles() as $role) {
+      if (isset($roles[$role])) {
+        $users_roles[] = $roles[$role];
+      }
+    }
     asort($users_roles);
     $row['roles']['data'] = [
       '#theme' => 'item_list',

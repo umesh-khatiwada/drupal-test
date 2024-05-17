@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\views\Kernel;
 
-use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\image\Entity\ImageStyle;
@@ -49,7 +48,7 @@ class ViewsConfigDependenciesIntegrationTest extends ViewsKernelTestBase {
    */
   public function testImage() {
     /** @var \Drupal\image\ImageStyleInterface $style */
-    $style = ImageStyle::create(['name' => 'foo', 'label' => 'Foo']);
+    $style = ImageStyle::create(['name' => 'foo']);
     $style->save();
 
     // Create a new image field 'bar' to be used in 'entity_test_fields' view.
@@ -154,7 +153,7 @@ class ViewsConfigDependenciesIntegrationTest extends ViewsKernelTestBase {
     // the schema for them so we can uninstall them.
     $entities = \Drupal::entityTypeManager()->getDefinitions();
     foreach ($entities as $entity_type_id => $definition) {
-      if ($definition instanceof ContentEntityTypeInterface && $definition->getProvider() == 'entity_test') {
+      if ($definition->getProvider() == 'entity_test') {
         $this->installEntitySchema($entity_type_id);
       }
     }

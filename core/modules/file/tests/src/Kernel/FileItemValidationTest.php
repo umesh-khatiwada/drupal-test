@@ -46,6 +46,7 @@ class FileItemValidationTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('file');
     $this->installSchema('file', 'file_usage');
+    $this->installSchema('system', 'sequences');
 
     $this->user = User::create([
       'name' => 'username',

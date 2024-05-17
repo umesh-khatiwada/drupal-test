@@ -27,7 +27,6 @@ class RequiredStatesTest extends KernelTestBase {
   public function testGetRequiredStates() {
     $workflow = Workflow::create([
       'id' => 'test',
-      'label' => 'Test workflow',
       'type' => 'workflow_type_required_state_test',
     ]);
     $workflow->save();
@@ -46,7 +45,6 @@ class RequiredStatesTest extends KernelTestBase {
   public function testDeleteRequiredStateAPI() {
     $workflow = Workflow::create([
       'id' => 'test',
-      'label' => 'Test workflow',
       'type' => 'workflow_type_required_state_test',
     ]);
     $workflow->save();
@@ -79,7 +77,6 @@ class RequiredStatesTest extends KernelTestBase {
   public function testChangeRequiredStateAPI() {
     $workflow = Workflow::create([
       'id' => 'test',
-      'label' => 'Test workflow',
       'type' => 'workflow_type_required_state_test',
     ]);
     $workflow->save();

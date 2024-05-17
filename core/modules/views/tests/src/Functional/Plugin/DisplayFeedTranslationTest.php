@@ -2,13 +2,10 @@
 
 namespace Drupal\Tests\views\Functional\Plugin;
 
-use Drupal\node\Entity\Node;
-use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
 use Drupal\Tests\Traits\Core\PathAliasTestTrait;
 use Drupal\Tests\views\Functional\ViewTestBase;
-use Drupal\Tests\WaitTerminateTestTrait;
-
-// cspell:ignore português
+use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\node\Entity\Node;
 
 /**
  * Tests the feed display plugin with translated content.
@@ -18,9 +15,7 @@ use Drupal\Tests\WaitTerminateTestTrait;
  */
 class DisplayFeedTranslationTest extends ViewTestBase {
 
-  use ContentTranslationTestTrait;
   use PathAliasTestTrait;
-  use WaitTerminateTestTrait;
 
   /**
    * Views used by this test.
@@ -63,7 +58,7 @@ class DisplayFeedTranslationTest extends ViewTestBase {
 
     $this->langcodes = ['es', 'pt-br'];
     foreach ($this->langcodes as $langcode) {
-      static::createLanguageFromLangcode($langcode);
+      ConfigurableLanguage::createFromLangcode($langcode)->save();
     }
 
     $admin_user = $this->drupalCreateUser([
@@ -79,16 +74,17 @@ class DisplayFeedTranslationTest extends ViewTestBase {
     $this->drupalCreateContentType(['type' => 'page']);
 
     // Enable translation for page.
-    static::enableContentTranslation('node', 'page');
+    $edit = [
+      'entity_types[node]' => TRUE,
+      'settings[node][page][translatable]' => TRUE,
+      'settings[node][page][settings][language][language_alterable]' => TRUE,
+    ];
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
     $this->rebuildContainer();
-
-    // The \Drupal\path_alias\AliasWhitelist service performs cache clears after
-    // Drupal has flushed the response to the client. We use
-    // WaitTerminateTestTrait to wait for Drupal to do this before continuing.
-    $this->setWaitForTerminate();
   }
 
   /**

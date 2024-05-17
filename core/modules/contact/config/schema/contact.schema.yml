@@ -5,15 +5,10 @@ contact.form.*:
   label: 'Contact form'
   mapping:
     id:
-      type: machine_name
+      type: string
       label: 'ID'
-      constraints:
-        Length:
-          # Contact form IDs are specifically limited to 32 characters.
-          # @see \Drupal\contact\ContactFormEditForm::form()
-          max: 32
     label:
-      type: required_label
+      type: label
       label: 'Label'
     recipients:
       type: sequence
@@ -28,7 +23,7 @@ contact.form.*:
       type: integer
       label: 'Weight'
     message:
-      type: text
+      type: label
       label: 'Message displayed to user on submission'
     redirect:
       type: path

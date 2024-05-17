@@ -220,7 +220,7 @@ class NodeSearch extends ConfigurableSearchPluginBase implements AccessibleInter
     // Node search is executable if we have keywords or an advanced parameter.
     // At least, we should parse out the parameters and see if there are any
     // keyword matches in that case, rather than just printing out the
-    // "Enter keywords" message.
+    // "Please enter keywords" message.
     return !empty($this->keywords) || (isset($this->searchParameters['f']) && count($this->searchParameters['f']));
   }
 

@@ -7,8 +7,6 @@ use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
 use Psr\Log\LoggerInterface;
 
-// cspell:ignore ndelay
-
 /**
  * Redirects logging messages to syslog.
  */
@@ -54,13 +52,8 @@ class SysLog implements LoggerInterface {
    */
   protected function openConnection() {
     if (!$this->connectionOpened) {
-      // Do not connect if identity or facility are not configured.
-      $identity = $this->config->get('identity');
       $facility = $this->config->get('facility');
-      if ($identity === NULL || $facility === NULL) {
-        return;
-      }
-      $this->connectionOpened = openlog($identity, LOG_NDELAY, $facility);
+      $this->connectionOpened = openlog($this->config->get('identity'), LOG_NDELAY, $facility);
     }
   }
 
@@ -80,9 +73,6 @@ class SysLog implements LoggerInterface {
 
     // Ensure we have a connection available.
     $this->openConnection();
-    if (!$this->connectionOpened) {
-      return;
-    }
 
     // Populate the message placeholders and then replace them in the message.
     $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);

@@ -175,10 +175,10 @@ class ImageUploadTest extends BrowserTestBase {
   }
 
   /**
-   * Provides the image upload URL.
+   * Provides the image upload url.
    *
    * @return \Drupal\Core\Url
-   *   The upload image URL for the basic_html format.
+   *   The upload image url for the basic_html format.
    */
   protected function getUploadUrl() {
     $token = $this->container->get('csrf_token')->get('ckeditor5/upload-image/basic_html');
@@ -224,11 +224,7 @@ class ImageUploadTest extends BrowserTestBase {
             'drupalInsertImage',
           ],
         ],
-        'plugins' => [
-          'ckeditor5_imageResize' => [
-            'allow_resize' => FALSE,
-          ],
-        ],
+        'plugins' => [],
       ],
       'image_upload' => $upload_config,
     ]);

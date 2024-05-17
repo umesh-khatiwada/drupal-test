@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests\Ajax;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -74,6 +72,9 @@ class MultiFormTest extends WebDriverTestBase {
     // of field items and "add more" button for the multi-valued field within
     // each form.
     $this->drupalGet('form-test/two-instances-of-same-form');
+
+    // Wait for javascript on the page to prepare the form attributes.
+    $this->assertSession()->assertWaitOnAjaxRequest();
 
     $session = $this->getSession();
     $page = $session->getPage();

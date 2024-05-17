@@ -47,7 +47,6 @@ class ViewsModerationStateSortTest extends ViewsKernelTestBase {
 
     $node_type = NodeType::create([
       'type' => 'example',
-      'name' => 'Example',
     ]);
     $node_type->save();
 

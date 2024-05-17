@@ -4,7 +4,7 @@ dependencies:
   module:
     - user
 id: test_access_role
-label: test_access_role
+label: ''
 module: views
 description: ''
 tag: ''

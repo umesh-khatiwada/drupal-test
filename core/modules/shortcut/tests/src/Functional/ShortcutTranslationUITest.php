@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\shortcut\Functional;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Tests\content_translation\Functional\ContentTranslationUITestBase;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Language\Language;
@@ -43,7 +44,6 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
     $this->entityTypeId = 'shortcut';
     $this->bundle = 'default';
     parent::setUp();
-    $this->doSetup();
   }
 
   /**
@@ -120,7 +120,7 @@ class ShortcutTranslationUITest extends ContentTranslationUITestBase {
 
     $this->assertFalse(
       $entity instanceof EntityChangedInterface,
-      "$this->entityTypeId is not implementing EntityChangedInterface."
+      new FormattableMarkup('%entity is not implementing EntityChangedInterface.', ['%entity' => $this->entityTypeId])
     );
   }
 

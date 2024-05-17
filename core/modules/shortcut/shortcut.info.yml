@@ -1,13 +1,13 @@
 name: Shortcut
 type: module
-description: 'Allows users to create sets of shortcuts within the site.'
+description: 'Allows users to manage customizable lists of shortcut links.'
 package: Core
 # version: VERSION
 configure: entity.shortcut_set.collection
 dependencies:
   - drupal:link
 
-# Information added by Drupal.org packaging script on 2024-04-03
-version: '10.2.5'
+# Information added by Drupal.org packaging script on 2023-09-20
+version: '10.0.11'
 project: 'drupal'
-datestamp: 1712131089
+datestamp: 1695229013

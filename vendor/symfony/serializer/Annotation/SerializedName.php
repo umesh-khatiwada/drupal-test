@@ -11,11 +11,29 @@
 
 namespace Symfony\Component\Serializer\Annotation;
 
-class_exists(\Symfony\Component\Serializer\Attribute\SerializedName::class);
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 
-if (false) {
-    #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
-    class SerializedName extends \Symfony\Component\Serializer\Attribute\SerializedName
+/**
+ * Annotation class for @SerializedName().
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
+ * @Target({"PROPERTY", "METHOD"})
+ *
+ * @author Fabien Bourigault <bourigaultfabien@gmail.com>
+ */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
+final class SerializedName
+{
+    public function __construct(private string $serializedName)
     {
+        if ('' === $serializedName) {
+            throw new InvalidArgumentException(sprintf('Parameter of annotation "%s" must be a non-empty string.', self::class));
+        }
+    }
+
+    public function getSerializedName(): string
+    {
+        return $this->serializedName;
     }
 }

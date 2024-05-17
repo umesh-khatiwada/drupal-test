@@ -177,6 +177,9 @@ function locale_translation_default_translation_server() {
  * @param array $langcodes
  *   Array of language codes. Defaults to all translatable languages.
  *
+ * @return array
+ *   Available sources indexed by project and language.
+ *
  * @todo Return batch or NULL.
  */
 function locale_translation_check_projects($projects = [], $langcodes = []) {
@@ -267,8 +270,7 @@ function _locale_translation_batch_status_operations($projects, $langcodes, $opt
 
   foreach ($projects as $project) {
     foreach ($langcodes as $langcode) {
-      // Check version and status translation sources.
-      $operations[] = ['locale_translation_batch_version_check', [$project, $langcode]];
+      // Check status of local and remote translation sources.
       $operations[] = ['locale_translation_batch_status_check', [$project, $langcode, $options]];
     }
   }

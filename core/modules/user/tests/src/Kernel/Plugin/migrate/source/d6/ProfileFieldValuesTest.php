@@ -33,7 +33,7 @@ class ProfileFieldValuesTest extends MigrateSqlSourceTestBase {
       [
         'fid' => '9',
         'uid' => '2',
-        'value' => 'The quick brown fox ...',
+        'value' => 'Lorem ipsum dolor sit amet...',
       ],
     ];
 
@@ -74,7 +74,7 @@ class ProfileFieldValuesTest extends MigrateSqlSourceTestBase {
     $tests[0]['expected_data'] = [
       [
         'profile_color' => ['red'],
-        'profile_biography' => ['The quick brown fox ...'],
+        'profile_biography' => ['Lorem ipsum dolor sit amet...'],
         'uid' => '2',
       ],
     ];

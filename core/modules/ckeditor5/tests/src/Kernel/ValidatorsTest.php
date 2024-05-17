@@ -20,7 +20,7 @@ use Symfony\Component\Yaml\Yaml;
  * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemConstraintValidator
  * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemDependencyConstraintValidator
  * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\EnabledConfigurablePluginsConstraintValidator
- * @covers \Drupal\ckeditor5\Plugin\Editor\CKEditor5::validatePair
+ * @covers \Drupal\ckeditor5\Plugin\Editor\CKEditor5::validatePair()
  * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\FundamentalCompatibilityConstraintValidator
  * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\CKEditor5MediaAndFilterSettingsInSyncConstraintValidator
  * @group ckeditor5
@@ -60,6 +60,9 @@ class ValidatorsTest extends KernelTestBase {
   }
 
   /**
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemConstraintValidator
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemDependencyConstraintValidator
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\EnabledConfigurablePluginsConstraintValidator
    * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\CKEditor5ElementConstraintValidator
    * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\StyleSensibleElementConstraintValidator
    * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\UniqueLabelInListConstraintValidator
@@ -95,8 +98,11 @@ class ValidatorsTest extends KernelTestBase {
     );
     $violations = $typed_config->validate();
 
-    $actual_violations = self::violationsToArray($violations);
-    $this->assertSame($expected_violations, self::violationsToArray($violations));
+    $actual_violations = [];
+    foreach ($violations as $violation) {
+      $actual_violations[$violation->getPropertyPath()] = (string) $violation->getMessage();
+    }
+    $this->assertSame($expected_violations, $actual_violations);
 
     if (empty($expected_violations)) {
       $this->assertConfigSchema(
@@ -131,11 +137,8 @@ class ValidatorsTest extends KernelTestBase {
         ],
         'plugins' => [
           'ckeditor5_list' => [
-            'properties' => [
-              'reversed' => FALSE,
-              'startIndex' => FALSE,
-            ],
-            'multiBlock' => TRUE,
+            'reversed' => FALSE,
+            'startIndex' => FALSE,
           ],
         ],
       ],
@@ -457,40 +460,6 @@ class ValidatorsTest extends KernelTestBase {
         'settings.plugins.ckeditor5_style.styles.0.element' => 'A style must only specify classes not supported by other plugins. The <code>text-align-justify</code> classes on <code>&lt;p&gt;</code> are already supported by the enabled <em class="placeholder">Alignment</em> plugin.',
       ],
     ];
-    $data['INVALID: Style plugin configured to add class to plugin-supported tag known to not work with Style … yet'] = [
-      'settings' => [
-        'toolbar' => [
-          'items' => [
-            'drupalInsertImage',
-            'style',
-          ],
-        ],
-        'plugins' => [
-          'ckeditor5_imageResize' => [
-            'allow_resize' => FALSE,
-          ],
-          'ckeditor5_style' => [
-            'styles' => [
-              // @see https://github.com/ckeditor/ckeditor5/issues/13778
-              [
-                'label' => 'Featured image',
-                'element' => '<img class="featured">',
-              ],
-              // @see https://www.drupal.org/project/drupal/issues/3398223
-              // @see https://github.com/ckeditor/ckeditor5/blob/39ad30090ead9dd2d54c3ac53d7f446ade9fd8ce/packages/ckeditor5-html-support/src/schemadefinitions.ts#L12-L50
-              [
-                'label' => 'Fancy linebreak',
-                'element' => '<br class="fancy">',
-              ],
-            ],
-          ],
-        ],
-      ],
-      'violations' => [
-        'settings.plugins.ckeditor5_style.styles.0.element' => 'The <code>&lt;img&gt;</code> tag is not yet supported by the Style plugin.',
-        'settings.plugins.ckeditor5_style.styles.1.element' => 'The <code>&lt;br&gt;</code> tag is not yet supported by the Style plugin.',
-      ],
-    ];
     $data['INVALID: Style plugin has multiple styles with same label'] = [
       'settings' => [
         'toolbar' => [
@@ -543,10 +512,7 @@ class ValidatorsTest extends KernelTestBase {
       ],
       'violations' => [
         'settings.plugins.ckeditor5_style.styles.0.element' => 'The following tag is missing the required attribute <code>class</code>: <code>&lt;p&gt;</code>.',
-        'settings.plugins.ckeditor5_style.styles.1.element' => [
-          'The following tag is not valid HTML: <em class="placeholder">&lt;blockquote class=&quot;&quot;&gt;</em>.',
-          'The following tag does not have the minimum of 1 allowed values for the required attribute <code>class</code>: <code>&lt;blockquote class=&quot;&quot;&gt;</code>.',
-        ],
+        'settings.plugins.ckeditor5_style.styles.1.element' => 'The following tag does not have the minimum of 1 allowed values for the required attribute <code>class</code>: <code>&lt;blockquote class=&quot;&quot;&gt;</code>.',
       ],
     ];
     $data['VALID: Style plugin has multiple styles with different labels'] = [
@@ -578,65 +544,16 @@ class ValidatorsTest extends KernelTestBase {
       ],
       'violations' => [],
     ];
-    $data['INVALID: SourceEditing plugin configuration: <ol start type> must not be allowed because List can generate <ol reversed start>'] = [
-      'settings' => [
-        'toolbar' => [
-          'items' => [
-            'numberedList',
-            'sourceEditing',
-          ],
-        ],
-        'plugins' => [
-          'ckeditor5_list' => [
-            'properties' => [
-              'reversed' => TRUE,
-              'startIndex' => TRUE,
-            ],
-            'multiBlock' => TRUE,
-          ],
-          'ckeditor5_sourceEditing' => [
-            'allowed_tags' => [
-              '<ol start type>',
-            ],
-          ],
-        ],
-      ],
-      'violations' => [
-        'settings.plugins.ckeditor5_sourceEditing.allowed_tags.0' => 'The following attribute(s) are already supported by enabled plugins and should not be added to the Source Editing "Manually editable HTML tags" field: <em class="placeholder">List (&lt;ol start&gt;)</em>.',
-      ],
-    ];
-    $data['INVALID: SourceEditing plugin configuration: <ol start type> must not be allowed because List can generate <ol start>'] = [
-      'settings' => [
-        'toolbar' => [
-          'items' => [
-            'numberedList',
-            'sourceEditing',
-          ],
-        ],
-        'plugins' => [
-          'ckeditor5_list' => [
-            'properties' => [
-              'reversed' => FALSE,
-              'startIndex' => FALSE,
-            ],
-            'multiBlock' => TRUE,
-          ],
-          'ckeditor5_sourceEditing' => [
-            'allowed_tags' => [
-              '<ol start type>',
-            ],
-          ],
-        ],
-      ],
-      'violations' => [
-        'settings.plugins.ckeditor5_sourceEditing.allowed_tags.0' => 'The following attribute(s) can optionally be supported by enabled plugins and should not be added to the Source Editing "Manually editable HTML tags" field: <em class="placeholder">List (&lt;ol start&gt;)</em>.',
-      ],
-    ];
 
     return $data;
   }
 
   /**
+   * @covers \Drupal\ckeditor5\Plugin\Editor\CKEditor5::validatePair()
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\FundamentalCompatibilityConstraintValidator
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemConstraintValidator
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\ToolbarItemDependencyConstraintValidator
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\EnabledConfigurablePluginsConstraintValidator
    * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\SourceEditingPreventSelfXssConstraintValidator
    * @dataProvider providerPair
    *
@@ -671,31 +588,15 @@ class ValidatorsTest extends KernelTestBase {
       'label' => 'View Mode 2',
     ])->save();
     assert($text_editor instanceof EditorInterface);
+    $this->assertConfigSchema(
+      $this->typedConfig,
+      $text_editor->getConfigDependencyName(),
+      $text_editor->toArray()
+    );
     $text_format = FilterFormat::create([
       'filters' => $filters,
     ]);
     assert($text_format instanceof FilterFormatInterface);
-    // TRICKY: because we're validating using `editor.editor.*` as the config
-    // name, TextEditorObjectDependentValidatorTrait will load the stored
-    // filter format. That has not yet been updated at this point, so in order
-    // for validation to pass, it must first be saved.
-    // @see \Drupal\ckeditor5\Plugin\Validation\Constraint\TextEditorObjectDependentValidatorTrait::createTextEditorObjectFromContext()
-    // @todo Remove this work-around in https://www.drupal.org/project/drupal/issues/3231354
-    $text_format
-      ->set('format', $text_editor->id())
-      ->set('name', $this->randomString())
-      ->save();
-
-    // TRICKY: only assert config schema (and validation constraints) if we
-    // expect NO violations: when violations are expected, this would just find
-    // the very violations that the next assertion is checking.
-    if (empty($expected_violations)) {
-      $this->assertConfigSchema(
-        $this->typedConfig,
-        $text_editor->getConfigDependencyName(),
-        $text_editor->toArray()
-      );
-    }
 
     $this->assertSame($expected_violations, $this->validatePairToViolationsArray($text_editor, $text_format, TRUE));
   }
@@ -1169,7 +1070,7 @@ class ValidatorsTest extends KernelTestBase {
       'filters' => [],
       'violations' => [],
     ];
-    $data['INVALID: drupalMedia toolbar item condition NOT met: media filter disabled'] = [
+    $data['INVALID: drupalMedia toolbar item condition NOT met: media filter enabled'] = [
       'settings' => [
         'toolbar' => [
           'items' => [
@@ -1193,17 +1094,13 @@ class ValidatorsTest extends KernelTestBase {
             'drupalMedia',
           ],
         ],
-        'plugins' => [
-          'media_media' => [
-            'allow_view_mode_override' => FALSE,
-          ],
-        ],
+        'plugins' => [],
       ],
       'image_upload' => [
         'status' => FALSE,
       ],
       'filters' => [
-        'media_embed' => [
+        'filter_html' => [
           'id' => 'media_embed',
           'provider' => 'media',
           'status' => TRUE,
@@ -1215,7 +1112,9 @@ class ValidatorsTest extends KernelTestBase {
           ],
         ],
       ],
-      'violations' => [],
+      'violations' => [
+        'settings.toolbar.items.0' => 'The <em class="placeholder">Drupal media</em> toolbar item requires the <em class="placeholder">Embed media</em> filter to be enabled.',
+      ],
     ];
     $data['VALID: HTML format: very minimal toolbar + wildcard in source editing HTML'] = [
       'settings' => [
@@ -1570,7 +1469,7 @@ class ValidatorsTest extends KernelTestBase {
   /**
    * Tests that validation works with >1 enabled HTML restrictor filters.
    *
-   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\FundamentalCompatibilityConstraintValidator::checkHtmlRestrictionsMatch
+   * @covers \Drupal\ckeditor5\Plugin\Validation\Constraint\FundamentalCompatibilityConstraintValidator::checkHtmlRestrictionsMatch()
    */
   public function testMultipleHtmlRestrictingFilters(): void {
     $this->container->get('module_installer')->install(['filter_test']);

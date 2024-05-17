@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\link\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -147,6 +145,7 @@ class LinkFormatterTest extends UnitTestCase {
       [
         '#type' => 'link',
         '#title' => 'http://example.com',
+        '#options' => [],
         '#url' => $expectedUrl,
       ],
     ], $elements);

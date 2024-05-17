@@ -25,13 +25,6 @@ abstract class EntityDisplayModeBase extends ConfigEntityBase implements EntityD
   protected $label;
 
   /**
-   * Description of the form or view mode.
-   *
-   * @var string|null
-   */
-  protected ?string $description;
-
-  /**
    * The entity type this form or view mode is used for.
    *
    * This is not to be confused with EntityDisplayModeBase::$entityType which is
@@ -124,13 +117,6 @@ abstract class EntityDisplayModeBase extends ConfigEntityBase implements EntityD
     }
 
     return $uri_route_parameters;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDescription(): string {
-    return $this->description ?? '';
   }
 
 }

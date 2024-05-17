@@ -99,8 +99,8 @@ class ImportForm extends FormBase {
     }
 
     $validators = [
-      'FileExtension' => ['extensions' => 'po'],
-      'FileSizeLimit' => ['fileLimit' => Environment::getUploadMaxSize()],
+      'file_validate_extensions' => ['po'],
+      'file_validate_size' => [Environment::getUploadMaxSize()],
     ];
     $form['file'] = [
       '#type' => 'file',

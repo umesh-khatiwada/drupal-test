@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_handler_relationships
-label: test_handler_relationships
+label: ''
 module: views
 description: ''
 tag: ''

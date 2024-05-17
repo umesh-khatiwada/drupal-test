@@ -148,7 +148,7 @@ class NodeBlockFunctionalTest extends NodeTestBase {
     $this->drupalGet("admin/structure/block/add/system_powered_by_block/{$theme}");
     $this->assertSession()->pageTextContains('Content type');
     $edit = [
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
       'region' => 'sidebar_first',
       'visibility[entity_bundle:node][bundles][article]' => 'article',
     ];

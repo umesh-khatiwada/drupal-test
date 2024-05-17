@@ -120,7 +120,6 @@ class UserPasswordForm extends FormBase {
         'autocapitalize' => 'off',
         'spellcheck' => 'false',
         'autofocus' => 'autofocus',
-        'autocomplete' => 'username',
       ],
     ];
     // Allow logged in users to request this also.
@@ -204,7 +203,7 @@ class UserPasswordForm extends FormBase {
       $mail = _user_mail_notify('password_reset', $account);
       if (!empty($mail)) {
         $this->logger('user')
-          ->info('Password reset instructions mailed to %name at %email.', [
+          ->notice('Password reset instructions mailed to %name at %email.', [
             '%name' => $account->getAccountName(),
             '%email' => $account->getEmail(),
           ]);
@@ -212,7 +211,7 @@ class UserPasswordForm extends FormBase {
     }
     else {
       $this->logger('user')
-        ->info('Password reset form was submitted with an unknown or inactive account: %name.', [
+        ->notice('Password reset form was submitted with an unknown or inactive account: %name.', [
           '%name' => $form_state->getValue('name'),
         ]);
     }

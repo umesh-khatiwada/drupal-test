@@ -157,8 +157,6 @@
               // change event is only triggered after the change has already
               // been accepted.
               select.value = activeFormatID;
-              const eventChange = new Event('change');
-              select.dispatchEvent(eventChange);
               confirmationDialog.close();
             },
           },
@@ -235,7 +233,7 @@
         });
 
         // Attach onChange handler to text format selector element.
-        if (editor.tagName === 'SELECT') {
+        if ($this.is('select')) {
           $this.on('change.editorAttach', { field }, onTextFormatChange);
         }
         // Detach any editor when the containing form is submitted.

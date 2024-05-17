@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Entity;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -53,8 +51,6 @@ class FieldDefinitionTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->fieldType = $this->randomMachineName();
     $this->fieldTypeDefinition = [
       'id' => $this->fieldType,
@@ -303,7 +299,7 @@ class FieldDefinitionTest extends UnitTestCase {
     $definition = $this->initializeFieldUsingFactory($factory_name);
     // setDefaultValueCallback returns $this.
     $this->assertSame($definition, $definition->setDefaultValueCallback(NULL));
-    $this->assertNull($definition->getDefaultValueCallback());
+    $this->assertSame(NULL, $definition->getDefaultValueCallback());
   }
 
   /**

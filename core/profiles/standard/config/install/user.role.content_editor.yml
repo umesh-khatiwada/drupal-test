@@ -14,6 +14,7 @@ dependencies:
     - system
     - taxonomy
     - toolbar
+    - tour
 id: content_editor
 label: 'Content editor'
 weight: 2
@@ -24,6 +25,7 @@ permissions:
   - 'access contextual links'
   - 'access files overview'
   - 'access toolbar'
+  - 'access tour'
   - 'administer url aliases'
   - 'create article content'
   - 'create page content'
@@ -31,7 +33,6 @@ permissions:
   - 'create url aliases'
   - 'delete article revisions'
   - 'delete own article content'
-  - 'delete own files'
   - 'delete own page content'
   - 'delete page revisions'
   - 'edit own article content'

@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: test_view_argument_validate_username
-label: test_view_argument_validate_username
+label: ''
 module: views
 description: ''
 tag: ''

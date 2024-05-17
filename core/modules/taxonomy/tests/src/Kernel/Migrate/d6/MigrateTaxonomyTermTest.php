@@ -15,7 +15,7 @@ class MigrateTaxonomyTermTest extends MigrateDrupal6TestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['comment', 'taxonomy'];
+  protected static $modules = ['taxonomy'];
 
   /**
    * {@inheritdoc}

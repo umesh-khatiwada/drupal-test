@@ -35,7 +35,6 @@ use Drupal\taxonomy\VocabularyInterface;
  *     }
  *   },
  *   admin_permission = "administer taxonomy",
- *   collection_permission = "access taxonomy overview",
  *   config_prefix = "vocabulary",
  *   bundle_of = "taxonomy_term",
  *   entity_keys = {

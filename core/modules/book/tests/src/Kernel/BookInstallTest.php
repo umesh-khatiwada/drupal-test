@@ -28,10 +28,7 @@ class BookInstallTest extends KernelTestBase {
    */
   public function testBookInstallWithPreexistingContentType() {
     // Create a 'book' content type.
-    NodeType::create([
-      'type' => 'book',
-      'name' => 'Book',
-    ])->save();
+    NodeType::create(['type' => 'book'])->save();
     // Install the Book module. Using the module installer service ensures that
     // all the install rituals, including default and optional configuration
     // import, are performed.

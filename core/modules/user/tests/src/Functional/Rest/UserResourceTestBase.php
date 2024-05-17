@@ -136,7 +136,7 @@ abstract class UserResourceTestBase extends EntityResourceTestBase {
     return [
       'name' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
     ];

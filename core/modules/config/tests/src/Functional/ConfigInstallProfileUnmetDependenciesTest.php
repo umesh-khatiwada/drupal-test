@@ -46,22 +46,15 @@ class ConfigInstallProfileUnmetDependenciesTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUpSettings() {
+  protected function setUp(): void {
     // During set up an UnmetDependenciesException should be thrown, which will
     // be re-thrown by TestHttpClientMiddleware as a standard Exception.
     try {
-      parent::setUpSettings();
+      parent::setUp();
     }
     catch (\Exception $exception) {
       $this->expectedException = $exception;
     }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUpSite() {
-    // This step can no longer be reached.
   }
 
   /**
@@ -80,7 +73,7 @@ class ConfigInstallProfileUnmetDependenciesTest extends InstallerTestBase {
         mkdir($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
       }
       else {
-        copy((string) $item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+        copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
       }
     }
 

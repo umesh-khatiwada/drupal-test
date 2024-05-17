@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\content_moderation\Unit;
 
 use Drupal\content_moderation\Routing\ContentModerationRouteSubscriber;
@@ -31,8 +29,6 @@ class ContentModerationRouteSubscriberTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->createMock(EntityTypeManagerInterface::class);
     $this->routeSubscriber = new ContentModerationRouteSubscriber($entity_type_manager);
@@ -63,6 +59,7 @@ class ContentModerationRouteSubscriberTest extends UnitTestCase {
     ];
 
     $reflector = new \ReflectionProperty($this->routeSubscriber, 'moderatedEntityTypes');
+    $reflector->setAccessible(TRUE);
     $reflector->setValue($this->routeSubscriber, $entity_types);
   }
 

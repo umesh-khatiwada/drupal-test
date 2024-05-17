@@ -157,7 +157,9 @@
 
     // Create bound versions of this instance's object methods to use as event
     // handlers. This will let us easily unbind those specific handlers later
-    // on.
+    // on. NOTE: jQuery.proxy will not work for this because it assumes we want
+    // only one bound version of an object method, whereas we need one version
+    // per object instance.
     const self = this;
 
     /**
@@ -221,7 +223,7 @@
         this.target.each(function (i) {
           // Ensure that the maxlength is not exceeded by prepopulating the field.
           const maxlength = $(this).attr('maxlength') - suffix.length;
-          this.value = transliterated.substring(0, maxlength) + suffix;
+          this.value = transliterated.substr(0, maxlength) + suffix;
         });
       },
 
@@ -260,12 +262,7 @@
       const $context = $(context);
       let $form = $context;
       // The add handler form may have an id of views-ui-add-handler-form--n.
-      if (
-        !(
-          context instanceof HTMLElement &&
-          context.matches('form[id^="views-ui-add-handler-form"]')
-        )
-      ) {
+      if (!$context.is('form[id^="views-ui-add-handler-form"]')) {
         $form = $context.find('form[id^="views-ui-add-handler-form"]');
       }
       if (once('views-ui-add-handler-form', $form).length) {
@@ -292,7 +289,7 @@
     this.$form = $form;
     this.$form
       .find('.views-filterable-options :checkbox')
-      .on('click', this.handleCheck.bind(this));
+      .on('click', $.proxy(this.handleCheck, this));
 
     /**
      * Find the wrapper of the displayed text.
@@ -317,9 +314,8 @@
     const $target = $(event.target);
     const label = $target.closest('td').next().html().trim();
     // Add/remove the checked item to the list.
-    if (event.target.checked) {
-      this.$selected_div.show();
-      this.$selected_div[0].style.display = 'block';
+    if ($target.is(':checked')) {
+      this.$selected_div.show().css('display', 'block');
       this.checkedItems.push(label);
     } else {
       const position = $.inArray(label, this.checkedItems);
@@ -412,7 +408,7 @@
       $('li.add', $menu).on('mouseleave', function (event) {
         const $this = $(this);
         const $trigger = $this.children('a[href="#"]');
-        if (Drupal.elementIsVisible($this.children('.action-list')[0])) {
+        if ($this.children('.action-list').is(':visible')) {
           Drupal.behaviors.viewsUiRenderAddViewButton.toggleMenu($trigger);
         }
       });
@@ -449,12 +445,7 @@
       const $context = $(context);
       let $form = $context;
       // The add handler form may have an id of views-ui-add-handler-form--n.
-      if (
-        !(
-          context instanceof HTMLElement &&
-          context.matches('form[id^="views-ui-add-handler-form"]')
-        )
-      ) {
+      if (!$context.is('form[id^="views-ui-add-handler-form"]')) {
         $form = $context.find('form[id^="views-ui-add-handler-form"]');
       }
       // Make sure we don't add more than one event handler to the same form.
@@ -496,7 +487,7 @@
     this.$form.on(
       'formUpdated',
       `${searchBoxSelector},${controlGroupSelector}`,
-      this.handleFilter.bind(this),
+      $.proxy(this.handleFilter, this),
     );
 
     this.$searchBox = this.$form.find(searchBoxSelector);
@@ -570,7 +561,7 @@
         // Search through the search texts in the form for matching text.
         this.options.forEach((option) => {
           function hasWord(word) {
-            return option.searchText.includes(word);
+            return option.searchText.indexOf(word) !== -1;
           }
 
           let found = true;
@@ -623,10 +614,11 @@
       }
 
       // Executes an initial preview.
-      const $livePreview = $(
-        once('edit-displays-live-preview', '#edit-displays-live-preview'),
-      );
-      if ($livePreview.length && $livePreview[0].checked) {
+      if (
+        $(once('edit-displays-live-preview', '#edit-displays-live-preview')).is(
+          ':checked',
+        )
+      ) {
         $(once('edit-displays-live-preview', '#preview-submit')).trigger(
           'click',
         );
@@ -713,7 +705,7 @@
       ),
     ).on(
       'change.views-rearrange-filter-handler',
-      this.redrawOperatorLabels.bind(this),
+      $.proxy(this, 'redrawOperatorLabels'),
     );
 
     // Bind handlers so that when a "Remove" link is clicked, we:
@@ -730,11 +722,11 @@
     )
       .on(
         'click.views-rearrange-filter-handler',
-        this.updateRowspans.bind(this),
+        $.proxy(this, 'updateRowspans'),
       )
       .on(
         'click.views-rearrange-filter-handler',
-        this.redrawOperatorLabels.bind(this),
+        $.proxy(this, 'redrawOperatorLabels'),
       );
   };
 
@@ -762,7 +754,7 @@
           .find('#views-add-group-link')
           .on(
             'click.views-rearrange-filter-handler',
-            this.clickAddGroupButton.bind(this),
+            $.proxy(this, 'clickAddGroupButton'),
           );
 
         // Find each (visually hidden) button for removing a filter group and
@@ -786,7 +778,7 @@
           ).on(
             'click.views-rearrange-filter-handler',
             { buttonId },
-            this.clickRemoveGroupButton.bind(this),
+            $.proxy(this, 'clickRemoveGroupButton'),
           );
         }
       },
@@ -882,7 +874,7 @@
           return;
         }
 
-        this.dropdowns.on('change', this.operatorChangeHandler.bind(this));
+        this.dropdowns.on('change', $.proxy(this, 'operatorChangeHandler'));
       },
 
       /**
@@ -936,7 +928,7 @@
             ) {
               // Move the dragged row down one.
               const next = thisRow.next();
-              if (next[0].tagName === 'TR') {
+              if (next.is('tr')) {
                 this.swap('after', next);
               }
             }
@@ -978,7 +970,7 @@
             'select.views-group-select',
             this.rowObject.element,
           );
-          if (!groupField[0].matches(`.views-group-select-${groupName}`)) {
+          if (!groupField.is(`.views-group-select-${groupName}`)) {
             const oldGroupName = groupField
               .attr('class')
               .replace(
@@ -1070,10 +1062,7 @@
             // The cell with the dropdown operator should span the title row and
             // the "this group is empty" row.
             $operatorCell.attr('rowspan', 2);
-          } else if (
-            $row.hasClass('draggable') &&
-            Drupal.elementIsVisible(rows[i])
-          ) {
+          } else if ($row.hasClass('draggable') && $row.is(':visible')) {
             // We've found a visible filter row, so we now know the group isn't
             // empty.
             draggableCount++;
@@ -1116,12 +1105,12 @@
         $selectAll.show();
         $selectAllCheckbox.on('click', function () {
           // Update all checkbox beside the select all checkbox.
-          $checkboxes.prop('checked', this.checked);
+          $checkboxes.prop('checked', $(this).is(':checked'));
         });
 
         // Uncheck the select all checkbox if any of the others are unchecked.
         $checkboxes.on('click', function () {
-          if (this.checked === false) {
+          if ($(this).is('checked') === false) {
             $selectAllCheckbox.prop('checked', false);
           }
         });
@@ -1212,7 +1201,7 @@
     this.$button.hide();
     this.$parent.find('.exposed-description, .grouped-description').hide();
 
-    this.$input.on('click', this.clickHandler.bind(this));
+    this.$input.on('click', $.proxy(this, 'clickHandler'));
   };
 
   /**

@@ -5,7 +5,7 @@ namespace Drupal\Core\PathProcessor;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Processes the inbound path by decoding the URL.
+ * Processes the inbound path by urldecoding it.
  *
  * Parameters in the URL sometimes represent code-meaningful strings. It is
  * therefore useful to always urldecode() those values so that individual

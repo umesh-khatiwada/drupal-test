@@ -182,6 +182,7 @@ abstract class NodeResourceTestBase extends EntityResourceTestBase {
           'url' => base_path() . 'user/' . $author->id(),
         ],
       ],
+      'revision_log' => [],
       'path' => [
         [
           'alias' => '/llama',
@@ -204,7 +205,7 @@ abstract class NodeResourceTestBase extends EntityResourceTestBase {
       ],
       'title' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
     ];
@@ -254,9 +255,6 @@ abstract class NodeResourceTestBase extends EntityResourceTestBase {
     $response = $this->request('PATCH', $url, $request_options);
     $this->assertSame('/llama', $this->entityStorage->loadUnchanged($this->entity->id())->get('path')->alias);
     $this->assertResourceErrorResponse(403, "Access denied on updating field 'path'. " . static::$patchProtectedFieldNames['path'], $response);
-
-    // Make sure the role save below properly invalidates cache tags.
-    $this->refreshVariables();
 
     // Grant permission to create URL aliases.
     $this->grantPermissionsToTestedRole(['create url aliases']);

@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\serialization\Unit\Normalizer\NormalizerBaseTest.
+ */
 
 namespace Drupal\Tests\serialization\Unit\Normalizer;
 
@@ -22,14 +25,14 @@ class NormalizerBaseTest extends UnitTestCase {
    *   The expected boolean return value from supportNormalization.
    * @param mixed $data
    *   The data passed to supportsNormalization.
-   * @param string $supported_types
+   * @param string $supported_interface_or_class
    *   (optional) The supported interface or class to set on the normalizer.
    */
-  public function testSupportsNormalization($expected_return, $data, $supported_types = NULL) {
+  public function testSupportsNormalization($expected_return, $data, $supported_interface_or_class = NULL) {
     $normalizer_base = $this->getMockForAbstractClass('Drupal\Tests\serialization\Unit\Normalizer\TestNormalizerBase');
 
-    if (isset($supported_types)) {
-      $normalizer_base->setSupportedTypes($supported_types);
+    if (isset($supported_interface_or_class)) {
+      $normalizer_base->setSupportedInterfaceOrClass($supported_interface_or_class);
     }
 
     $this->assertSame($expected_return, $normalizer_base->supportsNormalization($data));
@@ -66,27 +69,13 @@ class NormalizerBaseTest extends UnitTestCase {
 abstract class TestNormalizerBase extends NormalizerBase {
 
   /**
-   * The interface or class that this Normalizer supports.
+   * Sets the protected supportedInterfaceOrClass property.
    *
-   * @var string[]
-   */
-  protected array $supportedTypes = ['*' => FALSE];
-
-  /**
-   * Sets the supported types.
-   *
-   * @param string $supported_types
+   * @param string $supported_interface_or_class
    *   The class name to set.
    */
-  public function setSupportedTypes($supported_types): void {
-    $this->supportedTypes = [$supported_types => FALSE];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return $this->supportedTypes;
+  public function setSupportedInterfaceOrClass($supported_interface_or_class) {
+    $this->supportedInterfaceOrClass = $supported_interface_or_class;
   }
 
 }

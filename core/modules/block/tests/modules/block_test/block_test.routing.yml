@@ -1,4 +1,4 @@
-block_test.test_multiple_forms:
+block_test.test_multipleforms:
   path: '/test-multiple-forms'
   defaults:
     _controller: '\Drupal\block_test\Controller\TestMultipleFormController::testMultipleForms'

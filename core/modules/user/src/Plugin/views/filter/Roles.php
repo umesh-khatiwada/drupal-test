@@ -53,10 +53,8 @@ class Roles extends ManyToOne {
   }
 
   public function getValueOptions() {
-    $roles = $this->roleStorage->loadMultiple();
-    unset($roles[RoleInterface::ANONYMOUS_ID]);
-    unset($roles[RoleInterface::AUTHENTICATED_ID]);
-    $this->valueOptions = array_map(fn(RoleInterface $role) => $role->label(), $roles);
+    $this->valueOptions = user_role_names(TRUE);
+    unset($this->valueOptions[RoleInterface::AUTHENTICATED_ID]);
     return $this->valueOptions;
 
   }

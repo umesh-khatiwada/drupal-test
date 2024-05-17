@@ -240,7 +240,7 @@
         }
 
         // The simple case: no wildcard in property value.
-        if (!propertyValue.includes('*')) {
+        if (propertyValue.indexOf('*') === -1) {
           if (
             universe.hasOwnProperty(tag) &&
             universe[tag].hasOwnProperty(key)
@@ -989,7 +989,7 @@
           // Update status.
           Drupal.filterConfiguration.statuses[filterID].active = $(
             `[name="filters[${filterID}][status]"]`,
-          )[0].checked;
+          ).is(':checked');
 
           // Update current rules.
           if (Drupal.filterConfiguration.liveSettingParsers[filterID]) {

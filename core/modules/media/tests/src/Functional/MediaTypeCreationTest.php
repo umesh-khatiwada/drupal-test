@@ -25,42 +25,23 @@ class MediaTypeCreationTest extends MediaFunctionalTestBase {
 
   /**
    * Tests the media type creation form with only the mandatory options.
-   *
-   * @dataProvider providerMediaTypeCreationForm
    */
-  public function testMediaTypeCreationForm($button_label, $address, $machine_name) {
+  public function testMediaTypeCreationForm() {
+    $machine_name = mb_strtolower($this->randomMachineName());
+
     $this->drupalGet('/admin/structure/media/add');
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->fieldExists('label')->setValue($this->randomString());
     $this->assertSession()->fieldExists('id')->setValue($machine_name);
     $this->assertSession()->selectExists('source')->selectOption('test');
-    $this->assertSession()->buttonExists($button_label)->press();
+    $this->assertSession()->buttonExists('Save')->press();
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->fieldValueEquals('Test config value', 'This is default value.');
-    $this->assertSession()->buttonExists($button_label)->press();
+    $this->assertSession()->buttonExists('Save')->press();
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->addressEquals($address);
+    $this->assertSession()->addressEquals('admin/structure/media');
 
     $this->assertInstanceOf(MediaType::class, MediaType::load($machine_name));
-  }
-
-  /**
-   * Data provider for testMediaTypeCreationForm().
-   */
-  public function providerMediaTypeCreationForm() {
-    $machine_name = $this->randomMachineName();
-    return [
-      [
-        'Save',
-        'admin/structure/media',
-        $machine_name,
-      ],
-      [
-        'Save and manage fields',
-        'admin/structure/media/manage/' . $machine_name . '/fields',
-        $machine_name,
-      ],
-    ];
   }
 
 }

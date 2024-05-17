@@ -19,6 +19,11 @@ class TimestampItemNormalizer extends FieldItemNormalizer {
   /**
    * {@inheritdoc}
    */
+  protected $supportedInterfaceOrClass = TimestampItem::class;
+
+  /**
+   * {@inheritdoc}
+   */
   public function normalize($object, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
     return parent::normalize($object, $format, $context) + [
       // 'format' is not a property on Timestamp objects. This is present to
@@ -35,15 +40,6 @@ class TimestampItemNormalizer extends FieldItemNormalizer {
       $context['datetime_allowed_formats'] = [$data['format']];
     }
     return ['value' => $this->serializer->denormalize($data['value'], Timestamp::class, NULL, $context)];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      TimestampItem::class => TRUE,
-    ];
   }
 
 }

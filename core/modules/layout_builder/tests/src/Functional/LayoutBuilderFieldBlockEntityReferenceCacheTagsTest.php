@@ -4,7 +4,7 @@ namespace Drupal\Tests\layout_builder\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 
@@ -16,7 +16,7 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 class LayoutBuilderFieldBlockEntityReferenceCacheTagsTest extends BrowserTestBase {
 
   use ContentTypeCreationTrait;
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
   use NodeCreationTrait;
 
   /**

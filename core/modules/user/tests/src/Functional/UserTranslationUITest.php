@@ -54,7 +54,6 @@ class UserTranslationUITest extends ContentTranslationUITestBase {
     $this->testLanguageSelector = FALSE;
     $this->name = $this->randomMachineName();
     parent::setUp();
-    $this->doSetup();
 
     \Drupal::entityTypeManager()->getStorage('user')->resetCache();
   }

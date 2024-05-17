@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests;
 
 use WebDriver\Service\CurlService;
@@ -117,11 +115,7 @@ class WebDriverCurlService extends CurlService {
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $customHeaders);
 
-        $result = curl_exec($curl);
-        $rawResult = NULL;
-        if ($result !== FALSE) {
-          $rawResult = trim($result);
-        }
+        $rawResult = trim(curl_exec($curl));
 
         $info = curl_getinfo($curl);
         $info['request_method'] = $requestMethod;

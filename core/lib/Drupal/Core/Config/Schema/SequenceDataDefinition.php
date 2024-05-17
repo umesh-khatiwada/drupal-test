@@ -25,11 +25,4 @@ class SequenceDataDefinition extends ListDataDefinition {
     return $this->definition['orderby'] ?? NULL;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getDataType() {
-    return 'sequence';
-  }
-
 }

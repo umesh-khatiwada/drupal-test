@@ -120,7 +120,7 @@ class ModerationInformation implements ModerationInformationInterface {
   public function hasPendingRevision(ContentEntityInterface $entity) {
     $result = FALSE;
     if ($this->isModeratedEntity($entity)) {
-      /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
+      /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
       $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
       $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $entity->language()->getId());
       $default_revision_id = $entity->isDefaultRevision() && !$entity->isNewRevision() && ($revision_id = $entity->getRevisionId()) ?
@@ -215,10 +215,8 @@ class ModerationInformation implements ModerationInformationInterface {
     $state = NULL;
     $workflow_type = $this->getWorkflowForEntity($entity)->getTypePlugin();
     if (!$entity->isNew() && !$this->isFirstTimeModeration($entity)) {
-      /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
-      $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
       /** @var \Drupal\Core\Entity\ContentEntityInterface $original_entity */
-      $original_entity = $storage->loadRevision($entity->getLoadedRevisionId());
+      $original_entity = $this->entityTypeManager->getStorage($entity->getEntityTypeId())->loadRevision($entity->getLoadedRevisionId());
       if (!$entity->isDefaultTranslation() && $original_entity->hasTranslation($entity->language()->getId())) {
         $original_entity = $original_entity->getTranslation($entity->language()->getId());
       }
@@ -242,7 +240,6 @@ class ModerationInformation implements ModerationInformationInterface {
    *   TRUE if this is the entity's first time being moderated, FALSE otherwise.
    */
   protected function isFirstTimeModeration(ContentEntityInterface $entity) {
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
     $original_entity = $storage->loadRevision($storage->getLatestRevisionId($entity->id()));
 

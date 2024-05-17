@@ -47,12 +47,12 @@ class TourHelpPageTest extends BrowserTestBase {
     // tours' parent pages, but not the translation tour's parent page. See
     // self:getTourList().
     $this->tourUser = $this->drupalCreateUser([
-      'access help pages',
+      'access administration pages',
       'access tour',
       'administer languages',
     ]);
     $this->noTourUser = $this->drupalCreateUser([
-      'access help pages',
+      'access administration pages',
     ]);
   }
 

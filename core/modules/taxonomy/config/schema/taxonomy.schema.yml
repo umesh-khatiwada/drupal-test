@@ -13,25 +13,17 @@ taxonomy.settings:
     terms_per_page_admin:
       type: integer
       label: 'Number of terms per page'
-      constraints:
-        Range:
-          min: 1
 
 taxonomy.vocabulary.*:
   type: config_entity
   label: 'Vocabulary'
   mapping:
     name:
-      type: required_label
+      type: label
       label: 'Name'
     vid:
-      type: machine_name
+      type: string
       label: 'Machine name'
-      # Vocabulary machine names are specifically limited to 32 characters.
-      # @see \Drupal\taxonomy\VocabularyForm::form()
-      constraints:
-        Length:
-          max: 32
     description:
       type: label
       label: 'Description'

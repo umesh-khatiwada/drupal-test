@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Authentication\AuthenticationCollectorTest.
+ */
 
 namespace Drupal\Tests\Core\Authentication;
 
@@ -40,7 +43,7 @@ class AuthenticationCollectorTest extends UnitTestCase {
     krsort($providers);
 
     // Merge nested providers from $providers into $sorted_providers.
-    $sorted_providers = array_merge(...$providers);
+    $sorted_providers = array_merge([], ...$providers);
     $this->assertEquals($sorted_providers, $authentication_collector->getSortedProviders());
 
     // Test AuthenticationCollector::getProvider() and

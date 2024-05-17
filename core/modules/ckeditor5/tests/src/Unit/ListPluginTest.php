@@ -23,11 +23,8 @@ class ListPluginTest extends UnitTestCase {
     return [
       'startIndex is false' => [
         [
-          'properties' => [
-            'reversed' => TRUE,
-            'startIndex' => FALSE,
-          ],
-          'multiBlock' => TRUE,
+          'reversed' => TRUE,
+          'startIndex' => FALSE,
         ],
         [
           'list' => [
@@ -36,17 +33,13 @@ class ListPluginTest extends UnitTestCase {
               'startIndex' => FALSE,
               'styles' => FALSE,
             ],
-            'multiBlock' => TRUE,
           ],
         ],
       ],
       'reversed is false' => [
         [
-          'properties' => [
-            'reversed' => FALSE,
-            'startIndex' => TRUE,
-          ],
-          'multiBlock' => TRUE,
+          'reversed' => FALSE,
+          'startIndex' => TRUE,
         ],
         [
           'list' => [
@@ -55,17 +48,13 @@ class ListPluginTest extends UnitTestCase {
               'startIndex' => TRUE,
               'styles' => FALSE,
             ],
-            'multiBlock' => TRUE,
           ],
         ],
       ],
       'both disabled' => [
         [
-          'properties' => [
-            'reversed' => FALSE,
-            'startIndex' => FALSE,
-          ],
-          'multiBlock' => TRUE,
+          'reversed' => FALSE,
+          'startIndex' => FALSE,
         ],
         [
           'list' => [
@@ -74,17 +63,13 @@ class ListPluginTest extends UnitTestCase {
               'startIndex' => FALSE,
               'styles' => FALSE,
             ],
-            'multiBlock' => TRUE,
           ],
         ],
       ],
       'both enabled' => [
         [
-          'properties' => [
-            'reversed' => TRUE,
-            'startIndex' => TRUE,
-          ],
-          'multiBlock' => TRUE,
+          'reversed' => TRUE,
+          'startIndex' => TRUE,
         ],
         [
           'list' => [
@@ -93,7 +78,6 @@ class ListPluginTest extends UnitTestCase {
               'startIndex' => TRUE,
               'styles' => FALSE,
             ],
-            'multiBlock' => TRUE,
           ],
         ],
       ],

@@ -64,10 +64,8 @@ class EntityDisplayModeTest extends BrowserTestBase {
 
     // Test adding a view mode including dots in machine_name.
     $this->clickLink('Test entity');
-    // Check if 'Name' field is required.
-    $this->assertTrue($this->getSession()->getPage()->findField('label')->hasClass('required'));
     $edit = [
-      'id' => $this->randomMachineName() . '.' . $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()) . '.' . strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
     ];
     $this->submitForm($edit, 'Save');
@@ -75,7 +73,7 @@ class EntityDisplayModeTest extends BrowserTestBase {
 
     // Test adding a view mode.
     $edit = [
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
     ];
     $this->submitForm($edit, 'Save');
@@ -120,10 +118,8 @@ class EntityDisplayModeTest extends BrowserTestBase {
 
     // Test adding a view mode including dots in machine_name.
     $this->clickLink('Test entity');
-    // Check if 'Name' field is required.
-    $this->assertTrue($this->getSession()->getPage()->findField('label')->hasClass('required'));
     $edit = [
-      'id' => $this->randomMachineName() . '.' . $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()) . '.' . strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
     ];
     $this->submitForm($edit, 'Save');
@@ -131,7 +127,7 @@ class EntityDisplayModeTest extends BrowserTestBase {
 
     // Test adding a form mode.
     $edit = [
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
     ];
     $this->submitForm($edit, 'Save');
@@ -190,24 +186,24 @@ class EntityDisplayModeTest extends BrowserTestBase {
       $pos = $new_pos;
     }
     // Now that we have verified the original display order, we can change the
-    // label for one of the view modes. If we rename "Teaser" to "Breezier", it
+    // label for one of the view modes. If we rename "Teaser" to "Breezer", it
     // should appear as the first of the listed view modes:
     // Set new values and enable test plugins.
     $edit = [
-      'label' => 'Breezier',
+      'label' => 'Breezer',
     ];
     $this->drupalGet('admin/structure/display-modes/view/manage/node.teaser');
     $this->submitForm($edit, 'Save');
-    $this->assertSession()->pageTextContains('Saved the Breezier view mode.');
+    $this->assertSession()->pageTextContains('Saved the Breezer view mode.');
 
     // Re-open the display settings for the article content type and verify
-    // that changing "Teaser" to "Breezier" makes it appear before "Full
+    // that changing "Teaser" to "Breezer" makes it appear before "Full
     // content".
     $this->drupalGet('admin/structure/types/manage/article/display');
     $page_text = $this->getTextContent();
     $start = strpos($page_text, 'view modes');
     $pos = $start;
-    $list = ['Breezier', 'Full content'];
+    $list = ['Breezer', 'Full content'];
     // Verify that the order of the view modes is correct on the page.
     foreach ($list as $name) {
       $new_pos = strpos($page_text, $name, $start);

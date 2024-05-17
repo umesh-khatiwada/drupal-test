@@ -9,8 +9,6 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\TransferException;
 
-// cspell:ignore omitscript
-
 /**
  * Converts oEmbed media URLs into endpoint-specific resource URLs.
  */
@@ -176,7 +174,7 @@ class UrlResolver implements UrlResolverInterface {
     // provide extra parameters in the query string. For example, Instagram also
     // supports the 'omitscript' parameter.
     $this->moduleHandler->alter('oembed_resource_url', $parsed_url, $provider);
-    $resource_url = $parsed_url['path'] . '?' . UrlHelper::buildQuery($parsed_url['query']);
+    $resource_url = $parsed_url['path'] . '?' . rawurldecode(UrlHelper::buildQuery($parsed_url['query']));
 
     $this->urlCache[$url] = $resource_url;
     $this->cacheBackend->set($cache_id, $resource_url);
@@ -193,7 +191,7 @@ class UrlResolver implements UrlResolverInterface {
    *   The oEmbed provider for the asset.
    *
    * @return string
-   *   The resource URL.
+   *   The resource url.
    */
   protected function getEndpointMatchingUrl($url, Provider $provider) {
     $endpoints = $provider->getEndpoints();

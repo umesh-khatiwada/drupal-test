@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: test_aggregate_count_function
-label: test_aggregate_count_function
+label: ''
 module: views
 description: ''
 tag: ''

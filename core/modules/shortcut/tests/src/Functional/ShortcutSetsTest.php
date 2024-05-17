@@ -40,7 +40,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
     $this->clickLink('Add shortcut set');
     $edit = [
       'label' => $this->randomMachineName(),
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
     ];
     $this->submitForm($edit, 'Save');
     $new_set = $this->container->get('entity_type.manager')->getStorage('shortcut_set')->load($edit['id']);
@@ -133,7 +133,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
   public function testShortcutSetSwitchCreate() {
     $edit = [
       'set' => 'new',
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
       'label' => $this->randomString(),
     ];
     $this->drupalGet('user/' . $this->adminUser->id() . '/shortcuts');
@@ -172,7 +172,7 @@ class ShortcutSetsTest extends ShortcutTestBase {
   }
 
   /**
-   * Tests un-assigning a shortcut set.
+   * Tests unassigning a shortcut set.
    */
   public function testShortcutSetUnassign() {
     $new_set = $this->generateShortcutSet($this->randomMachineName());

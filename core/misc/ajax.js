@@ -179,18 +179,6 @@
      * @type {string}
      */
     this.name = 'AjaxError';
-
-    if (!Drupal.AjaxError.messages) {
-      Drupal.AjaxError.messages = new Drupal.Message();
-    }
-    Drupal.AjaxError.messages.add(
-      Drupal.t(
-        "Oops, something went wrong. Check your browser's developer console for more details.",
-      ),
-      {
-        type: 'error',
-      },
-    );
   };
 
   Drupal.AjaxError.prototype = new Error();
@@ -325,13 +313,6 @@
         elementSettings.url = href;
         elementSettings.event = 'click';
       }
-      const httpMethod = $linkElement.data('ajax-http-method');
-      /**
-       * In case of setting custom ajax http method for link we rewrite ajax.httpMethod.
-       */
-      if (httpMethod) {
-        elementSettings.httpMethod = httpMethod;
-      }
       Drupal.ajax(elementSettings);
     });
   };
@@ -362,7 +343,7 @@
    * @prop {string} [progress.type='throbber']
    *   Type of progress element, core provides `'bar'`, `'throbber'` and
    *   `'fullscreen'`.
-   * @prop {string} [progress.message=Drupal.t('Processing...')]
+   * @prop {string} [progress.message=Drupal.t('Please wait...')]
    *   Custom message to be used with the bar indicator.
    * @prop {object} [submit]
    *   Extra data to be sent with the Ajax request.
@@ -398,7 +379,6 @@
    */
   Drupal.Ajax = function (base, element, elementSettings) {
     const defaults = {
-      httpMethod: 'POST',
       event: element ? 'mousedown' : null,
       keypress: true,
       selector: base ? `#${base}` : null,
@@ -407,7 +387,7 @@
       method: 'replaceWith',
       progress: {
         type: 'throbber',
-        message: Drupal.t('Processing...'),
+        message: Drupal.t('Please wait...'),
       },
       submit: {
         js: true,
@@ -443,13 +423,6 @@
     this.element = element;
 
     /**
-     * The last focused element right before processing ajax response.
-     *
-     * @type {string|null}
-     */
-    this.preCommandsFocusedElementSelector = null;
-
-    /**
      * @type {Drupal.Ajax~elementSettings}
      */
     this.elementSettings = elementSettings;
@@ -466,7 +439,7 @@
     // If no Ajax callback URL was given, use the link href or form action.
     if (!this.url) {
       const $element = $(this.element);
-      if (this.element.tagName === 'A') {
+      if ($element.is('a')) {
         this.url = $element.attr('href');
       } else if (this.element && element.form) {
         this.url = this.$form.attr('action');
@@ -540,7 +513,6 @@
       },
       beforeSubmit(formValues, elementSettings, options) {
         ajax.ajaxing = true;
-        ajax.preCommandsFocusedElementSelector = null;
         return ajax.beforeSubmit(formValues, elementSettings, options);
       },
       beforeSend(xmlhttprequest, options) {
@@ -548,9 +520,6 @@
         return ajax.beforeSend(xmlhttprequest, options);
       },
       success(response, status, xmlhttprequest) {
-        ajax.preCommandsFocusedElementSelector =
-          document.activeElement.getAttribute('data-drupal-selector');
-
         // Sanity check for browser support (object expected).
         // When using iFrame uploads, responses must be returned as a string.
         if (typeof response === 'string') {
@@ -610,7 +579,7 @@
       },
       dataType: 'json',
       jsonp: false,
-      method: ajax.httpMethod,
+      type: 'POST',
     };
 
     if (elementSettings.dialog) {
@@ -619,7 +588,7 @@
 
     // Ensure that we have a valid URL by adding ? when no query parameter is
     // yet available, otherwise append using &.
-    if (!ajax.options.url.includes('?')) {
+    if (ajax.options.url.indexOf('?') === -1) {
       ajax.options.url += '?';
     } else {
       ajax.options.url += '&';
@@ -835,7 +804,6 @@
 
     // Allow Drupal to return new JavaScript and CSS files to load without
     // returning the ones already loaded.
-    // @see \Drupal\Core\StackMiddleWare\AjaxPageState
     // @see \Drupal\Core\Theme\AjaxBasePageNegotiator
     // @see \Drupal\Core\Asset\LibraryDependencyResolverInterface::getMinimalRepresentativeSubset()
     // @see system_js_settings_alter()
@@ -1085,9 +1053,7 @@
     const focusChanged = Object.keys(response || {}).some((key) => {
       const { command, method } = response[key];
       return (
-        command === 'focusFirst' ||
-        command === 'openDialog' ||
-        (command === 'invoke' && method === 'focus')
+        command === 'focusFirst' || (command === 'invoke' && method === 'focus')
       );
     });
 
@@ -1097,30 +1063,19 @@
         // the triggering element or one of its parents if that element does not
         // exist anymore.
         .then(() => {
-          if (!focusChanged) {
+          if (
+            !focusChanged &&
+            this.element &&
+            !$(this.element).data('disable-refocus')
+          ) {
             let target = false;
-            if (this.element) {
-              if (
-                $(this.element).data('refocus-blur') &&
-                this.preCommandsFocusedElementSelector
-              ) {
-                target = document.querySelector(
-                  `[data-drupal-selector="${this.preCommandsFocusedElementSelector}"]`,
-                );
-              }
-              if (!target && !$(this.element).data('disable-refocus')) {
-                for (
-                  let n = elementParents.length - 1;
-                  !target && n >= 0;
-                  n--
-                ) {
-                  target = document.querySelector(
-                    `[data-drupal-selector="${elementParents[n].getAttribute(
-                      'data-drupal-selector',
-                    )}"]`,
-                  );
-                }
-              }
+
+            for (let n = elementParents.length - 1; !target && n >= 0; n--) {
+              target = document.querySelector(
+                `[data-drupal-selector="${elementParents[n].getAttribute(
+                  'data-drupal-selector',
+                )}"]`,
+              );
             }
             if (target) {
               $(target).trigger('focus');
@@ -1511,7 +1466,6 @@
      *   The XMLHttpRequest status.
      */
     css(ajax, response, status) {
-      // eslint-disable-next-line jquery/no-css
       $(response.selector).css(response.argument);
     },
 
@@ -1699,53 +1653,13 @@
      *   {@link Drupal.Ajax} object created by {@link Drupal.ajax}.
      * @param {object} response
      *   The response from the Ajax request.
-     * @param {object[]|string} response.data
-     *   An array of styles to be added.
+     * @param {string} response.data
+     *   A string that contains the styles to be added.
      * @param {number} [status]
      *   The XMLHttpRequest status.
      */
     add_css(ajax, response, status) {
-      if (typeof response.data === 'string') {
-        Drupal.deprecationError({
-          message:
-            'Passing a string to the Drupal.ajax.add_css() method is deprecated in 10.1.0 and is removed from drupal:11.0.0. See https://www.drupal.org/node/3154948.',
-        });
-        $('head').prepend(response.data);
-        return;
-      }
-
-      const allUniqueBundleIds = response.data.map(function (style) {
-        const uniqueBundleId = style.href + ajax.instanceIndex;
-        // Force file to load as a CSS stylesheet using 'css!' flag.
-        loadjs(`css!${style.href}`, uniqueBundleId, {
-          before(path, styleEl) {
-            // This allows all attributes to be added, like media.
-            Object.keys(style).forEach((attributeKey) => {
-              styleEl.setAttribute(attributeKey, style[attributeKey]);
-            });
-          },
-        });
-        return uniqueBundleId;
-      });
-      // Returns the promise so that the next AJAX command waits on the
-      // completion of this one to execute, ensuring the CSS is loaded before
-      // executing.
-      return new Promise((resolve, reject) => {
-        loadjs.ready(allUniqueBundleIds, {
-          success() {
-            // All CSS files were loaded. Resolve the promise and let the
-            // remaining commands execute.
-            resolve();
-          },
-          error(depsNotFound) {
-            const message = Drupal.t(
-              `The following files could not be loaded: @dependencies`,
-              { '@dependencies': depsNotFound.join(', ') },
-            );
-            reject(message);
-          },
-        });
-      });
+      $('head').prepend(response.data);
     },
 
     /**
@@ -1839,32 +1753,6 @@
           },
         });
       });
-    },
-
-    /**
-     * Command to scroll the page to an html element.
-     *
-     * @param {Drupal.Ajax} [ajax]
-     *   A {@link Drupal.ajax} object.
-     * @param {object} response
-     *   Ajax response.
-     * @param {string} response.selector
-     *   Selector to use.
-     */
-    scrollTop(ajax, response) {
-      const offset = $(response.selector).offset();
-      // We can't guarantee that the scrollable object should be
-      // the body, as the element could be embedded in something
-      // more complex such as a modal popup. Recurse up the DOM
-      // and scroll the first element that has a non-zero top.
-      let scrollTarget = response.selector;
-      while ($(scrollTarget).scrollTop() === 0 && $(scrollTarget).parent()) {
-        scrollTarget = $(scrollTarget).parent();
-      }
-      // Only scroll upward.
-      if (offset.top - 10 < $(scrollTarget).scrollTop()) {
-        $(scrollTarget).animate({ scrollTop: offset.top - 10 }, 500);
-      }
     },
   };
 

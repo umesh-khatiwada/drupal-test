@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Utility;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -51,12 +49,11 @@ class UrlHelperTest extends TestCase {
    *
    * @return array
    */
-  public static function providerTestValidAbsoluteData(): array {
+  public function providerTestValidAbsoluteData() {
     $urls = [
       'example.com',
       'www.example.com',
       'ex-ample.com',
-      // cspell:disable-next-line
       '3xampl3.com',
       'example.com/parenthesis',
       'example.com/index.html#pagetop',
@@ -75,7 +72,7 @@ class UrlHelperTest extends TestCase {
       '[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html',
     ];
 
-    return self::dataEnhanceWithScheme($urls);
+    return $this->dataEnhanceWithScheme($urls);
   }
 
   /**
@@ -89,7 +86,7 @@ class UrlHelperTest extends TestCase {
    * @param string $scheme
    *   The scheme to test.
    */
-  public function testValidAbsolute(string $url, string $scheme): void {
+  public function testValidAbsolute($url, $scheme) {
     $test_url = $scheme . '://' . $url;
     $valid_url = UrlHelper::isValid($test_url, TRUE);
     $this->assertTrue($valid_url, $test_url . ' is a valid URL.');
@@ -100,37 +97,13 @@ class UrlHelperTest extends TestCase {
    *
    * @return array
    */
-  public static function providerTestInvalidAbsolute(): array {
+  public function providerTestInvalidAbsolute() {
     $data = [
       '',
       'ex!ample.com',
       'ex%ample.com',
     ];
-    return self::dataEnhanceWithScheme($data);
-  }
-
-  /**
-   * Tests that we get the same thing out that we put in.
-   */
-  public function testCompressUncompress() {
-    $data = [];
-    while (count($data) < 30) {
-      $data[] = 'drupal/drupal' . count($data);
-    }
-    $data = implode(',', $data);
-    $compressed = UrlHelper::compressQueryParameter($data);
-    $uncompressed = UrlHelper::uncompressQueryParameter($compressed);
-    $this->assertEquals($data, $uncompressed);
-    $this->assertLessThan(strlen($uncompressed), strlen($compressed));
-  }
-
-  /**
-   * Tests passing an invalid string as a compressed query parameter.
-   */
-  public function testUncompressInvalidString() {
-    // Pass an invalid string to ::uncompressQueryParameter() and ensure it
-    // doesn't result in a PHP warning.
-    $this->assertFalse(UrlHelper::uncompressQueryParameter('llama'));
+    return $this->dataEnhanceWithScheme($data);
   }
 
   /**
@@ -144,7 +117,7 @@ class UrlHelperTest extends TestCase {
    * @param string $scheme
    *   The scheme to test.
    */
-  public function testInvalidAbsolute(string $url, string $scheme): void {
+  public function testInvalidAbsolute($url, $scheme) {
     $test_url = $scheme . '://' . $url;
     $valid_url = UrlHelper::isValid($test_url, TRUE);
     $this->assertFalse($valid_url, $test_url . ' is NOT a valid URL.');
@@ -155,7 +128,7 @@ class UrlHelperTest extends TestCase {
    *
    * @return array
    */
-  public static function providerTestValidRelativeData(): array {
+  public function providerTestValidRelativeData() {
     $data = [
       'paren(the)sis',
       'index.html#pagetop',
@@ -164,7 +137,7 @@ class UrlHelperTest extends TestCase {
       'login.php?do=login&style=%23#pagetop',
     ];
 
-    return self::dataEnhanceWithPrefix($data);
+    return $this->dataEnhanceWithPrefix($data);
   }
 
   /**
@@ -178,7 +151,7 @@ class UrlHelperTest extends TestCase {
    * @param string $prefix
    *   The prefix to test.
    */
-  public function testValidRelative(string $url, string $prefix): void {
+  public function testValidRelative($url, $prefix) {
     $test_url = $prefix . $url;
     $valid_url = UrlHelper::isValid($test_url);
     $this->assertTrue($valid_url, $test_url . ' is a valid URL.');
@@ -189,14 +162,13 @@ class UrlHelperTest extends TestCase {
    *
    * @return array
    */
-  public static function providerTestInvalidRelativeData(): array {
+  public function providerTestInvalidRelativeData() {
     $data = [
-      // cspell:disable-next-line
       'ex^mple',
       'example<>',
       'ex%ample',
     ];
-    return self::dataEnhanceWithPrefix($data);
+    return $this->dataEnhanceWithPrefix($data);
   }
 
   /**
@@ -210,7 +182,7 @@ class UrlHelperTest extends TestCase {
    * @param string $prefix
    *   The prefix to test.
    */
-  public function testInvalidRelative(string $url, string $prefix): void {
+  public function testInvalidRelative($url, $prefix) {
     $test_url = $prefix . $url;
     $valid_url = UrlHelper::isValid($test_url);
     $this->assertFalse($valid_url, $test_url . ' is NOT a valid URL.');
@@ -434,14 +406,14 @@ class UrlHelperTest extends TestCase {
       ['https://example.com/external/path', TRUE],
       ['javascript://fake-external-path', FALSE],
       // External URL without an explicit protocol.
-      ['//www.example.com/foo/bar?foo=bar&bar=baz&baz#foo', TRUE],
+      ['//www.drupal.org/foo/bar?foo=bar&bar=baz&baz#foo', TRUE],
       // Internal URL starting with a slash.
-      ['/www.example.com', FALSE],
+      ['/www.drupal.org', FALSE],
       // Simple external URLs.
       ['http://example.com', TRUE],
       ['https://example.com', TRUE],
-      ['http://example.com/foo/bar?foo=bar&bar=baz&baz#foo', TRUE],
-      ['//example.com', TRUE],
+      ['http://drupal.org/foo/bar?foo=bar&bar=baz&baz#foo', TRUE],
+      ['//drupal.org', TRUE],
       // Some browsers ignore or strip leading control characters.
       ["\x00//www.example.com", TRUE],
       ["\x08//www.example.com", TRUE],
@@ -459,7 +431,7 @@ class UrlHelperTest extends TestCase {
       ['/system/ajax', FALSE],
       ['?q=foo:bar', FALSE],
       ['node/edit:me', FALSE],
-      ['/example.com', FALSE],
+      ['/drupal.org', FALSE],
       ['<front>', FALSE],
     ];
   }
@@ -545,15 +517,15 @@ class UrlHelperTest extends TestCase {
   }
 
   /**
-   * Enhances test URLs with schemes.
+   * Enhances test urls with schemes.
    *
    * @param array $urls
-   *   The list of URLs.
+   *   The list of urls.
    *
    * @return array
    *   A list of provider data with schemes.
    */
-  protected static function dataEnhanceWithScheme(array $urls): array {
+  protected function dataEnhanceWithScheme(array $urls) {
     $url_schemes = ['http', 'https', 'ftp'];
     $data = [];
     foreach ($url_schemes as $scheme) {
@@ -565,15 +537,15 @@ class UrlHelperTest extends TestCase {
   }
 
   /**
-   * Enhances test URLs with prefixes.
+   * Enhances test urls with prefixes.
    *
    * @param array $urls
-   *   The list of URLs.
+   *   The list of urls.
    *
    * @return array
    *   A list of provider data with prefixes.
    */
-  protected static function dataEnhanceWithPrefix(array $urls): array {
+  protected function dataEnhanceWithPrefix(array $urls) {
     $prefixes = ['', '/'];
     $data = [];
     foreach ($prefixes as $prefix) {
@@ -585,7 +557,7 @@ class UrlHelperTest extends TestCase {
   }
 
   /**
-   * Tests detecting external URLs that point to local resources.
+   * Tests detecting external urls that point to local resources.
    *
    * @param string $url
    *   The external URL to test.
@@ -665,7 +637,7 @@ class UrlHelperTest extends TestCase {
       ['http://example.com/foo', ''],
       ['http://example.com/foo', 'bar'],
       ['http://example.com/foo', 'http://'],
-      // Invalid destination URLs.
+      // Invalid destination urls.
       ['', 'http://example.com/foo'],
       ['bar', 'http://example.com/foo'],
       ['/bar', 'http://example.com/foo'],

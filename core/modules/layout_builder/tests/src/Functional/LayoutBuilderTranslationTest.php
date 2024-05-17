@@ -41,7 +41,6 @@ class LayoutBuilderTranslationTest extends ContentTranslationTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->doSetup();
     $this->setUpViewDisplay();
     $this->setUpEntities();
   }

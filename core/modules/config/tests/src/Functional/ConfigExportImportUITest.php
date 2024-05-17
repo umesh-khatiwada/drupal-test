@@ -106,7 +106,7 @@ class ConfigExportImportUITest extends BrowserTestBase {
     $this->contentType = $this->drupalCreateContentType();
 
     // Create a field.
-    $this->fieldName = $this->randomMachineName();
+    $this->fieldName = mb_strtolower($this->randomMachineName());
     $this->fieldStorage = FieldStorageConfig::create([
       'field_name' => $this->fieldName,
       'entity_type' => 'node',

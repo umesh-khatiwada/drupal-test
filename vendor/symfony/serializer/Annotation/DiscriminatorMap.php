@@ -11,11 +11,40 @@
 
 namespace Symfony\Component\Serializer\Annotation;
 
-class_exists(\Symfony\Component\Serializer\Attribute\DiscriminatorMap::class);
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 
-if (false) {
-    #[\Attribute(\Attribute::TARGET_CLASS)]
-    class DiscriminatorMap extends \Symfony\Component\Serializer\Attribute\DiscriminatorMap
+/**
+ * Annotation class for @DiscriminatorMap().
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
+ * @Target({"CLASS"})
+ *
+ * @author Samuel Roze <samuel.roze@gmail.com>
+ */
+#[\Attribute(\Attribute::TARGET_CLASS)]
+class DiscriminatorMap
+{
+    public function __construct(
+        private string $typeProperty,
+        private array $mapping,
+    ) {
+        if (empty($typeProperty)) {
+            throw new InvalidArgumentException(sprintf('Parameter "typeProperty" of annotation "%s" cannot be empty.', static::class));
+        }
+
+        if (empty($mapping)) {
+            throw new InvalidArgumentException(sprintf('Parameter "mapping" of annotation "%s" cannot be empty.', static::class));
+        }
+    }
+
+    public function getTypeProperty(): string
     {
+        return $this->typeProperty;
+    }
+
+    public function getMapping(): array
+    {
+        return $this->mapping;
     }
 }

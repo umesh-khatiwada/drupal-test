@@ -25,17 +25,12 @@ use Symfony\Component\Serializer\Exception\RuntimeException;
  */
 class ChainEncoder implements ContextAwareEncoderInterface
 {
-    /**
-     * @var array<string, array-key>
-     */
+    private array $encoders = [];
     private array $encoderByFormat = [];
 
-    /**
-     * @param array<EncoderInterface> $encoders
-     */
-    public function __construct(
-        private readonly array $encoders = []
-    ) {
+    public function __construct(array $encoders = [])
+    {
+        $this->encoders = $encoders;
     }
 
     final public function encode(mixed $data, string $format, array $context = []): string

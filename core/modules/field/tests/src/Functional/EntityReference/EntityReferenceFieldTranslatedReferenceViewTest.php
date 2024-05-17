@@ -2,12 +2,11 @@
 
 namespace Drupal\Tests\field\Functional\EntityReference;
 
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
+use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Tests the translation of entity reference field display on nodes.
@@ -15,8 +14,6 @@ use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
  * @group entity_reference
  */
 class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
-
-  use ContentTranslationTestTrait;
 
   /**
    * Flag indicating whether the field is translatable.
@@ -168,7 +165,10 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
     $this->assertEntityReferenceFormDisplay();
 
     // Disable translation for referrer content type.
-    static::disableBundleTranslation('node', 'referrer');
+    $this->drupalLogin($this->rootUser);
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm(['settings[node][referrer][translatable]' => FALSE], 'Save configuration');
+    $this->drupalLogout();
 
     // Create a referrer entity without translation.
     $this->referrerEntity = $this->createReferrerEntity(FALSE);
@@ -218,7 +218,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
    * Adds additional languages.
    */
   protected function setUpLanguages() {
-    static::createLanguageFromLangcode($this->translateToLangcode);
+    ConfigurableLanguage::createFromLangcode($this->translateToLangcode)->save();
   }
 
   /**
@@ -233,9 +233,10 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
    * Enables translations where it needed.
    */
   protected function enableTranslation() {
-    // Enable translation for the entity types.
-    $this->enableContentTranslation($this->testEntityTypeName, $this->referrerType->id());
-    $this->enableContentTranslation($this->testEntityTypeName, $this->referencedType->id());
+    // Enable translation for the entity types and ensure the change is picked
+    // up.
+    \Drupal::service('content_translation.manager')->setEnabled($this->testEntityTypeName, $this->referrerType->id(), TRUE);
+    \Drupal::service('content_translation.manager')->setEnabled($this->testEntityTypeName, $this->referencedType->id(), TRUE);
   }
 
   /**

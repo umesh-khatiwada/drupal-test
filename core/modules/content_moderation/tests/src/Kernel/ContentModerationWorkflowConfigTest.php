@@ -63,7 +63,6 @@ class ContentModerationWorkflowConfigTest extends KernelTestBase {
 
     NodeType::create([
       'type' => 'example',
-      'name' => 'Example',
     ])->save();
 
     $workflow = $this->createEditorialWorkflow();

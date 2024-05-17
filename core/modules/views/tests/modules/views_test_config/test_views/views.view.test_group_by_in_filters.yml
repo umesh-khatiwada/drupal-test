@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: test_group_by_in_filters
-label: test_group_by_in_filters
+label: ''
 module: views
 description: ''
 tag: ''

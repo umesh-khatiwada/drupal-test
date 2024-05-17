@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Drupal\Tests\ckeditor5\FunctionalJavascript;
 
 use Drupal\ckeditor5\Plugin\Editor\CKEditor5;
 use Drupal\editor\Entity\Editor;
 use Drupal\filter\Entity\FilterFormat;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\user\Entity\User;
 use Symfony\Component\Validator\ConstraintViolation;
 
@@ -17,21 +16,14 @@ use Symfony\Component\Validator\ConstraintViolation;
  * @group ckeditor5
  * @internal
  */
-class CKEditor5ToolbarTest extends WebDriverTestBase {
+class CKEditor5ToolbarTest extends CKEditor5TestBase {
 
   /**
    * {@inheritdoc}
    */
   protected static $modules = [
-    'node',
-    'ckeditor5',
     'toolbar',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $defaultTheme = 'stark';
 
   /**
    * The admin user.

@@ -16,6 +16,7 @@ use Drupal\Core\TypedData\TypedDataInterface;
  *   id = "field_test",
  *   label = @Translation("Test field item"),
  *   description = @Translation("A field containing a plain string value."),
+ *   category = @Translation("Field"),
  * )
  */
 class FieldTestItem extends FieldItemBase {

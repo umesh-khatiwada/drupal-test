@@ -3,7 +3,7 @@
  * Views dialog behaviors.
  */
 
-(function ($, Drupal, drupalSettings, bodyScrollLock) {
+(function ($, Drupal, drupalSettings) {
   function handleDialogResize(e) {
     const $modal = $(e.currentTarget);
     const $viewsOverride = $modal.find('[data-drupal-views-offset]');
@@ -14,12 +14,7 @@
       // Add a class to do some styles adjustments.
       $modal.closest('.views-ui-dialog').addClass('views-ui-dialog-scroll');
       // Let scroll element take all the height available.
-      $scroll.each(function () {
-        Object.assign(this.style, {
-          overflow: 'visible',
-          height: 'auto',
-        });
-      });
+      $scroll.css({ overflow: 'visible', height: 'auto' });
       modalHeight = $modal.height();
       $viewsOverride.each(function () {
         offset += $(this).outerHeight();
@@ -29,12 +24,8 @@
       const scrollOffset = $scroll.outerHeight() - $scroll.height();
       $scroll.height(modalHeight - offset - scrollOffset);
       // Reset scrolling properties.
-      $modal.each(function () {
-        this.style.overflow = 'hidden';
-      });
-      $scroll.each(function () {
-        this.style.overflow = 'auto';
-      });
+      $modal.css('overflow', 'hidden');
+      $scroll.css('overflow', 'auto');
     }
   }
 
@@ -70,22 +61,4 @@
       }
     },
   };
-
-  /**
-   * Binds a listener on dialog creation to handle Views modal scroll.
-   *
-   * @param {jQuery.Event} e
-   *   The event triggered.
-   * @param {Drupal.dialog~dialogDefinition} dialog
-   *   The dialog instance.
-   * @param {jQuery} $element
-   *   The jQuery collection of the dialog element.
-   */
-  $(window).on('dialog:aftercreate', (e, dialog, $element) => {
-    const $scroll = $element.find('.scroll');
-    if ($scroll.length) {
-      bodyScrollLock.unlock($element.get(0));
-      bodyScrollLock.lock($scroll.get(0));
-    }
-  });
-})(jQuery, Drupal, drupalSettings, bodyScrollLock);
+})(jQuery, Drupal, drupalSettings);

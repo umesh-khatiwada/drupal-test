@@ -52,15 +52,13 @@ class FilterAndArgumentUserUidTest extends KernelTestBase {
    */
   public function testHandlers() {
     $this->installEntitySchema('user');
+    $this->installSchema('system', ['sequences']);
     $this->installEntitySchema('node');
     $this->installEntitySchema('comment');
     $this->installSchema('comment', ['comment_entity_statistics']);
     $this->installConfig(['filter']);
 
-    NodeType::create([
-      'type' => 'page',
-      'name' => 'Page',
-    ])->save();
+    NodeType::create(['type' => 'page'])->save();
 
     FieldStorageConfig::create([
       'type' => 'text_long',

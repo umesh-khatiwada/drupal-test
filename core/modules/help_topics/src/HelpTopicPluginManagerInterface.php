@@ -2,7 +2,7 @@
 
 namespace Drupal\help_topics;
 
-use Drupal\help\HelpTopicPluginManagerInterface as CoreHelpTopicPluginManagerInterface;
+use Drupal\Component\Plugin\PluginManagerInterface;
 
 /**
  * Defines an interface for managing help topics and storing their definitions.
@@ -12,6 +12,5 @@ use Drupal\help\HelpTopicPluginManagerInterface as CoreHelpTopicPluginManagerInt
  *   experimental modules and development releases of contributed modules.
  *   See https://www.drupal.org/core/experimental for more information.
  */
-interface HelpTopicPluginManagerInterface extends CoreHelpTopicPluginManagerInterface {
-
+interface HelpTopicPluginManagerInterface extends PluginManagerInterface {
 }

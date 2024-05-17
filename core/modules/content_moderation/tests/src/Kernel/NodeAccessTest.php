@@ -48,13 +48,15 @@ class NodeAccessTest extends KernelTestBase {
     $this->installEntitySchema('content_moderation_state');
     $this->installEntitySchema('node');
     $this->installEntitySchema('user');
+    $this->installEntitySchema('workflow');
     $this->installConfig(['content_moderation', 'filter']);
+    $this->installSchema('system', ['sequences']);
     $this->installSchema('node', ['node_access']);
 
     // Add a moderated node type.
     $node_type = NodeType::create([
       'type' => 'page',
-      'name' => 'Page',
+      'label' => 'Page',
     ]);
     $node_type->save();
     $workflow = $this->createEditorialWorkflow();

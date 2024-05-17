@@ -16,13 +16,13 @@
       /**
        * @type {object}
        *
-       * @prop {object|null} subtrees
+       * @prop {object} subtrees
        */
       defaults: /** @lends Drupal.toolbar.MenuModel# */ {
         /**
-         * @type {object|null}
+         * @type {object}
          */
-        subtrees: null,
+        subtrees: {},
       },
     },
   );

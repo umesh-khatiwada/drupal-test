@@ -20,6 +20,7 @@
   -webkit-transition: width 0.5s ease-out;
   transition: width 0.5s ease-out;
   -webkit-animation: animate-stripes 3s linear infinite;
+  -moz-animation: animate-stripes 3s linear infinite;
   border: 1px #07629a solid;
   border-radius: 10em;
   background: #057ec9;
@@ -32,6 +33,7 @@
   margin-right: -1px;
   margin-left: 0;
   -webkit-animation-direction: reverse;
+  -moz-animation-direction: reverse;
   animation-direction: reverse;
 }
 
@@ -40,6 +42,7 @@
     -webkit-transition: none;
     transition: none;
     -webkit-animation: none;
+    -moz-animation: none;
   }
 }
 

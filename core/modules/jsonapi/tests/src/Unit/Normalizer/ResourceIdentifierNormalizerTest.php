@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\jsonapi\Unit\Normalizer;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -47,8 +45,6 @@ class ResourceIdentifierNormalizerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $target_resource_type = new ResourceType('lorem', 'dummy_bundle', NULL);
     $relationship_fields = [
       'field_dummy' => new ResourceTypeRelationship('field_dummy'),

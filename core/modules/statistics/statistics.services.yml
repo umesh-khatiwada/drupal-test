@@ -4,4 +4,3 @@ services:
     arguments: ['@database', '@state', '@request_stack']
     tags:
       - { name: backend_overridable }
-  Drupal\statistics\StatisticsStorageInterface: '@statistics.storage.node'

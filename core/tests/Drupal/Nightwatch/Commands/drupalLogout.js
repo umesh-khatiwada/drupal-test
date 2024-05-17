@@ -1,3 +1,6 @@
+const { execSync } = require('child_process');
+const { URL } = require('url');
+
 /**
  * Logs out from a Drupal site.
  *

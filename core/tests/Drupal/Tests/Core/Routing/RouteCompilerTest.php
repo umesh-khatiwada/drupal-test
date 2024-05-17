@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Routing;
 
 use Drupal\Core\Routing\RouteCompiler;
@@ -42,9 +40,9 @@ class RouteCompilerTest extends UnitTestCase {
   public function providerTestGetFit() {
     return [
       ['test', 1],
-      ['/estWithLeadingSlash', 1],
-      ['testWithTrailingslash/', 1],
-      ['/testWithSlashes/', 1],
+      ['/testwithleadingslash', 1],
+      ['testwithtrailingslash/', 1],
+      ['/testwithslashes/', 1],
       ['test/with/multiple/parts', 15],
       ['test/with/{some}/slugs', 13],
       ['test/very/long/path/that/drupal/7/could/not/have/handled', 2047],

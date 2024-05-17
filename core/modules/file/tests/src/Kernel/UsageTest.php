@@ -254,19 +254,11 @@ class UsageTest extends FileManagedUnitTestBase {
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);
 
-    ConfigurableLanguage::create([
-      'id' => 'en',
-      'label' => 'English',
-    ])->save();
-    ConfigurableLanguage::create([
-      'id' => 'ro',
-      'label' => 'Romanian',
-    ])->save();
+    // Activate English and Romanian languages.
+    ConfigurableLanguage::create(['id' => 'en'])->save();
+    ConfigurableLanguage::create(['id' => 'ro'])->save();
 
-    NodeType::create([
-      'type' => 'page',
-      'name' => 'Page',
-    ])->save();
+    NodeType::create(['type' => 'page'])->save();
     ContentLanguageSettings::loadByEntityTypeBundle('node', 'page')
       ->setLanguageAlterable(FALSE)
       ->setDefaultLangcode('en')

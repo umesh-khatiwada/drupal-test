@@ -6,8 +6,6 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\FieldableEntityStorageInterface;
-use Drupal\Core\Entity\Plugin\DataType\EntityAdapter;
-use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldException;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\OptionsProviderInterface;
@@ -48,9 +46,6 @@ use Drupal\field\FieldStorageConfigInterface;
  *     "indexes",
  *     "persist_with_no_fields",
  *     "custom_storage",
- *   },
- *   constraints = {
- *     "ImmutableProperties" = {"id", "entity_type", "field_name", "type"},
  *   }
  * )
  */
@@ -285,28 +280,6 @@ class FieldStorageConfig extends ConfigEntityBase implements FieldStorageConfigI
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function postCreate(EntityStorageInterface $storage) {
-    parent::postCreate($storage);
-
-    // Check that the field type is known.
-    $field_type = \Drupal::service('plugin.manager.field.field_type')->getDefinition($this->type, FALSE);
-    if (!$field_type) {
-      throw new FieldException("Attempt to create a field storage of unknown type {$this->type}.");
-    }
-    $this->module = $field_type['provider'];
-
-    // Make sure all expected runtime settings are present.
-    $default_settings = \Drupal::service('plugin.manager.field.field_type')
-      ->getDefaultStorageSettings($this->getType());
-
-    // Filter out any unknown (unsupported) settings.
-    $supported_settings = array_intersect_key($this->getSettings(), $default_settings);
-    $this->set('settings', $supported_settings + $default_settings);
-  }
-
-  /**
    * Overrides \Drupal\Core\Entity\Entity::preSave().
    *
    * @throws \Drupal\Core\Field\FieldException
@@ -346,6 +319,7 @@ class FieldStorageConfig extends ConfigEntityBase implements FieldStorageConfigI
    */
   protected function preSaveNew(EntityStorageInterface $storage) {
     $entity_field_manager = \Drupal::service('entity_field.manager');
+    $field_type_manager = \Drupal::service('plugin.manager.field.field_type');
 
     // Assign the ID.
     $this->id = $this->id();
@@ -362,6 +336,13 @@ class FieldStorageConfig extends ConfigEntityBase implements FieldStorageConfigI
     if (in_array($this->getName(), $disallowed_field_names)) {
       throw new FieldException("Attempt to create field storage {$this->getName()} which is reserved by entity type {$this->getTargetEntityTypeId()}.");
     }
+
+    // Check that the field type is known.
+    $field_type = $field_type_manager->getDefinition($this->getType(), FALSE);
+    if (!$field_type) {
+      throw new FieldException("Attempt to create a field storage of unknown type {$this->getType()}.");
+    }
+    $this->module = $field_type['provider'];
 
     // Notify the field storage definition listener.
     \Drupal::service('field_storage_definition.listener')->onFieldStorageDefinitionCreate($this);
@@ -685,19 +666,7 @@ class FieldStorageConfig extends ConfigEntityBase implements FieldStorageConfigI
     // runtime item object, so that it can be used as the options provider
     // without modifying the entity being worked on.
     if (is_subclass_of($this->getFieldItemClass(), OptionsProviderInterface::class)) {
-      try {
-        $items = $entity->get($this->getName());
-      }
-      catch (\InvalidArgumentException $e) {
-        // When a field doesn't exist, create a new field item list using a
-        // temporary base field definition. This step is necessary since there
-        // may not be a field configuration for the storage when creating a new
-        // field.
-        // @todo Simplify in https://www.drupal.org/project/drupal/issues/3347291.
-        $field_storage = BaseFieldDefinition::createFromFieldStorageDefinition($this);
-        $entity_adapter = EntityAdapter::createFromEntity($entity);
-        $items = \Drupal::typedDataManager()->create($field_storage, name: $field_storage->getName(), parent: $entity_adapter);
-      }
+      $items = $entity->get($this->getName());
       return \Drupal::service('plugin.manager.field.field_type')->createFieldItem($items, 0);
     }
     // @todo: Allow setting custom options provider, see
@@ -741,7 +710,7 @@ class FieldStorageConfig extends ConfigEntityBase implements FieldStorageConfigI
    *   TRUE if the field has data for any entity; FALSE otherwise.
    */
   public function hasData() {
-    return !$this->isNew() && \Drupal::entityTypeManager()->getStorage($this->entity_type)->countFieldData($this, TRUE);
+    return \Drupal::entityTypeManager()->getStorage($this->entity_type)->countFieldData($this, TRUE);
   }
 
   /**

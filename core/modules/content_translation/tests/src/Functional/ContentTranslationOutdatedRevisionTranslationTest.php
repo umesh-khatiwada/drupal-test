@@ -22,7 +22,6 @@ class ContentTranslationOutdatedRevisionTranslationTest extends ContentTranslati
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->doSetup();
     $this->enableContentModeration();
   }
 

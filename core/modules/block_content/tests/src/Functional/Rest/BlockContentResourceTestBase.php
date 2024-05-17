@@ -38,24 +38,7 @@ abstract class BlockContentResourceTestBase extends EntityResourceTestBase {
    * {@inheritdoc}
    */
   protected function setUpAuthorization($method) {
-    switch ($method) {
-      case 'GET':
-      case 'PATCH':
-        $this->grantPermissionsToTestedRole(['access block library', 'edit any basic block content']);
-        break;
-
-      case 'POST':
-        $this->grantPermissionsToTestedRole(['access block library', 'create basic block content']);
-        break;
-
-      case 'DELETE':
-        $this->grantPermissionsToTestedRole(['delete any basic block content']);
-        break;
-
-      default:
-        $this->grantPermissionsToTestedRole(['administer block content']);
-        break;
-    }
+    $this->grantPermissionsToTestedRole(['administer blocks']);
   }
 
   /**
@@ -72,7 +55,7 @@ abstract class BlockContentResourceTestBase extends EntityResourceTestBase {
       block_content_add_body_field($block_content_type->id());
     }
 
-    // Create a "Llama" content block.
+    // Create a "Llama" custom block.
     $block_content = BlockContent::create([
       'info' => 'Llama',
       'type' => 'basic',
@@ -184,7 +167,7 @@ abstract class BlockContentResourceTestBase extends EntityResourceTestBase {
       ],
       'info' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
     ];
@@ -194,21 +177,7 @@ abstract class BlockContentResourceTestBase extends EntityResourceTestBase {
    * {@inheritdoc}
    */
   protected function getExpectedUnauthorizedAccessMessage($method) {
-    if (!$this->resourceConfigStorage->load(static::$resourceConfigId)) {
-      return match ($method) {
-        'GET', 'PATCH' => "The 'edit any basic block content' permission is required.",
-        'POST' => "The following permissions are required: 'create basic block content' AND 'access block library'.",
-        'DELETE' => "The 'delete any basic block content' permission is required.",
-        default => parent::getExpectedUnauthorizedAccessMessage($method),
-      };
-    }
-    return match ($method) {
-      'GET' => "The 'access block library' permission is required.",
-      'PATCH' => "The 'edit any basic block content' permission is required.",
-      'POST' => "The following permissions are required: 'create basic block content' AND 'access block library'.",
-      'DELETE' => "The 'delete any basic block content' permission is required.",
-      default => parent::getExpectedUnauthorizedAccessMessage($method),
-    };
+    return parent::getExpectedUnauthorizedAccessMessage($method);
   }
 
   /**

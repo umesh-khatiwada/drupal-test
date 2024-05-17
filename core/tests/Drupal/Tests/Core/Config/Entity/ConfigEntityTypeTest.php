@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Config\Entity;
 
 use Drupal\Core\Config\TypedConfigManagerInterface;
@@ -27,8 +25,6 @@ class ConfigEntityTypeTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->typedConfigManager = $this->createMock(TypedConfigManagerInterface::class);
     $container = new ContainerBuilder();
     $container->set('config.typed', $this->typedConfigManager);

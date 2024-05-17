@@ -25,6 +25,7 @@ class MigrateUserStubTest extends MigrateDrupalTestBase {
   protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('user');
+    $this->installSchema('system', ['sequences']);
   }
 
   /**

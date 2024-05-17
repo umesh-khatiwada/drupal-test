@@ -27,12 +27,14 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlFileLoader extends FileLoader
 {
-    private ?Parser $yamlParser = null;
+    private $yamlParser;
 
     /**
      * An array of YAML class descriptions.
+     *
+     * @var array
      */
-    private ?array $classes = null;
+    private $classes;
 
     public function loadClassMetadata(ClassMetadataInterface $classMetadata): bool
     {

@@ -3,16 +3,15 @@
 namespace Drupal\system\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Block\Attribute\Block;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Provides a 'Powered by Drupal' block.
+ *
+ * @Block(
+ *   id = "system_powered_by_block",
+ *   admin_label = @Translation("Powered by Drupal")
+ * )
  */
-#[Block(
-  id: "system_powered_by_block",
-  admin_label: new TranslatableMarkup("Powered by Drupal")
-)]
 class SystemPoweredByBlock extends BlockBase {
 
   /**

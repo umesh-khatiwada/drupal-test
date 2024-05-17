@@ -33,22 +33,9 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         private NormalizerInterface|DenormalizerInterface $normalizer,
         private SerializerDataCollector $dataCollector,
     ) {
-        if (!method_exists($normalizer, 'getSupportedTypes')) {
-            trigger_deprecation('symfony/serializer', '6.3', 'Not implementing the "NormalizerInterface::getSupportedTypes()" in "%s" is deprecated.', get_debug_type($normalizer));
-        }
     }
 
-    public function getSupportedTypes(?string $format): array
-    {
-        // @deprecated remove condition in 7.0
-        if (!method_exists($this->normalizer, 'getSupportedTypes')) {
-            return ['*' => $this->normalizer instanceof CacheableSupportsMethodInterface && $this->normalizer->hasCacheableSupportsMethod()];
-        }
-
-        return $this->normalizer->getSupportedTypes($format);
-    }
-
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize(mixed $object, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         if (!$this->normalizer instanceof NormalizerInterface) {
             throw new \BadMethodCallException(sprintf('The "%s()" method cannot be called as nested normalizer doesn\'t implements "%s".', __METHOD__, NormalizerInterface::class));
@@ -59,13 +46,13 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         $time = microtime(true) - $startTime;
 
         if ($traceId = ($context[TraceableSerializer::DEBUG_TRACE_ID] ?? null)) {
-            $this->dataCollector->collectNormalization($traceId, $this->normalizer::class, $time);
+            $this->dataCollector->collectNormalization($traceId, \get_class($this->normalizer), $time);
         }
 
         return $normalized;
     }
 
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         if (!$this->normalizer instanceof NormalizerInterface) {
             return false;
@@ -74,7 +61,7 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         return $this->normalizer->supportsNormalization($data, $format, $context);
     }
 
-    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!$this->normalizer instanceof DenormalizerInterface) {
             throw new \BadMethodCallException(sprintf('The "%s()" method cannot be called as nested normalizer doesn\'t implements "%s".', __METHOD__, DenormalizerInterface::class));
@@ -85,13 +72,13 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         $time = microtime(true) - $startTime;
 
         if ($traceId = ($context[TraceableSerializer::DEBUG_TRACE_ID] ?? null)) {
-            $this->dataCollector->collectDenormalization($traceId, $this->normalizer::class, $time);
+            $this->dataCollector->collectDenormalization($traceId, \get_class($this->normalizer), $time);
         }
 
         return $denormalized;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         if (!$this->normalizer instanceof DenormalizerInterface) {
             return false;
@@ -100,7 +87,7 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         return $this->normalizer->supportsDenormalization($data, $type, $format, $context);
     }
 
-    public function setSerializer(SerializerInterface $serializer): void
+    public function setSerializer(SerializerInterface $serializer)
     {
         if (!$this->normalizer instanceof SerializerAwareInterface) {
             return;
@@ -109,7 +96,7 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         $this->normalizer->setSerializer($serializer);
     }
 
-    public function setNormalizer(NormalizerInterface $normalizer): void
+    public function setNormalizer(NormalizerInterface $normalizer)
     {
         if (!$this->normalizer instanceof NormalizerAwareInterface) {
             return;
@@ -118,7 +105,7 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         $this->normalizer->setNormalizer($normalizer);
     }
 
-    public function setDenormalizer(DenormalizerInterface $denormalizer): void
+    public function setDenormalizer(DenormalizerInterface $denormalizer)
     {
         if (!$this->normalizer instanceof DenormalizerAwareInterface) {
             return;
@@ -127,13 +114,8 @@ class TraceableNormalizer implements NormalizerInterface, DenormalizerInterface,
         $this->normalizer->setDenormalizer($denormalizer);
     }
 
-    /**
-     * @deprecated since Symfony 6.3, use "getSupportedTypes()" instead
-     */
     public function hasCacheableSupportsMethod(): bool
     {
-        trigger_deprecation('symfony/serializer', '6.3', 'The "%s()" method is deprecated, implement "%s::getSupportedTypes()" instead.', __METHOD__, get_debug_type($this->normalizer));
-
         return $this->normalizer instanceof CacheableSupportsMethodInterface && $this->normalizer->hasCacheableSupportsMethod();
     }
 

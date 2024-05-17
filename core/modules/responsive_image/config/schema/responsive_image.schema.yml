@@ -5,10 +5,10 @@ responsive_image.styles.*:
   label: 'Responsive image style'
   mapping:
     id:
-      type: machine_name
+      type: string
       label: 'Machine-readable name'
     label:
-      type: required_label
+      type: label
       label: 'Label'
     image_style_mappings:
       type: sequence
@@ -67,10 +67,3 @@ field.formatter.settings.responsive_image:
     image_link:
       type: string
       label: 'Link image to'
-    image_loading:
-      type: mapping
-      label: 'Image loading settings'
-      mapping:
-        attribute:
-          type: string
-          label: 'Loading attribute'

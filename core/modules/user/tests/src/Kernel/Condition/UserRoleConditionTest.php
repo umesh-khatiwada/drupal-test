@@ -56,6 +56,7 @@ class UserRoleConditionTest extends KernelTestBase {
   protected function setUp(): void {
     parent::setUp();
 
+    $this->installSchema('system', 'sequences');
     $this->installEntitySchema('user');
 
     $this->manager = $this->container->get('plugin.manager.condition');
@@ -71,7 +72,7 @@ class UserRoleConditionTest extends KernelTestBase {
     ])->save();
 
     // Create new role.
-    $rid = $this->randomMachineName(8);
+    $rid = strtolower($this->randomMachineName(8));
     $label = $this->randomString(8);
     $role = Role::create([
       'id' => $rid,

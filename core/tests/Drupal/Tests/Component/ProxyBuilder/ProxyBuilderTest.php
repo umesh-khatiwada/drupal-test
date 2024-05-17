@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\ProxyBuilder\ProxyBuilderTest.
+ */
 
 namespace Drupal\Tests\Component\ProxyBuilder;
 

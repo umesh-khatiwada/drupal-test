@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Datetime;
 
 use Drupal\Component\Datetime\DateTimePlus;
@@ -188,7 +186,7 @@ class DateTimePlusTest extends TestCase {
    *
    * @param \Drupal\Component\Datetime\DateTimePlus $date
    *   DateTimePlus to test.
-   * @param string|int $input
+   * @param string $input
    *   The original input passed to the test method.
    * @param array $initial
    *   @see testTimestamp()
@@ -197,7 +195,7 @@ class DateTimePlusTest extends TestCase {
    *
    * @internal
    */
-  public function assertDateTimestamp(DateTimePlus $date, string|int $input, array $initial, array $transform): void {
+  public function assertDateTimestamp(DateTimePlus $date, string $input, array $initial, array $transform): void {
     // Check format.
     $value = $date->format($initial['format']);
     $this->assertEquals($initial['expected_date'], $value, sprintf("Test new DateTimePlus(%s, %s): should be %s, found %s.", $input, $initial['timezone'], $initial['expected_date'], $value));
@@ -696,7 +694,7 @@ class DateTimePlusTest extends TestCase {
       ],
       [
         'input1' => DateTimePlus::createFromFormat('U', 3600),
-        'input2' => \DateTime::createFromFormat('U', '0'),
+        'input2' => \DateTime::createFromFormat('U', 0),
         'absolute' => FALSE,
         'expected' => $negative_1_hour,
       ],
@@ -708,7 +706,7 @@ class DateTimePlusTest extends TestCase {
       ],
       [
         'input1' => DateTimePlus::createFromFormat('U', 3600),
-        'input2' => \DateTime::createFromFormat('U', '0'),
+        'input2' => \DateTime::createFromFormat('U', 0),
         'absolute' => TRUE,
         'expected' => $positive_1_hour,
       ],
@@ -825,7 +823,7 @@ class DateTimePlusTest extends TestCase {
         ],
       ],
       [
-        'invalid time string',
+        'lorem ipsum dolor sit amet',
         [
           'The timezone could not be found in the database',
           'Double timezone specification',

@@ -2,6 +2,7 @@
 
 namespace Drupal\KernelTests\Core\Entity;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\entity_test\Entity\EntityTest;
@@ -68,25 +69,25 @@ class EntityApiTest extends EntityKernelTestBase {
       ->getStorage($entity_type);
 
     $entities = array_values($storage->loadByProperties(['name' => 'test']));
-    $this->assertEquals('test', $entities[0]->name->value, "$entity_type: Created and loaded entity");
-    $this->assertEquals('test', $entities[1]->name->value, "$entity_type: Created and loaded entity");
+    $this->assertEquals('test', $entities[0]->name->value, new FormattableMarkup('%entity_type: Created and loaded entity', ['%entity_type' => $entity_type]));
+    $this->assertEquals('test', $entities[1]->name->value, new FormattableMarkup('%entity_type: Created and loaded entity', ['%entity_type' => $entity_type]));
 
     // Test loading a single entity.
     $loaded_entity = $storage->load($entity->id());
-    $this->assertEquals($entity->id(), $loaded_entity->id(), "$entity_type: Loaded a single entity by id.");
+    $this->assertEquals($entity->id(), $loaded_entity->id(), new FormattableMarkup('%entity_type: Loaded a single entity by id.', ['%entity_type' => $entity_type]));
 
     // Test deleting an entity.
     $entities = array_values($storage->loadByProperties(['name' => 'test2']));
     $entities[0]->delete();
     $entities = array_values($storage->loadByProperties(['name' => 'test2']));
-    $this->assertEquals([], $entities, "$entity_type: Entity deleted.");
+    $this->assertEquals([], $entities, new FormattableMarkup('%entity_type: Entity deleted.', ['%entity_type' => $entity_type]));
 
     // Test updating an entity.
     $entities = array_values($storage->loadByProperties(['name' => 'test']));
     $entities[0]->name->value = 'test3';
     $entities[0]->save();
     $entity = $storage->load($entities[0]->id());
-    $this->assertEquals('test3', $entity->name->value, "$entity_type: Entity updated.");
+    $this->assertEquals('test3', $entity->name->value, new FormattableMarkup('%entity_type: Entity updated.', ['%entity_type' => $entity_type]));
 
     // Try deleting multiple test entities by deleting all.
     $entities = $storage->loadMultiple();

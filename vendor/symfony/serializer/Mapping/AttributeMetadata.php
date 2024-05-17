@@ -23,28 +23,32 @@ class AttributeMetadata implements AttributeMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getName()} instead.
      */
-    public string $name;
+    public $name;
 
     /**
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getGroups()} instead.
      */
-    public array $groups = [];
+    public $groups = [];
 
     /**
+     * @var int|null
+     *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getMaxDepth()} instead.
      */
-    public ?int $maxDepth = null;
+    public $maxDepth;
 
     /**
+     * @var string|null
+     *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getSerializedName()} instead.
      */
-    public ?string $serializedName = null;
+    public $serializedName;
 
     /**
      * @internal This property is public in order to reduce the size of the
@@ -54,11 +58,13 @@ class AttributeMetadata implements AttributeMetadataInterface
     public ?PropertyPath $serializedPath = null;
 
     /**
+     * @var bool
+     *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link isIgnored()} instead.
      */
-    public bool $ignore = false;
+    public $ignore = false;
 
     /**
      * @var array[] Normalization contexts per group name ("*" applies to all groups)
@@ -67,7 +73,7 @@ class AttributeMetadata implements AttributeMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getNormalizationContexts()} instead.
      */
-    public array $normalizationContexts = [];
+    public $normalizationContexts = [];
 
     /**
      * @var array[] Denormalization contexts per group name ("*" applies to all groups)
@@ -76,7 +82,7 @@ class AttributeMetadata implements AttributeMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getDenormalizationContexts()} instead.
      */
-    public array $denormalizationContexts = [];
+    public $denormalizationContexts = [];
 
     public function __construct(string $name)
     {
@@ -88,7 +94,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         return $this->name;
     }
 
-    public function addGroup(string $group): void
+    public function addGroup(string $group)
     {
         if (!\in_array($group, $this->groups)) {
             $this->groups[] = $group;
@@ -100,7 +106,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         return $this->groups;
     }
 
-    public function setMaxDepth(?int $maxDepth): void
+    public function setMaxDepth(?int $maxDepth)
     {
         $this->maxDepth = $maxDepth;
     }
@@ -110,7 +116,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         return $this->maxDepth;
     }
 
-    public function setSerializedName(?string $serializedName = null): void
+    public function setSerializedName(string $serializedName = null)
     {
         if (1 > \func_num_args()) {
             trigger_deprecation('symfony/serializer', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
@@ -124,7 +130,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         return $this->serializedName;
     }
 
-    public function setSerializedPath(?PropertyPath $serializedPath = null): void
+    public function setSerializedPath(PropertyPath $serializedPath = null): void
     {
         $this->serializedPath = $serializedPath;
     }
@@ -134,7 +140,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         return $this->serializedPath;
     }
 
-    public function setIgnore(bool $ignore): void
+    public function setIgnore(bool $ignore)
     {
         $this->ignore = $ignore;
     }
@@ -196,7 +202,7 @@ class AttributeMetadata implements AttributeMetadataInterface
         }
     }
 
-    public function merge(AttributeMetadataInterface $attributeMetadata): void
+    public function merge(AttributeMetadataInterface $attributeMetadata)
     {
         foreach ($attributeMetadata->getGroups() as $group) {
             $this->addGroup($group);

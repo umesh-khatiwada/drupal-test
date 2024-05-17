@@ -39,7 +39,6 @@ class StateFileExistsTest extends MigrateDrupalTestBase {
     'ban',
     'block',
     'block_content',
-    // @todo Remove book in https://www.drupal.org/project/drupal/issues/3376101
     'book',
     'comment',
     'config_translation',
@@ -50,7 +49,6 @@ class StateFileExistsTest extends MigrateDrupalTestBase {
     'field',
     'file',
     'filter',
-    // @todo Remove forum in https://www.drupal.org/project/drupal/issues/3261653
     'forum',
     'image',
     'language',

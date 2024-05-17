@@ -28,6 +28,7 @@ class RenderCacheTest extends KernelTestBase {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installConfig(['user']);
+    $this->installSchema('system', ['sequences']);
   }
 
   /**

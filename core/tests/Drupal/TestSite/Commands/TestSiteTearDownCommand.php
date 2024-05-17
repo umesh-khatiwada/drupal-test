@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\TestSite\Commands;
 
 use Drupal\Core\Database\Database;
@@ -40,8 +38,6 @@ class TestSiteTearDownCommand extends Command {
    * {@inheritdoc}
    */
   protected function execute(InputInterface $input, OutputInterface $output): int {
-    $root = dirname(__DIR__, 5);
-    chdir($root);
     $db_prefix = $input->getArgument('db-prefix');
     // Validate the db_prefix argument.
     try {

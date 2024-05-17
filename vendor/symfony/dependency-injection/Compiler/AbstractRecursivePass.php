@@ -31,15 +31,11 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
      */
     protected $container;
     protected $currentId;
-    protected bool $skipScalars = false;
 
     private bool $processExpressions = false;
     private ExpressionLanguage $expressionLanguage;
     private bool $inExpression = false;
 
-    /**
-     * @return void
-     */
     public function process(ContainerBuilder $container)
     {
         $this->container = $container;
@@ -51,9 +47,6 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
         }
     }
 
-    /**
-     * @return void
-     */
     protected function enableExpressionProcessing()
     {
         $this->processExpressions = true;
@@ -78,11 +71,8 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
-                if ((!$v || \is_scalar($v)) && $this->skipScalars) {
-                    continue;
-                }
                 if ($isRoot) {
-                    if ($v instanceof Definition && $v->hasTag('container.excluded')) {
+                    if ($v->hasTag('container.excluded')) {
                         continue;
                     }
                     $this->currentId = $k;

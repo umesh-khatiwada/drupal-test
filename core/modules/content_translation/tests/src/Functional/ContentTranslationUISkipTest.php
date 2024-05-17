@@ -7,8 +7,6 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Tests the content translation UI check skip.
  *
- * @covers \Drupal\language\Form\ContentLanguageSettingsForm
- * @covers ::_content_translation_form_language_content_settings_form_alter
  * @group content_translation
  */
 class ContentTranslationUISkipTest extends BrowserTestBase {

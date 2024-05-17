@@ -12,8 +12,6 @@ use Drupal\Core\Extension\Exception\ObsoleteExtensionException;
 use Drupal\Core\Installer\InstallerKernel;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Update\UpdateHookRegistry;
-use Drupal\Core\Utility\Error;
-use Psr\Log\LoggerInterface;
 
 /**
  * Default implementation of the module installer.
@@ -83,22 +81,16 @@ class ModuleInstaller implements ModuleInstallerInterface {
    *   The database connection.
    * @param \Drupal\Core\Update\UpdateHookRegistry $update_registry
    *   The update registry service.
-   * @param \Psr\Log\LoggerInterface|null $logger
-   *   The logger.
    *
    * @see \Drupal\Core\DrupalKernel
    * @see \Drupal\Core\CoreServiceProvider
    */
-  public function __construct($root, ModuleHandlerInterface $module_handler, DrupalKernelInterface $kernel, Connection $connection, UpdateHookRegistry $update_registry, protected ?LoggerInterface $logger = NULL) {
+  public function __construct($root, ModuleHandlerInterface $module_handler, DrupalKernelInterface $kernel, Connection $connection, UpdateHookRegistry $update_registry) {
     $this->root = $root;
     $this->moduleHandler = $module_handler;
     $this->kernel = $kernel;
     $this->connection = $connection;
     $this->updateRegistry = $update_registry;
-    if ($this->logger === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . ' without the $logger argument is deprecated in drupal:10.1.0 and it will be required in drupal:11.0.0. See https://www.drupal.org/node/2932520', E_USER_DEPRECATED);
-      $this->logger = \Drupal::service('logger.channel.system');
-    }
   }
 
   /**
@@ -126,7 +118,6 @@ class ModuleInstaller implements ModuleInstallerInterface {
         throw new ObsoleteExtensionException("Unable to install modules: module '$module' is obsolete.");
       }
       if ($module_data[$module]->info[ExtensionLifecycle::LIFECYCLE_IDENTIFIER] === ExtensionLifecycle::DEPRECATED) {
-        // phpcs:ignore Drupal.Semantics.FunctionTriggerError
         @trigger_error("The module '$module' is deprecated. See " . $module_data[$module]->info['lifecycle_link'], E_USER_DEPRECATED);
       }
     }
@@ -189,12 +180,6 @@ class ModuleInstaller implements ModuleInstallerInterface {
         // Throw an exception if the module name is too long.
         if (strlen($module) > DRUPAL_EXTENSION_NAME_MAX_LENGTH) {
           throw new ExtensionNameLengthException("Module name '$module' is over the maximum allowed length of " . DRUPAL_EXTENSION_NAME_MAX_LENGTH . ' characters');
-        }
-
-        // Throw an exception if a theme with the same name is enabled.
-        $installed_themes = $extension_config->get('theme') ?: [];
-        if (isset($installed_themes[$module])) {
-          throw new ExtensionNameReservedException("Module name $module is already in use by an installed theme.");
         }
 
         // Load a new config object for each iteration, otherwise changes made
@@ -317,7 +302,7 @@ class ModuleInstaller implements ModuleInstallerInterface {
                   $update_manager->installFieldStorageDefinition($storage_definition->getName(), $entity_type->id(), $module, $storage_definition);
                 }
                 catch (EntityStorageException $e) {
-                  Error::logException($this->logger, $e, 'An error occurred while notifying the creation of the @name field storage definition: "@message" in %function (line %line of %file).', ['@name' => $storage_definition->getName()]);
+                  watchdog_exception('system', $e, 'An error occurred while notifying the creation of the @name field storage definition: "@message" in %function (line %line of %file).', ['@name' => $storage_definition->getName(), '@message' => $e->getMessage()]);
                 }
               }
             }
@@ -352,7 +337,7 @@ class ModuleInstaller implements ModuleInstallerInterface {
         \Drupal::service('stream_wrapper_manager')->register();
 
         // Update the theme registry to include it.
-        \Drupal::service('theme.registry')->reset();
+        drupal_theme_rebuild();
 
         // Modules can alter theme info, so refresh theme data.
         // @todo ThemeHandler cannot be injected into ModuleHandler, since that
@@ -532,7 +517,7 @@ class ModuleInstaller implements ModuleInstallerInterface {
       \Drupal::getContainer()->get('plugin.cache_clearer')->clearCachedDefinitions();
 
       // Update the theme registry to remove the newly uninstalled module.
-      \Drupal::service('theme.registry')->reset();
+      drupal_theme_rebuild();
 
       // Modules can alter theme info, so refresh theme data.
       // @todo ThemeHandler cannot be injected into ModuleHandler, since that

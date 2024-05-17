@@ -97,7 +97,7 @@ abstract class MediaResourceTestBase extends EntityResourceTestBase {
     if (!MediaType::load('camelids')) {
       // Create a "Camelids" media type.
       $media_type = MediaType::create([
-        'label' => 'Camelids',
+        'name' => 'Camelids',
         'id' => 'camelids',
         'description' => 'Camelids are large, strictly herbivorous animals with slender necks and long legs.',
         'source' => 'file',
@@ -245,6 +245,7 @@ abstract class MediaResourceTestBase extends EntityResourceTestBase {
           'url' => base_path() . 'user/' . $author->id(),
         ],
       ],
+      'revision_log_message' => [],
       'revision_translation_affected' => [
         [
           'value' => TRUE,
@@ -265,7 +266,7 @@ abstract class MediaResourceTestBase extends EntityResourceTestBase {
       ],
       'name' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
       'field_media_file' => [
@@ -374,9 +375,6 @@ abstract class MediaResourceTestBase extends EntityResourceTestBase {
     $actual = $this->serializer->decode((string) $response->getBody(), static::$format);
     static::recursiveKSort($actual);
     $this->assertSame($expected, $actual);
-
-    // Make sure the role save below properly invalidates cache tags.
-    $this->refreshVariables();
 
     // To still run the complete test coverage for POSTing a Media entity, we
     // must revoke the additional permissions that we granted.

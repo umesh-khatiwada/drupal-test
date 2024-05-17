@@ -4,7 +4,6 @@ services:
     arguments: ['@database']
     tags:
       - { name: backend_overridable }
-  Drupal\ban\BanIpManagerInterface: '@ban.ip_manager'
   ban.middleware:
     class: Drupal\ban\BanMiddleware
     arguments: ['@ban.ip_manager']

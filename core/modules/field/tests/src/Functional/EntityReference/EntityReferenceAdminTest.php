@@ -4,7 +4,6 @@ namespace Drupal\Tests\field\Functional\EntityReference;
 
 use Behat\Mink\Element\NodeElement;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -58,7 +57,7 @@ class EntityReferenceAdminTest extends BrowserTestBase {
     $this->drupalPlaceBlock('system_breadcrumb_block');
 
     // Create a content type, with underscores.
-    $type_name = $this->randomMachineName(8) . '_test';
+    $type_name = strtolower($this->randomMachineName(8)) . '_test';
     $type = $this->drupalCreateContentType(['name' => $type_name, 'type' => $type_name]);
     $this->type = $type->id();
 
@@ -114,13 +113,19 @@ class EntityReferenceAdminTest extends BrowserTestBase {
 
     // Create a test entity reference field.
     $field_name = 'test_entity_ref_field';
-    $this->fieldUIAddNewField($bundle_path, $field_name, 'Test Entity Reference Field', 'field_ui:entity_reference:node', [], [], FALSE);
+    $edit = [
+      'new_storage_type' => 'field_ui:entity_reference:node',
+      'label' => 'Test Entity Reference Field',
+      'field_name' => $field_name,
+    ];
+    $this->drupalGet($bundle_path . '/fields/add-field');
+    $this->submitForm($edit, 'Save and continue');
 
     // Set to unlimited.
     $edit = [
-      'field_storage[subform][cardinality]' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED,
+      'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED,
     ];
-    $this->submitForm($edit, 'Update settings');
+    $this->submitForm($edit, 'Save field settings');
 
     // Add the view to the test field.
     $edit = [
@@ -132,8 +137,6 @@ class EntityReferenceAdminTest extends BrowserTestBase {
       'settings[handler_settings][view][view_and_display]' => 'node_test_view:entity_reference_1',
     ];
     $this->submitForm($edit, 'Save settings');
-    $this->assertSession()->statusMessageContains("Saved Test Entity Reference Field configuration.", MessengerInterface::TYPE_STATUS);
-    $this->assertFieldExistsOnOverview('Test Entity Reference Field');
 
     // Create nodes.
     $node1 = Node::create([
@@ -204,26 +207,12 @@ class EntityReferenceAdminTest extends BrowserTestBase {
     Vocabulary::create(['vid' => 'tags', 'name' => 'tags'])->save();
     $taxonomy_term_field_name = $this->createEntityReferenceField('taxonomy_term', ['tags']);
     $field_path = 'node.' . $this->type . '.field_' . $taxonomy_term_field_name;
-    $this->drupalGet($bundle_path . '/fields/' . $field_path);
+    $this->drupalGet($bundle_path . '/fields/' . $field_path . '/storage');
     $edit = [
-      'field_storage[subform][cardinality]' => -1,
+      'cardinality' => -1,
     ];
-    $this->submitForm($edit, 'Update settings');
-
-    // Assert that the target bundle handler setting is initially set.
-    $this->assertSession()->checkboxChecked('settings[handler_settings][target_bundles][tags]');
-    // Change the handler to 'views'.
-    $this->submitForm([
-      'settings[handler]' => 'views',
-    ], 'Change handler');
-    $this->assertSession()->fieldValueEquals('settings[handler]', 'views');
-    // Change handler back to 'default'.
-    $this->submitForm([
-      'settings[handler]' => 'default:taxonomy_term',
-    ], 'Change handler');
-    // Assert that changing the handler resets the handler settings.
-    $this->assertSession()->checkboxNotChecked('settings[handler_settings][target_bundles][tags]');
-
+    $this->submitForm($edit, 'Save field settings');
+    $this->drupalGet($bundle_path . '/fields/' . $field_path);
     $term_name = $this->randomString();
     $result = \Drupal::entityQuery('taxonomy_term')
       ->condition('name', $term_name)
@@ -232,20 +221,16 @@ class EntityReferenceAdminTest extends BrowserTestBase {
       ->execute();
     $this->assertCount(0, $result, "No taxonomy terms exist with the name '$term_name'.");
     $edit = [
-      'settings[handler_settings][target_bundles][tags]' => TRUE,
       // This must be set before new entities will be auto-created.
       'settings[handler_settings][auto_create]' => 1,
     ];
     $this->submitForm($edit, 'Save settings');
-    $this->assertFieldExistsOnOverview($taxonomy_term_field_name);
     $this->drupalGet($bundle_path . '/fields/' . $field_path);
     $edit = [
-      'set_default_value' => '1',
       // A term that doesn't yet exist.
       'default_value_input[field_' . $taxonomy_term_field_name . '][0][target_id]' => $term_name,
     ];
     $this->submitForm($edit, 'Save settings');
-    $this->assertFieldExistsOnOverview($taxonomy_term_field_name);
     // The term should now exist.
     $result = \Drupal::entityQuery('taxonomy_term')
       ->condition('name', $term_name)
@@ -323,7 +308,7 @@ class EntityReferenceAdminTest extends BrowserTestBase {
     /** @var \Drupal\taxonomy\Entity\Vocabulary[] $vocabularies */
     $vocabularies = [];
     for ($i = 0; $i < 2; $i++) {
-      $vid = $this->randomMachineName();
+      $vid = mb_strtolower($this->randomMachineName());
       $vocabularies[$i] = Vocabulary::create([
         'name' => $this->randomString(),
         'vid' => $vid,
@@ -394,7 +379,7 @@ class EntityReferenceAdminTest extends BrowserTestBase {
     $bundle_path = 'admin/structure/types/manage/' . $this->type;
 
     // Generate a random field name, must be only lowercase characters.
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
 
     $storage_edit = $field_edit = [];
     $storage_edit['settings[target_type]'] = $target_type;
@@ -402,7 +387,7 @@ class EntityReferenceAdminTest extends BrowserTestBase {
       $field_edit['settings[handler_settings][target_bundles][' . $bundle . ']'] = TRUE;
     }
 
-    $this->fieldUIAddNewField($bundle_path, $field_name, $field_name, 'entity_reference', $storage_edit, $field_edit);
+    $this->fieldUIAddNewField($bundle_path, $field_name, NULL, 'entity_reference', $storage_edit, $field_edit);
 
     // Returns the generated field name.
     return $field_name;

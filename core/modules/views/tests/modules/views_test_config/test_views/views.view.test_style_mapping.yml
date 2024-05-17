@@ -4,7 +4,7 @@ dependencies:
   module:
     - views_test_data
 id: test_style_mapping
-label: test_style_mapping
+label: ''
 module: views
 description: ''
 tag: ''

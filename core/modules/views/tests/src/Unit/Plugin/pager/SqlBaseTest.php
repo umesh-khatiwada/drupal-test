@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\views\Unit\Plugin\pager;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -37,8 +35,6 @@ class SqlBaseTest extends UnitTestCase {
   protected $display;
 
   protected function setUp(): void {
-    parent::setUp();
-
     $this->pager = $this->getMockBuilder('Drupal\views\Plugin\views\pager\SqlBase')
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();

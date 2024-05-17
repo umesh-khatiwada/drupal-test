@@ -5,7 +5,7 @@ dependencies:
     - node
     - user
 id: test_display
-label: test_display
+label: ''
 module: views
 description: ''
 tag: ''

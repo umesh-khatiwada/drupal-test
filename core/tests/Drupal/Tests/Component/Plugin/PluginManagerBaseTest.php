@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Plugin;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -38,7 +36,9 @@ class PluginManagerBaseTest extends TestCase {
    * Generates a mocked FactoryInterface object with known properties.
    */
   public function getMockFactoryInterface($expects_count) {
-    $mock_factory = $this->createMock('Drupal\Component\Plugin\Factory\FactoryInterface');
+    $mock_factory = $this->getMockBuilder('Drupal\Component\Plugin\Factory\FactoryInterface')
+      ->onlyMethods(['createInstance'])
+      ->getMockForAbstractClass();
     $mock_factory->expects($this->exactly($expects_count))
       ->method('createInstance')
       ->willReturnCallback([$this, 'createInstanceCallback']);
@@ -56,6 +56,7 @@ class PluginManagerBaseTest extends TestCase {
     // PluginManagerBase::createInstance() looks for a factory object and then
     // calls createInstance() on it. So we have to mock a factory object.
     $factory_ref = new \ReflectionProperty($manager, 'factory');
+    $factory_ref->setAccessible(TRUE);
     $factory_ref->setValue($manager, $this->getMockFactoryInterface(1));
 
     // Finally the test.
@@ -76,6 +77,7 @@ class PluginManagerBaseTest extends TestCase {
     $manager = new StubFallbackPluginManager();
     // Put our stubbed factory on the base object.
     $factory_ref = new \ReflectionProperty($manager, 'factory');
+    $factory_ref->setAccessible(TRUE);
 
     // Set up the configuration array.
     $configuration_array = ['config' => 'something'];

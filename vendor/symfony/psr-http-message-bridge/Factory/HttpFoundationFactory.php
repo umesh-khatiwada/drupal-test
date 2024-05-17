@@ -23,19 +23,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
+ * {@inheritdoc}
+ *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
 class HttpFoundationFactory implements HttpFoundationFactoryInterface
 {
     /**
-     * @param int $responseBufferMaxLength The maximum output buffering size for each iteration when sending the response
+     * @var int The maximum output buffering size for each iteration when sending the response
      */
-    public function __construct(
-        private readonly int $responseBufferMaxLength = 16372,
-    ) {
+    private $responseBufferMaxLength;
+
+    public function __construct(int $responseBufferMaxLength = 16372)
+    {
+        $this->responseBufferMaxLength = $responseBufferMaxLength;
     }
 
-    public function createRequest(ServerRequestInterface $psrRequest, bool $streamed = false): Request
+    /**
+     * {@inheritdoc}
+     */
+    public function createRequest(ServerRequestInterface $psrRequest, bool $streamed = false)
     {
         $server = [];
         $uri = $psrRequest->getUri();
@@ -104,13 +111,18 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
 
     /**
      * Gets a temporary file path.
+     *
+     * @return string
      */
-    protected function getTemporaryPath(): string
+    protected function getTemporaryPath()
     {
         return tempnam(sys_get_temp_dir(), uniqid('symfony', true));
     }
 
-    public function createResponse(ResponseInterface $psrResponse, bool $streamed = false): Response
+    /**
+     * {@inheritdoc}
+     */
+    public function createResponse(ResponseInterface $psrResponse, bool $streamed = false)
     {
         $cookies = $psrResponse->getHeader('Set-Cookie');
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
@@ -205,13 +217,13 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         return new Cookie(
             $cookieName,
             $cookieValue,
-            $cookieExpire ?? 0,
-            $cookiePath ?? '/',
-            $cookieDomain ?? null,
+            isset($cookieExpire) ? $cookieExpire : 0,
+            isset($cookiePath) ? $cookiePath : '/',
+            isset($cookieDomain) ? $cookieDomain : null,
             isset($cookieSecure),
             isset($cookieHttpOnly),
             true,
-            $samesite ?? null
+            isset($samesite) ? $samesite : null
         );
     }
 

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\contact\Unit;
 
 use Drupal\contact\MailHandler;
@@ -137,7 +135,7 @@ class MailHandlerTest extends UnitTestCase {
    */
   public function testSendMailMessages(MessageInterface $message, AccountInterface $sender, $results) {
     $this->logger->expects($this->once())
-      ->method('info');
+      ->method('notice');
     $this->mailManager->expects($this->any())
       ->method('mail')
       ->willReturnCallback(

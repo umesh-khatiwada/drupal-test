@@ -308,9 +308,7 @@ class AreaDisplayLinkTest extends ViewsKernelTestBase {
   protected function assertFormOptions(ViewExecutable $view, string $display_link_id): void {
     $form = [];
     $form_state = new FormState();
-    /** @var \Drupal\views\Plugin\views\area\DisplayLink $display_handler */
-    $display_handler = $view->display_handler->getHandler('header', $display_link_id);
-    $display_handler->buildOptionsForm($form, $form_state);
+    $view->display_handler->getHandler('header', $display_link_id)->buildOptionsForm($form, $form_state);
     $this->assertTrue(isset($form['display_id']['#options']['page_1']));
     $this->assertTrue(isset($form['display_id']['#options']['page_2']));
     $this->assertFalse(isset($form['display_id']['#options']['block_1']));
@@ -417,9 +415,9 @@ class AreaDisplayLinkTest extends ViewsKernelTestBase {
 
     $this->assertCount(0, $errors);
     $this->assertCount(3, $messages);
-    $this->assertSame('<em class="placeholder">Block 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Block 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[0]->__toString());
-    $this->assertSame('<em class="placeholder">Page 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 2</em> display which uses different settings than the <em class="placeholder">Page 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[1]->__toString());
-    $this->assertSame('<em class="placeholder">Page 2</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Page 2</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[2]->__toString());
+    $this->assertSame('<em class="placeholder">Block 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Block 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[0]->__toString());
+    $this->assertSame('<em class="placeholder">Page 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 2</em> display which uses different settings than the <em class="placeholder">Page 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[1]->__toString());
+    $this->assertSame('<em class="placeholder">Page 2</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Page 2</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[2]->__toString());
 
     $messenger->deleteAll();
 
@@ -432,10 +430,10 @@ class AreaDisplayLinkTest extends ViewsKernelTestBase {
 
     $this->assertCount(0, $errors);
     $this->assertCount(4, $messages);
-    $this->assertSame('<em class="placeholder">Default</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Default</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[0]->__toString());
-    $this->assertSame('<em class="placeholder">Block 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Block 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[1]->__toString());
-    $this->assertSame('<em class="placeholder">Page 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 2</em> display which uses different settings than the <em class="placeholder">Page 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[2]->__toString());
-    $this->assertSame('<em class="placeholder">Page 2</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Page 2</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, check that the settings are the same.', $messages[3]->__toString());
+    $this->assertSame('<em class="placeholder">Default</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Default</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[0]->__toString());
+    $this->assertSame('<em class="placeholder">Block 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Block 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[1]->__toString());
+    $this->assertSame('<em class="placeholder">Page 1</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 2</em> display which uses different settings than the <em class="placeholder">Page 1</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[2]->__toString());
+    $this->assertSame('<em class="placeholder">Page 2</em>: The link in the <em class="placeholder">header</em> area points to the <em class="placeholder">Page 1</em> display which uses different settings than the <em class="placeholder">Page 2</em> display for: <em class="placeholder">' . $unequal_options_text . '</em>. To make sure users see the exact same result when clicking the link, please check that the settings are the same.', $messages[3]->__toString());
 
     $messenger->deleteAll();
     $this->config('views.settings')->set('ui.show.default_display', FALSE)->save();

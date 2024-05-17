@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Config\Entity;
 
 use Drupal\Tests\UnitTestCase;
@@ -19,6 +17,7 @@ class EntityDisplayBaseTest extends UnitTestCase {
   public function testGetTargetEntityTypeId() {
     $mock = $this->getMockForAbstractClass('\Drupal\Core\Entity\EntityDisplayBase', [], '', FALSE);
     $reflection = new \ReflectionProperty($mock, 'targetEntityType');
+    $reflection->setAccessible(TRUE);
     $reflection->setValue($mock, 'test');
     $this->assertEquals('test', $mock->getTargetEntityTypeId());
   }
@@ -29,6 +28,7 @@ class EntityDisplayBaseTest extends UnitTestCase {
   public function testGetMode() {
     $mock = $this->getMockForAbstractClass('\Drupal\Core\Entity\EntityDisplayBase', [], '', FALSE);
     $reflection = new \ReflectionProperty($mock, 'mode');
+    $reflection->setAccessible(TRUE);
     $reflection->setValue($mock, 'test');
     $this->assertEquals('test', $mock->getMode());
   }
@@ -39,6 +39,7 @@ class EntityDisplayBaseTest extends UnitTestCase {
   public function testGetOriginalMode() {
     $mock = $this->getMockForAbstractClass('\Drupal\Core\Entity\EntityDisplayBase', [], '', FALSE);
     $reflection = new \ReflectionProperty($mock, 'originalMode');
+    $reflection->setAccessible(TRUE);
     $reflection->setValue($mock, 'test');
     $this->assertEquals('test', $mock->getOriginalMode());
   }
@@ -49,6 +50,7 @@ class EntityDisplayBaseTest extends UnitTestCase {
   public function testGetTargetBundle() {
     $mock = $this->getMockForAbstractClass('\Drupal\Core\Entity\EntityDisplayBase', [], '', FALSE);
     $reflection = new \ReflectionProperty($mock, 'bundle');
+    $reflection->setAccessible(TRUE);
     $reflection->setValue($mock, 'test');
     $this->assertEquals('test', $mock->getTargetBundle());
   }
@@ -59,6 +61,7 @@ class EntityDisplayBaseTest extends UnitTestCase {
   public function testSetTargetBundle() {
     $mock = $this->getMockForAbstractClass('\Drupal\Core\Entity\EntityDisplayBase', [], '', FALSE);
     $reflection = new \ReflectionProperty($mock, 'bundle');
+    $reflection->setAccessible(TRUE);
     $mock->setTargetBundle('test');
     $this->assertEquals('test', $reflection->getValue($mock));
   }

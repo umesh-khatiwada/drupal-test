@@ -7,8 +7,6 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Test enabling content translation module.
  *
- * @covers \Drupal\language\Form\ContentLanguageSettingsForm
- * @covers ::_content_translation_form_language_content_settings_form_alter
  * @group content_translation
  */
 class ContentTranslationEnableTest extends BrowserTestBase {
@@ -70,7 +68,7 @@ class ContentTranslationEnableTest extends BrowserTestBase {
       'type' => 'foo',
     ];
     $this->drupalGet('admin/structure/types/add');
-    $this->submitForm($edit, 'Save');
+    $this->submitForm($edit, 'Save content type');
     $this->drupalGet('admin/config/regional/content-language');
     $this->assertSession()->responseContains('entity_types[node]');
   }

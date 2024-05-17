@@ -23,6 +23,7 @@ class MigrateBlockTest extends MigrateDrupal6TestBase {
     'block_content',
     'taxonomy',
     'node',
+    'book',
     'forum',
     'path_alias',
     'statistics',
@@ -206,9 +207,9 @@ class MigrateBlockTest extends MigrateDrupal6TestBase {
 
     // Check book block.
     $settings = [
-      'id' => 'broken',
+      'id' => 'book_navigation',
       'label' => '',
-      'provider' => 'core',
+      'provider' => 'book',
       'label_display' => '0',
       'block_mode' => 'book pages',
     ];
@@ -251,7 +252,7 @@ class MigrateBlockTest extends MigrateDrupal6TestBase {
     ];
     $this->assertEntity('statistics', [], 'sidebar', 'olivero', 0, $settings);
 
-    // Check content blocks.
+    // Check custom blocks.
     $visibility = [
       'request_path' => [
         'id' => 'request_path',
@@ -301,17 +302,14 @@ class MigrateBlockTest extends MigrateDrupal6TestBase {
     ];
     $this->assertEntity('block_2', [], 'right', 'test_theme', -7, $settings);
 
-    // Content block with php code is not migrated.
+    // Custom block with php code is not migrated.
     $block = Block::load('block_3');
     $this->assertNotInstanceOf(Block::class, $block);
 
     // Check migrate messages.
     $messages = iterator_to_array($this->getMigration('d6_block')->getIdMap()->getMessages());
-    $this->assertCount(4, $messages);
-    $this->assertSame($messages[0]->message, 'Schema errors for block.block.block_1 with the following errors: 0 [dependencies.theme.0] Theme &#039;bluemarine&#039; is not installed.');
-    $this->assertSame($messages[1]->message, "d6_block:visibility: The block with bid '13' from module 'block' will have no PHP or request_path visibility configuration.");
-    $this->assertSame($messages[2]->message, 'Schema errors for block.block.aggregator with the following errors: block.block.aggregator:settings.block_count missing schema, block.block.aggregator:settings.feed missing schema, 0 [settings.block_count] &#039;block_count&#039; is not a supported key., 1 [settings.feed] &#039;feed&#039; is not a supported key.');
-    $this->assertSame($messages[3]->message, 'Schema errors for block.block.book with the following errors: block.block.book:settings.block_mode missing schema, 0 [settings.block_mode] &#039;block_mode&#039; is not a supported key.');
+    $this->assertCount(2, $messages);
+    $this->assertSame($messages[1]->message, 'Schema errors for block.block.aggregator with the following errors: block.block.aggregator:settings.block_count missing schema, block.block.aggregator:settings.feed missing schema');
   }
 
 }

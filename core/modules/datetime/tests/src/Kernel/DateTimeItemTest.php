@@ -316,9 +316,9 @@ class DateTimeItemTest extends FieldKernelTestBase {
   /**
    * Tests the constraint validations for fields with date only.
    *
-   * @dataProvider dateOnlyValidationProvider
+   * @dataProvider dateonlyValidationProvider
    */
-  public function testDateOnlyValidation($value) {
+  public function testDateonlyValidation($value) {
     $this->expectException(AssertionFailedError::class);
 
     $this->fieldStorage->setSetting('datetime_type', DateTimeItem::DATETIME_TYPE_DATE);
@@ -332,7 +332,7 @@ class DateTimeItemTest extends FieldKernelTestBase {
   /**
    * Provider for testDatetimeValidation().
    */
-  public function dateOnlyValidationProvider() {
+  public function dateonlyValidationProvider() {
     return [
       // Valid date strings, but unsupported by DateTimeItem.
       ['Thu, 03 Nov 2014'],

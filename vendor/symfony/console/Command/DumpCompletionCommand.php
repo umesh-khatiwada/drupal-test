@@ -39,7 +39,7 @@ final class DumpCompletionCommand extends Command
 
     private array $supportedShells;
 
-    protected function configure(): void
+    protected function configure()
     {
         $fullCommand = $_SERVER['PHP_SELF'];
         $commandName = basename($fullCommand);

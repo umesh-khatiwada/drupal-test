@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Datetime;
 
 use Drupal\Component\Datetime\Time;
@@ -85,9 +83,7 @@ class TimeTest extends TestCase {
    * @covers ::getRequestTime
    */
   public function testGetRequestTimeNoRequest() {
-    // With no request, and no global variable, we expect to get the int part
-    // of the microtime.
-    $expected = 1234567;
+    $expected = 12345678;
     unset($_SERVER['REQUEST_TIME']);
     $this->assertEquals($expected, $this->time->getRequestTime());
     $_SERVER['REQUEST_TIME'] = 23456789;
@@ -132,7 +128,7 @@ namespace Drupal\Component\Datetime;
 /**
  * Shadow time() system call.
  *
- * @return int
+ * @returns int
  */
 function time() {
   return 12345678;
@@ -141,8 +137,8 @@ function time() {
 /**
  * Shadow microtime system call.
  *
- * @return float
+ * @returns float
  */
-function microtime(bool $as_float = FALSE) {
+function microtime() {
   return 1234567.89;
 }

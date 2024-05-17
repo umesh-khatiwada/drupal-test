@@ -35,7 +35,6 @@ class Config {
     'instaclick/php-webdriver' => ['doc', 'test'],
     'justinrainbow/json-schema' => ['demo'],
     'masterminds/html5' => ['bin', 'test'],
-    'mck89/peast' => ['doc'],
     'mikey179/vfsstream' => ['src/test'],
     'myclabs/deep-copy' => ['doc'],
     'pear/archive_tar' => ['docs', 'tests'],

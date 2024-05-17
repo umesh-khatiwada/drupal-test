@@ -40,7 +40,6 @@ class NodeAccessRebuildNodeGrantsTest extends NodeTestBase {
       'administer site configuration',
       'access administration pages',
       'access site reports',
-      'administer nodes',
     ]);
     $this->drupalLogin($this->adminUser);
 

@@ -1,13 +1,13 @@
 name: Statistics
 type: module
-description: 'Logs how many times content is viewed.'
+description: 'Logs content statistics for your site.'
 package: Core
 # version: VERSION
 configure: statistics.settings
 dependencies:
   - drupal:node
 
-# Information added by Drupal.org packaging script on 2024-04-03
-version: '10.2.5'
+# Information added by Drupal.org packaging script on 2023-09-20
+version: '10.0.11'
 project: 'drupal'
-datestamp: 1712131089
+datestamp: 1695229013

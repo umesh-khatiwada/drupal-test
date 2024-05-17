@@ -88,16 +88,11 @@
 }
 
 .form-element:focus {
-  box-shadow:
-    0 0 0 2px var(--color-white),
-    0 0 0 5px var(--color-focus);
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus);
 }
 
 .form-element:hover:focus {
-  box-shadow:
-    0 0 0 2px var(--color-white),
-    0 0 0 5px var(--color-focus),
-    inset 0 0 0 var(--input-border-size) var(--input--hover-border-color);
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus), inset 0 0 0 var(--input-border-size) var(--input--hover-border-color);
 }
 
 .form-element.error {
@@ -110,9 +105,7 @@
 }
 
 .form-element.error:hover:focus {
-  box-shadow:
-    0 0 0 2px var(--color-white),
-    0 0 0 5px var(--color-focus);
+  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus);
 }
 
 .form-element--type-textarea.error + .cke {
@@ -137,12 +130,13 @@
   .form-element {
     float: none;
     width: 100%;
-    margin-block-start: 0.75rem;
-    margin-inline: 0;
+    margin-top: 0.75rem;
+    margin-right: 0;
+    margin-left: 0;
   }
   .form-element:first-child,
   .form-item__label + .form-element {
-    margin-block-start: 0;
+    margin-top: 0;
   }
 }
 

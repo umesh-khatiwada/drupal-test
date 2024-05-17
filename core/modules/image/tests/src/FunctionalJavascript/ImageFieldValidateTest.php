@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\image\FunctionalJavascript;
 
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 
 /**
- * Tests validation functions such as min/max dimensions.
+ * Tests validation functions such as min/max resolution.
  *
  * @group image
  */
@@ -23,7 +21,7 @@ class ImageFieldValidateTest extends ImageFieldTestBase {
    * Tests the validation message is displayed only once for ajax uploads.
    */
   public function testAJAXValidationMessage() {
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $this->createImageField($field_name, 'article', ['cardinality' => -1]);
 
     $this->drupalGet('node/add/article');

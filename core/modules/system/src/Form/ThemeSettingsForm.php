@@ -2,7 +2,6 @@
 
 namespace Drupal\system\Form;
 
-use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\FileSystemInterface;
@@ -73,8 +72,6 @@ class ThemeSettingsForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
-   *   The typed config manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler instance to use.
    * @param \Drupal\Core\Extension\ThemeHandlerInterface $theme_handler
@@ -86,8 +83,8 @@ class ThemeSettingsForm extends ConfigFormBase {
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The file system.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, ModuleHandlerInterface $module_handler, ThemeHandlerInterface $theme_handler, $mime_type_guesser, ThemeManagerInterface $theme_manager, FileSystemInterface $file_system) {
-    parent::__construct($config_factory, $typedConfigManager);
+  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, ThemeHandlerInterface $theme_handler, $mime_type_guesser, ThemeManagerInterface $theme_manager, FileSystemInterface $file_system) {
+    parent::__construct($config_factory);
 
     $this->moduleHandler = $module_handler;
     $this->themeHandler = $theme_handler;
@@ -102,7 +99,6 @@ class ThemeSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('config.typed'),
       $container->get('module_handler'),
       $container->get('theme_handler'),
       $container->get('file.mime_type.guesser'),
@@ -240,7 +236,7 @@ class ThemeSettingsForm extends ConfigFormBase {
         '#title' => $this->t('Upload logo image'),
         '#description' => $this->t("If you don't have direct file access to the server, use this field to upload your logo."),
         '#upload_validators' => [
-          'FileIsImage' => [],
+          'file_validate_is_image' => [],
         ],
       ];
     }
@@ -283,8 +279,8 @@ class ThemeSettingsForm extends ConfigFormBase {
         '#title' => $this->t('Upload favicon image'),
         '#description' => $this->t("If you don't have direct file access to the server, use this field to upload your shortcut icon."),
         '#upload_validators' => [
-          'FileExtension' => [
-            'extensions' => 'ico png gif jpg jpeg apng svg webp',
+          'file_validate_extensions' => [
+            'ico png gif jpg jpeg apng svg',
           ],
         ],
       ];

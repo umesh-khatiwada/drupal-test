@@ -23,10 +23,6 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 /**
  * @author Robin Chalas <robin.chalas@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
- *
- * @template-covariant T of mixed
- *
- * @implements ServiceProviderInterface<T>
  */
 class ServiceLocator implements ServiceProviderInterface, \Countable
 {
@@ -60,9 +56,6 @@ class ServiceLocator implements ServiceProviderInterface, \Countable
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function __invoke(string $id)
     {
         return isset($this->factories[$id]) ? $this->get($id) : null;
@@ -94,7 +87,7 @@ class ServiceLocator implements ServiceProviderInterface, \Countable
         }
 
         $class = debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS, 4);
-        $class = isset($class[3]['object']) ? $class[3]['object']::class : null;
+        $class = isset($class[3]['object']) ? \get_class($class[3]['object']) : null;
         $externalId = $this->externalId ?: $class;
 
         $msg = [];
@@ -138,7 +131,7 @@ class ServiceLocator implements ServiceProviderInterface, \Countable
         return new ServiceCircularReferenceException($id, $path);
     }
 
-    private function formatAlternatives(?array $alternatives = null, string $separator = 'and'): string
+    private function formatAlternatives(array $alternatives = null, string $separator = 'and'): string
     {
         $format = '"%s"%s';
         if (null === $alternatives) {

@@ -180,7 +180,7 @@ class PoHeader {
   /**
    * Parses a Plural-Forms entry from a Gettext Portable Object file header.
    *
-   * @param string $plural_forms
+   * @param string $pluralforms
    *   The Plural-Forms entry value.
    *
    * @return array|bool
@@ -191,13 +191,13 @@ class PoHeader {
    *
    * @throws \Exception
    */
-  public function parsePluralForms($plural_forms) {
+  public function parsePluralForms($pluralforms) {
     $plurals = [];
     // First, delete all whitespace.
-    $plural_forms = strtr($plural_forms, [" " => "", "\t" => ""]);
+    $pluralforms = strtr($pluralforms, [" " => "", "\t" => ""]);
 
     // Select the parts that define nplurals and plural.
-    $nplurals = strstr($plural_forms, "nplurals=");
+    $nplurals = strstr($pluralforms, "nplurals=");
     if (strpos($nplurals, ";")) {
       // We want the string from the 10th char, because "nplurals=" length is 9.
       $nplurals = substr($nplurals, 9, strpos($nplurals, ";") - 9);
@@ -205,7 +205,7 @@ class PoHeader {
     else {
       return FALSE;
     }
-    $plural = strstr($plural_forms, "plural=");
+    $plural = strstr($pluralforms, "plural=");
     if (strpos($plural, ";")) {
       // We want the string from the 8th char, because "plural=" length is 7.
       $plural = substr($plural, 7, strpos($plural, ";") - 7);
@@ -303,24 +303,24 @@ class PoHeader {
         $operator_stack[] = $current_token;
       }
       elseif ($current_token == ")") {
-        $top_op = array_pop($operator_stack);
-        while (isset($top_op) && ($top_op != "(")) {
-          $element_stack[] = $top_op;
-          $top_op = array_pop($operator_stack);
+        $topop = array_pop($operator_stack);
+        while (isset($topop) && ($topop != "(")) {
+          $element_stack[] = $topop;
+          $topop = array_pop($operator_stack);
         }
       }
       elseif (!empty($precedence[$current_token])) {
         // If it's an operator, then pop from $operator_stack into
         // $element_stack until the precedence in $operator_stack is less
         // than current, then push into $operator_stack.
-        $top_op = array_pop($operator_stack);
-        while (isset($top_op) && ($precedence[$top_op] >= $precedence[$current_token]) && !(($precedence[$top_op] == $precedence[$current_token]) && !empty($right_associativity[$top_op]) && !empty($right_associativity[$current_token]))) {
-          $element_stack[] = $top_op;
-          $top_op = array_pop($operator_stack);
+        $topop = array_pop($operator_stack);
+        while (isset($topop) && ($precedence[$topop] >= $precedence[$current_token]) && !(($precedence[$topop] == $precedence[$current_token]) && !empty($right_associativity[$topop]) && !empty($right_associativity[$current_token]))) {
+          $element_stack[] = $topop;
+          $topop = array_pop($operator_stack);
         }
-        if ($top_op) {
+        if ($topop) {
           // Return element to top.
-          $operator_stack[] = $top_op;
+          $operator_stack[] = $topop;
         }
         // Parentheses are not needed.
         $operator_stack[] = $current_token;
@@ -331,10 +331,10 @@ class PoHeader {
     }
 
     // Flush operator stack.
-    $top_op = array_pop($operator_stack);
-    while ($top_op != NULL) {
-      $element_stack[] = $top_op;
-      $top_op = array_pop($operator_stack);
+    $topop = array_pop($operator_stack);
+    while ($topop != NULL) {
+      $element_stack[] = $topop;
+      $topop = array_pop($operator_stack);
     }
     $return = $element_stack;
 

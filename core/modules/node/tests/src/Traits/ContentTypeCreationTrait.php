@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\node\Traits;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -29,7 +27,7 @@ trait ContentTypeCreationTrait {
     // Find a non-existent random type name.
     if (!isset($values['type'])) {
       do {
-        $id = $this->randomMachineName(8);
+        $id = strtolower($this->randomMachineName(8));
       } while (NodeType::load($id));
     }
     else {

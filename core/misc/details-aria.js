@@ -23,6 +23,7 @@
 
           $summary.attr({
             'aria-expanded': open,
+            'aria-pressed': open,
           });
         },
       );

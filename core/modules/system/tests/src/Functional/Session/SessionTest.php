@@ -9,7 +9,6 @@ use Drupal\Tests\BrowserTestBase;
  * Drupal session handling tests.
  *
  * @group Session
- * @group #slow
  */
 class SessionTest extends BrowserTestBase {
 
@@ -357,20 +356,6 @@ class SessionTest extends BrowserTestBase {
     $this->assertSessionCookie(FALSE);
     $this->assertSessionEmpty(TRUE);
     $this->assertSession()->statusCodeEquals(200);
-  }
-
-  /**
-   * Test exception thrown during session write close.
-   */
-  public function testSessionWriteError() {
-    // Login to ensure a session exists.
-    $user = $this->drupalCreateUser([]);
-    $this->drupalLogin($user);
-
-    // Trigger an exception in SessionHandler::write().
-    $this->expectExceptionMessageMatches("/^Drupal\\\\Core\\\\Database\\\\DatabaseExceptionWrapper:/");
-    $this->drupalGet('/session-test/trigger-write-exception');
-    $this->assertSession()->statusCodeEquals(500);
   }
 
   /**

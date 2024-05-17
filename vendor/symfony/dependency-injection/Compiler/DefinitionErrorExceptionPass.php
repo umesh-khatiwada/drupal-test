@@ -25,10 +25,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DefinitionErrorExceptionPass extends AbstractRecursivePass
 {
-    protected bool $skipScalars = true;
-
-    private array $erroredDefinitions = [];
-    private array $sourceReferences = [];
+    private $erroredDefinitions = [];
+    private $sourceReferences = [];
 
     /**
      * @return void
@@ -74,7 +72,7 @@ class DefinitionErrorExceptionPass extends AbstractRecursivePass
             return $value;
         }
 
-        if (!$value instanceof Definition || !$value->hasErrors() || $value->hasTag('container.error')) {
+        if (!$value instanceof Definition || !$value->hasErrors()) {
             return parent::processValue($value, $isRoot);
         }
 

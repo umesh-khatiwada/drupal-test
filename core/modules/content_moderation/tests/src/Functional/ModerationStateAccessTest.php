@@ -37,7 +37,7 @@ class ModerationStateAccessTest extends BrowserTestBase {
 
     $node_type = NodeType::create([
       'type' => 'test',
-      'name' => 'Test',
+      'label' => 'Test',
     ]);
     $node_type->save();
 

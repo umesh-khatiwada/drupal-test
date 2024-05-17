@@ -22,7 +22,6 @@ class ContentTranslationRevisionTranslationDeletionTest extends ContentTranslati
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->doSetup();
     $this->enableContentModeration();
   }
 
@@ -94,7 +93,7 @@ class ContentTranslationRevisionTranslationDeletionTest extends ContentTranslati
     $warning = 'The "Delete translation" action is only available for published translations.';
     $this->assertSession()->statusMessageContains($warning, 'warning');
     $this->drupalGet($this->getEditUrl($it_revision));
-    $this->assertSession()->linkNotExistsExact('Delete translation');
+    $this->assertSession()->buttonNotExists('Delete translation');
 
     // Publish the translation and verify it can be deleted.
     $edit = [
@@ -110,7 +109,7 @@ class ContentTranslationRevisionTranslationDeletionTest extends ContentTranslati
     $this->assertSession()->linkByHrefExists($it_delete_href);
     $this->assertSession()->statusMessageNotContains($warning);
     $this->drupalGet($this->getEditUrl($it_revision));
-    $this->assertSession()->linkExistsExact('Delete translation');
+    $this->assertSession()->buttonExists('Delete translation');
 
     // Create an English draft and verify the published translation was
     // preserved.
@@ -206,11 +205,8 @@ class ContentTranslationRevisionTranslationDeletionTest extends ContentTranslati
     $this->assertSession()->linkByHrefExists($it_delete_href);
 
     // Verify that now the translation can be deleted.
-    $this->drupalGet($this->getEditUrl($it_revision)->setOption('query', ['destination', '/kittens']));
-    $this->clickLink('Delete translation');
+    $this->drupalGet($it_delete_url);
     $this->submitForm([], 'Delete Italian translation');
-    $this->assertStringEndsWith('/kittens', $this->getSession()->getCurrentUrl());
-
     $entity = $this->storage->loadUnchanged($id);
     $this->assertFalse($entity->hasTranslation('it'));
     $it_revision = $this->loadRevisionTranslation($entity, 'it');

@@ -39,9 +39,12 @@ final class Link implements CacheableDependencyInterface {
   protected $href;
 
   /**
-   * The link relation type.
+   * The link relation types.
    *
-   * @var string
+   * @var string[]
+   *
+   * @todo: change this type documentation to be a single string in
+   *   https://www.drupal.org/project/drupal/issues/3080467.
    */
   protected $rel;
 

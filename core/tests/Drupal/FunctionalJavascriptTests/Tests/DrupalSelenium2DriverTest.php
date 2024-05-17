@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests\Tests;
 
 use Drupal\entity_test\Entity\EntityTest;

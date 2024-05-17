@@ -4,6 +4,7 @@ namespace Drupal\Core\Extension;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Asset\AssetCollectionOptimizerInterface;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ConfigInstallerInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
@@ -11,7 +12,6 @@ use Drupal\Core\Extension\Exception\UnknownExtensionException;
 use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\Theme\Registry;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -100,10 +100,8 @@ class ThemeInstaller implements ThemeInstallerInterface {
    *   The state store.
    * @param \Drupal\Core\Extension\ModuleExtensionList $module_extension_list
    *   The module extension list.
-   * @param \Drupal\Core\Theme\Registry|null $themeRegistry
-   *   The theme registry.
    */
-  public function __construct(ThemeHandlerInterface $theme_handler, ConfigFactoryInterface $config_factory, ConfigInstallerInterface $config_installer, ModuleHandlerInterface $module_handler, ConfigManagerInterface $config_manager, AssetCollectionOptimizerInterface $css_collection_optimizer, RouteBuilderInterface $route_builder, LoggerInterface $logger, StateInterface $state, ModuleExtensionList $module_extension_list, protected ?Registry $themeRegistry = NULL) {
+  public function __construct(ThemeHandlerInterface $theme_handler, ConfigFactoryInterface $config_factory, ConfigInstallerInterface $config_installer, ModuleHandlerInterface $module_handler, ConfigManagerInterface $config_manager, AssetCollectionOptimizerInterface $css_collection_optimizer, RouteBuilderInterface $route_builder, LoggerInterface $logger, StateInterface $state, ModuleExtensionList $module_extension_list) {
     $this->themeHandler = $theme_handler;
     $this->configFactory = $config_factory;
     $this->configInstaller = $config_installer;
@@ -114,10 +112,6 @@ class ThemeInstaller implements ThemeInstallerInterface {
     $this->logger = $logger;
     $this->state = $state;
     $this->moduleExtensionList = $module_extension_list;
-    if ($this->themeRegistry === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . '() without the $themeRegistry argument is deprecated in drupal:10.1.0 and will be required in drupal:11.0.0. See https://www.drupal.org/node/3350906', E_USER_DEPRECATED);
-      $this->themeRegistry = \Drupal::service('theme.registry');
-    }
   }
 
   /**
@@ -159,7 +153,6 @@ class ThemeInstaller implements ThemeInstallerInterface {
         $unmet_module_dependencies = array_diff_key($module_dependencies, $installed_modules);
 
         if ($theme_data[$theme]->info[ExtensionLifecycle::LIFECYCLE_IDENTIFIER] === ExtensionLifecycle::DEPRECATED) {
-          // phpcs:ignore Drupal.Semantics.FunctionTriggerError
           @trigger_error("The theme '$theme' is deprecated. See " . $theme_data[$theme]->info['lifecycle_link'], E_USER_DEPRECATED);
         }
 
@@ -214,12 +207,6 @@ class ThemeInstaller implements ThemeInstallerInterface {
         throw new ExtensionNameLengthException("Theme name $key is over the maximum allowed length of " . DRUPAL_EXTENSION_NAME_MAX_LENGTH . ' characters.');
       }
 
-      // Throw an exception if a module with the same name is enabled.
-      $installed_modules = $extension_config->get('module') ?: [];
-      if (isset($installed_modules[$key])) {
-        throw new ExtensionNameReservedException("Theme name $key is already in use by an installed module.");
-      }
-
       // Validate default configuration of the theme. If there is existing
       // configuration then stop installing.
       $this->configInstaller->checkConfigurationToInstall('theme', $key);
@@ -266,7 +253,7 @@ class ThemeInstaller implements ThemeInstallerInterface {
     $theme_config = $this->configFactory->getEditable('system.theme');
     $list = $this->themeHandler->listInfo();
     foreach ($theme_list as $key) {
-      if ($extension_config->get("theme.$key") === NULL) {
+      if (!isset($list[$key])) {
         throw new UnknownExtensionException("Unknown theme: $key.");
       }
       if ($key === $theme_config->get('default')) {
@@ -277,7 +264,7 @@ class ThemeInstaller implements ThemeInstallerInterface {
       }
       // Base themes cannot be uninstalled if sub themes are installed, and if
       // they are not uninstalled at the same time.
-      if (isset($list[$key]) && !empty($list[$key]->sub_themes)) {
+      if (!empty($list[$key]->sub_themes)) {
         foreach ($list[$key]->sub_themes as $sub_key => $sub_label) {
           if (isset($list[$sub_key]) && !in_array($sub_key, $theme_list, TRUE)) {
             throw new \InvalidArgumentException("The base theme $key cannot be uninstalled, because theme $sub_key depends on it.");
@@ -317,7 +304,17 @@ class ThemeInstaller implements ThemeInstallerInterface {
       $this->routeBuilder->setRebuildNeeded();
     }
 
-    $this->themeRegistry->reset();
+    // @todo It feels wrong to have the requirement to clear the local tasks
+    //   cache here.
+    Cache::invalidateTags(['local_task']);
+    $this->themeRegistryRebuild();
+  }
+
+  /**
+   * Wraps drupal_theme_rebuild().
+   */
+  protected function themeRegistryRebuild() {
+    drupal_theme_rebuild();
   }
 
 }

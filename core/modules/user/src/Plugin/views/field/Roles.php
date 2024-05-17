@@ -7,7 +7,6 @@ use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\field\PrerenderList;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\user\Entity\Role;
 
 /**
  * Field handler to provide a list of roles.
@@ -73,7 +72,7 @@ class Roles extends PrerenderList {
     }
 
     if ($uids) {
-      $roles = Role::loadMultiple();
+      $roles = user_roles();
       $result = $this->database->query('SELECT [u].[entity_id] AS [uid], [u].[roles_target_id] AS [rid] FROM {user__roles} [u] WHERE [u].[entity_id] IN ( :uids[] ) AND [u].[roles_target_id] IN ( :rids[] )', [':uids[]' => $uids, ':rids[]' => array_keys($roles)]);
       foreach ($result as $role) {
         $this->items[$role->uid][$role->rid]['role'] = $roles[$role->rid]->label();

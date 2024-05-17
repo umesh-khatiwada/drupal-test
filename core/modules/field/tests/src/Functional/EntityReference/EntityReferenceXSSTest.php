@@ -5,7 +5,7 @@ namespace Drupal\Tests\field\Functional\EntityReference;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 
 /**
  * Tests possible XSS security issues in entity references.
@@ -14,7 +14,7 @@ use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
  */
 class EntityReferenceXSSTest extends BrowserTestBase {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
 
   /**
    * Modules to enable.

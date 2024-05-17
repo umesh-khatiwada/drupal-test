@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-label: test_argument
+label: ''
 module: views
 description: ''
 tag: ''
@@ -61,6 +61,7 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true
@@ -97,6 +98,7 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
+          default_argument_skip_url: false
           summary_options:
             base_path: ''
             count: true

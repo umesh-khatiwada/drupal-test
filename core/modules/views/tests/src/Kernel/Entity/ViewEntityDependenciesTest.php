@@ -62,7 +62,7 @@ class ViewEntityDependenciesTest extends ViewsKernelTestBase {
     ]);
     $content_type->save();
     $field_storage = FieldStorageConfig::create([
-      'field_name' => $this->randomMachineName(),
+      'field_name' => mb_strtolower($this->randomMachineName()),
       'entity_type' => 'node',
       'type' => 'comment',
     ]);
@@ -80,10 +80,7 @@ class ViewEntityDependenciesTest extends ViewsKernelTestBase {
       'field_storage' => FieldStorageConfig::loadByName('node', 'body'),
       'bundle' => $content_type->id(),
       'label' => $this->randomMachineName() . '_body',
-      'settings' => [
-        'display_summary' => TRUE,
-        'allowed_formats' => [],
-      ],
+      'settings' => ['display_summary' => TRUE],
     ])->save();
 
     ViewTestData::createTestViews(static::class, ['views_test_config']);

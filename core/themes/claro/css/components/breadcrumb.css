@@ -26,7 +26,6 @@
 .breadcrumb__item,
 .breadcrumb__link {
   display: inline;
-  -webkit-text-decoration: none;
   text-decoration: none;
   color: var(--color-text);
   font-weight: bold;
@@ -43,6 +42,7 @@
 }
 
 @media (forced-colors: active) {
+
   .breadcrumb__item + .breadcrumb__item::before {
     width: 0.3125rem; /* Width and height of the SVG. */
     height: 0.5rem;
@@ -61,6 +61,5 @@
 
 .breadcrumb__link:hover,
 .breadcrumb__link:focus {
-  -webkit-text-decoration: none;
   text-decoration: none;
 }

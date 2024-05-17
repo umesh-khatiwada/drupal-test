@@ -5,13 +5,10 @@ namespace Drupal\Tests\locale\Functional;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Language\LanguageInterface;
 
-// cspell:ignore lundi
-
 /**
  * Tests for updating the interface translations of projects.
  *
  * @group locale
- * @group #slow
  */
 class LocaleUpdateTest extends LocaleUpdateBase {
 
@@ -387,7 +384,7 @@ class LocaleUpdateTest extends LocaleUpdateBase {
     // Check if the right number of translations are added.
     $this->assertSession()->pageTextContains("One translation file imported. 8 translations were added, 0 translations were updated and 0 translations were removed.");
     // cSpell:disable-next-line
-    $this->assertTranslation('Extra day', 'extra dag', 'nl');
+    $this->assertTranslation('Extraday', 'extra dag', 'nl');
 
     // Check if the language data is added to the database.
     $connection = Database::getConnection();
@@ -411,7 +408,7 @@ class LocaleUpdateTest extends LocaleUpdateBase {
     $this->assertFalse($result, 'Files removed from file history');
 
     // Check that the Dutch translation is gone.
-    $this->assertTranslation('Extra day', '', 'nl');
+    $this->assertTranslation('Extraday', '', 'nl');
     // cSpell:disable-next-line
     $this->assertTranslation('Tuesday', 'Dienstag', 'de');
   }

@@ -3,9 +3,7 @@
 namespace Drupal\block_content\Plugin\Block;
 
 use Drupal\block_content\BlockContentUuidLookup;
-use Drupal\block_content\Plugin\Derivative\BlockContent;
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
@@ -14,18 +12,18 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Defines a generic block type.
+ * Defines a generic custom block type.
+ *
+ * @Block(
+ *  id = "block_content",
+ *  admin_label = @Translation("Custom block"),
+ *  category = @Translation("Custom"),
+ *  deriver = "Drupal\block_content\Plugin\Derivative\BlockContent"
+ * )
  */
-#[Block(
-  id: "block_content",
-  admin_label: new TranslatableMarkup("Content block"),
-  category: new TranslatableMarkup("Content block"),
-  deriver: BlockContent::class
-)]
 class BlockContentBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
@@ -166,7 +164,7 @@ class BlockContentBlock extends BlockBase implements ContainerFactoryPluginInter
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    // Invalidate the block cache to update content block-based derivatives.
+    // Invalidate the block cache to update custom block-based derivatives.
     $this->configuration['view_mode'] = $form_state->getValue('view_mode');
     $this->blockManager->clearCachedDefinitions();
   }
@@ -190,7 +188,7 @@ class BlockContentBlock extends BlockBase implements ContainerFactoryPluginInter
     }
     else {
       return [
-        '#markup' => $this->t('Block with uuid %uuid does not exist. <a href=":url">Add content block</a>.', [
+        '#markup' => $this->t('Block with uuid %uuid does not exist. <a href=":url">Add custom block</a>.', [
           '%uuid' => $this->getDerivativeId(),
           ':url' => $this->urlGenerator->generate('block_content.add_page'),
         ]),

@@ -211,9 +211,12 @@
         // Clone the table header so it inherits original jQuery properties.
         const $stickyHeader = this.$originalHeader.clone(true);
         // Hide the table to avoid a flash of the header clone upon page load.
-        this.$stickyTable = $(
-          '<table class="sticky-header" style="visibility: hidden; position: fixed; top: 0;"></table>',
-        )
+        this.$stickyTable = $('<table class="sticky-header"></table>')
+          .css({
+            visibility: 'hidden',
+            position: 'fixed',
+            top: '0px',
+          })
           .append($stickyHeader)
           .insertBefore(this.$originalTable);
 
@@ -242,13 +245,12 @@
         if (typeof offsetLeft === 'number') {
           css.left = `${this.tableOffset.left - offsetLeft}px`;
         }
-        this.$html[0].style.scrollPaddingTop =
+        this.$html.css(
+          'scroll-padding-top',
           displace.offsets.top +
-          (this.stickyVisible ? this.$stickyTable.height() : 0);
-
-        Object.assign(this.$stickyTable[0].style, css);
-
-        return this.$stickyTable;
+            (this.stickyVisible ? this.$stickyTable.height() : 0),
+        );
+        return this.$stickyTable.css(css);
       },
 
       /**
@@ -284,9 +286,10 @@
         this.checkStickyVisible();
         // Track horizontal positioning relative to the viewport.
         this.stickyPosition(null, scrollValue('scrollLeft'));
-        this.$stickyTable[0].style.visibility = this.stickyVisible
-          ? 'visible'
-          : 'hidden';
+        this.$stickyTable.css(
+          'visibility',
+          this.stickyVisible ? 'visible' : 'hidden',
+        );
       },
 
       /**
@@ -315,17 +318,14 @@
         for (let i = 0; i < il; i++) {
           $that = $(this.$originalHeaderCells[i]);
           $stickyCell = this.$stickyHeaderCells.eq($that.index());
-          display = window.getComputedStyle($that[0]).display;
+          display = $that.css('display');
           if (display !== 'none') {
-            Object.assign($stickyCell[0].style, {
-              width: window.getComputedStyle($that[0]).width,
-              display,
-            });
+            $stickyCell.css({ width: $that.css('width'), display });
           } else {
-            $stickyCell[0].style.display = 'none';
+            $stickyCell.css('display', 'none');
           }
         }
-        this.$stickyTable[0].style.width = `${this.$originalTable.outerWidth()}px`;
+        this.$stickyTable.css('width', this.$originalTable.outerWidth());
       },
     },
   );

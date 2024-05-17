@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\media_library\FunctionalJavascript;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -9,7 +7,7 @@ use Drupal\file\Entity\File;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\media\Entity\Media;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
 use Drupal\Tests\TestFileCreationTrait;
 
@@ -20,7 +18,7 @@ use Drupal\Tests\TestFileCreationTrait;
  */
 class TranslationsTest extends WebDriverTestBase {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
   use MediaTypeCreationTrait;
   use TestFileCreationTrait;
 

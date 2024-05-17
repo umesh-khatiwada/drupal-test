@@ -15,7 +15,6 @@ use Drupal\field\Entity\FieldStorageConfig;
  * Tests field form handling.
  *
  * @group field
- * @group #slow
  */
 class FormTest extends FieldTestBase {
 
@@ -32,7 +31,6 @@ class FormTest extends FieldTestBase {
     'options',
     'entity_test',
     'locale',
-    'field_ui',
   ];
 
   /**
@@ -77,7 +75,6 @@ class FormTest extends FieldTestBase {
     $web_user = $this->drupalCreateUser([
       'view test entity',
       'administer entity_test content',
-      'administer entity_test fields',
     ]);
     $this->drupalLogin($web_user);
 
@@ -273,11 +270,6 @@ class FormTest extends FieldTestBase {
       ->getFormDisplay($this->field['entity_type'], $this->field['bundle'])
       ->setComponent($field_name)
       ->save();
-
-    // Verify that only one "Default value" field
-    // exists on the Manage field display.
-    $this->drupalGet("entity_test/structure/entity_test/fields/entity_test.entity_test.{$field_name}");
-    $this->assertSession()->elementsCount('xpath', "//table[@id='field-unlimited-values']/tbody/tr//input[contains(@class, 'form-text')]", 1);
 
     // Display creation form -> 1 widget.
     $this->drupalGet('entity_test/add');
@@ -579,10 +571,9 @@ class FormTest extends FieldTestBase {
     $this->assertEquals(2, $entity->{$field_name}->value, 'New revision has the expected value for the field with edit access.');
 
     // Check that the revision is also saved in the revisions table.
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
-    $storage = $this->container->get('entity_type.manager')
-      ->getStorage($entity_type);
-    $entity = $storage->loadRevision($entity->getRevisionId());
+    $entity = $this->container->get('entity_type.manager')
+      ->getStorage($entity_type)
+      ->loadRevision($entity->getRevisionId());
     $this->assertEquals(99, $entity->{$field_name_no_access}->value, 'New revision has the expected value for the field with no edit access.');
     $this->assertEquals(2, $entity->{$field_name}->value, 'New revision has the expected value for the field with edit access.');
   }

@@ -23,7 +23,7 @@ interface PluginInspectionInterface {
   /**
    * Gets the definition of the plugin implementation.
    *
-   * @return \Drupal\Component\Plugin\Definition\PluginDefinitionInterface|array
+   * @return array
    *   The plugin definition, as returned by the discovery object used by the
    *   plugin manager.
    */

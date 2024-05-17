@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\system\Functional\Form;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -34,7 +35,7 @@ class CheckboxTest extends BrowserTestBase {
       // @see \Drupal\Core\Render\Element\Checkbox::processCheckbox().
       foreach (['0', '', 1, '1', 'foobar', '1foobar'] as $return_value) {
         $form_array = \Drupal::formBuilder()->getForm('\Drupal\form_test\Form\FormTestCheckboxTypeJugglingForm', $default_value, $return_value);
-        $form = (string) \Drupal::service('renderer')->renderRoot($form_array);
+        $form = \Drupal::service('renderer')->renderRoot($form_array);
         if ($default_value === TRUE) {
           $checked = TRUE;
         }
@@ -53,8 +54,8 @@ class CheckboxTest extends BrowserTestBase {
         elseif ($return_value === '1foobar') {
           $checked = ($default_value === '1foobar');
         }
-        $checked_in_html = str_contains($form, 'checked');
-        $message = '#default_value is ' . var_export($default_value, TRUE) . ' #return_value is ' . var_export($return_value, TRUE) . '.';
+        $checked_in_html = strpos($form, 'checked') !== FALSE;
+        $message = new FormattableMarkup('#default_value is %default_value #return_value is %return_value.', ['%default_value' => var_export($default_value, TRUE), '%return_value' => var_export($return_value, TRUE)]);
         $this->assertSame($checked, $checked_in_html, $message);
       }
     }
@@ -86,7 +87,7 @@ class CheckboxTest extends BrowserTestBase {
     foreach ($checkboxes as $checkbox) {
       $checked = $checkbox->isChecked();
       $name = $checkbox->getAttribute('name');
-      $this->assertSame($checked, $name == 'checkbox_zero_default[0]' || $name == 'checkbox_string_zero_default[0]', "Checkbox $name correctly checked");
+      $this->assertSame($checked, $name == 'checkbox_zero_default[0]' || $name == 'checkbox_string_zero_default[0]', new FormattableMarkup('Checkbox %name correctly checked', ['%name' => $name]));
     }
     // Due to Mink driver differences, we cannot submit an empty checkbox value
     // to submitForm(), even if that empty value is the 'true' value for
@@ -100,7 +101,7 @@ class CheckboxTest extends BrowserTestBase {
     foreach ($checkboxes as $checkbox) {
       $checked = $checkbox->isChecked();
       $name = (string) $checkbox->getAttribute('name');
-      $this->assertSame($checked, $name == 'checkbox_off[0]' || $name == 'checkbox_zero_default[0]' || $name == 'checkbox_string_zero_default[0]', "Checkbox $name correctly checked");
+      $this->assertSame($checked, $name == 'checkbox_off[0]' || $name == 'checkbox_zero_default[0]' || $name == 'checkbox_string_zero_default[0]', new FormattableMarkup('Checkbox %name correctly checked', ['%name' => $name]));
     }
   }
 

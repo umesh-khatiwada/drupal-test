@@ -27,11 +27,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class DecoratorServicePass extends AbstractRecursivePass
 {
-    protected bool $skipScalars = true;
-
-    /**
-     * @return void
-     */
     public function process(ContainerBuilder $container)
     {
         $definitions = new \SplPriorityQueue();
@@ -44,7 +39,6 @@ class DecoratorServicePass extends AbstractRecursivePass
             $definitions->insert([$id, $definition], [$decorated[2], --$order]);
         }
         $decoratingDefinitions = [];
-        $decoratedIds = [];
 
         $tagsToKeep = $container->hasParameter('container.behavior_describing_tags')
             ? $container->getParameter('container.behavior_describing_tags')
@@ -61,7 +55,6 @@ class DecoratorServicePass extends AbstractRecursivePass
                 $renamedId = $id.'.inner';
             }
 
-            $decoratedIds[$inner] ??= $renamedId;
             $this->currentId = $renamedId;
             $this->processValue($definition);
 
@@ -115,10 +108,6 @@ class DecoratorServicePass extends AbstractRecursivePass
             }
 
             $container->setAlias($inner, $id)->setPublic($public);
-        }
-
-        foreach ($decoratingDefinitions as $inner => $definition) {
-            $definition->addTag('container.decorator', ['id' => $inner, 'inner' => $decoratedIds[$inner]]);
         }
     }
 

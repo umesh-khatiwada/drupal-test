@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\field\Unit\Plugin\migrate\process\d6;
 
 use Drupal\field\Plugin\migrate\process\d6\FieldInstanceSettings;
@@ -19,7 +17,7 @@ use Drupal\Tests\UnitTestCase;
 class FieldInstanceSettingsTest extends UnitTestCase {
 
   /**
-   * @covers \Drupal\Core\Field\BaseFieldDefinition::getSettings
+   * @covers ::getSettings
    *
    * @dataProvider getSettingsProvider
    */

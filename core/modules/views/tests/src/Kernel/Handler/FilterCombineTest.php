@@ -9,7 +9,6 @@ use Drupal\views\Views;
  * Tests the combine filter handler.
  *
  * @group views
- * @group #slow
  *
  * @coversDefaultClass \Drupal\views\Plugin\views\filter\Combine
  */
@@ -89,65 +88,6 @@ class FilterCombineTest extends ViewsKernelTestBase {
       [
         'name' => 'Ringo',
         'job' => 'Drummer',
-      ],
-      [
-        'name' => 'Ginger',
-        'job' => NULL,
-      ],
-    ];
-    $this->assertIdenticalResultset($view, $resultset, $this->columnMap);
-  }
-
-  /**
-   * Tests the Combine field filter with the 'regular_expression' operator.
-   */
-  public function testFilterCombineRegEx() {
-    $view = Views::getView('test_view');
-    $view->setDisplay();
-
-    $fields = $view->displayHandlers->get('default')->getOption('fields');
-    $view->displayHandlers->get('default')->overrideOption('fields', $fields + [
-      'job' => [
-        'id' => 'job',
-        'table' => 'views_test_data',
-        'field' => 'job',
-        'relationship' => 'none',
-      ],
-    ]);
-
-    // Change the filtering.
-    $view->displayHandlers->get('default')->overrideOption('filters', [
-      'age' => [
-        'id' => 'combine',
-        'table' => 'views',
-        'field' => 'combine',
-        'relationship' => 'none',
-        'operator' => 'regular_expression',
-        'fields' => [
-          'name',
-          'job',
-        ],
-        'value' => '(ing|write)',
-      ],
-    ]);
-
-    $this->executeView($view);
-    $resultset = [
-      [
-        'name' => 'John',
-        'job' => 'Singer',
-      ],
-      [
-        'name' => 'George',
-        'job' => 'Singer',
-      ],
-      [
-        'name' => 'Ringo',
-        'job' => 'Drummer',
-      ],
-      [
-        'name' => 'Paul',
-        'job' => 'Songwriter',
       ],
       [
         'name' => 'Ginger',
@@ -253,7 +193,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
 
     // Confirm that the query with multiple filters used the "CONCAT_WS"
     // operator.
-    $this->assertStringContainsString('CONCAT_WS(', (string) $view->query->query());
+    $this->assertStringContainsString('CONCAT_WS(', $view->query->query());
   }
 
   /**
@@ -301,7 +241,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
     $this->assertTrue($view->build_info['fail'], "View build has been marked as failed.");
     // Make sure this view does not pass validation with the right error.
     $errors = $view->validate();
-    $this->assertEquals('Field dummy set in Global: Combine fields filter is not set in display Default.', reset($errors['default']));
+    $this->assertEquals(t('Field %field set in %filter is not set in display %display.', ['%field' => 'dummy', '%filter' => 'Global: Combine fields filter', '%display' => 'Default']), reset($errors['default']));
   }
 
   /**
@@ -335,17 +275,17 @@ class FilterCombineTest extends ViewsKernelTestBase {
     $this->executeView($view);
     $errors = $view->validate();
     // Check that the right error is shown.
-    $this->assertEquals('Default: Global: Combine fields filter can only be used on displays that use fields. Set the style or row format for that display to one using fields to use the combine field filter.', reset($errors['default']));
+    $this->assertEquals(t('%display: %filter can only be used on displays that use fields. Set the style or row format for that display to one using fields to use the combine field filter.', ['%filter' => 'Global: Combine fields filter', '%display' => 'Default']), reset($errors['default']));
 
     // Confirm that the query with single filter does not use the "CONCAT_WS"
     // operator.
-    $this->assertStringNotContainsString('CONCAT_WS(', (string) $view->query->query());
+    $this->assertStringNotContainsString('CONCAT_WS(', $view->query->query());
   }
 
   /**
    * Tests the Combine field filter using the 'equal' operator.
    *
-   * @covers ::opEqual
+   * @covers::opEqual
    */
   public function testFilterCombineEqual() {
     $view = Views::getView('test_view');
@@ -393,7 +333,7 @@ class FilterCombineTest extends ViewsKernelTestBase {
   /**
    * Tests the Combine field filter using the 'not equal' operator.
    *
-   * @covers ::opEqual
+   * @covers::opEqual
    */
   public function testFilterCombineNotEqual(): void {
     $view = Views::getView('test_view');

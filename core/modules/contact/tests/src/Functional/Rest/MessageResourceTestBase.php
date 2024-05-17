@@ -74,7 +74,7 @@ abstract class MessageResourceTestBase extends EntityResourceTestBase {
     return [
       'subject' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
       'contact_form' => [

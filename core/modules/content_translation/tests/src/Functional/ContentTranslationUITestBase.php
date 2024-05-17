@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\content_translation\Functional;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -95,7 +96,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
     foreach ($values[$default_langcode] as $property => $value) {
       $stored_value = $this->getValue($translation, $property, $default_langcode);
       $value = is_array($value) ? $value[0]['value'] : $value;
-      $message = "$property correctly stored in the default language.";
+      $message = new FormattableMarkup('@property correctly stored in the default language.', ['@property' => $property]);
       $this->assertEquals($value, $stored_value, $message);
     }
 
@@ -135,10 +136,11 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
 
     $author_field_name = $entity->hasField('content_translation_uid') ? 'content_translation_uid' : 'uid';
     if ($entity->getFieldDefinition($author_field_name)->isTranslatable()) {
-      $this->assertEquals($this->translator->id(), $metadata_target_translation->getAuthor()->id(), "Author of the target translation $langcode correctly stored for translatable owner field.");
+      $this->assertEquals($this->translator->id(), $metadata_target_translation->getAuthor()->id(), new FormattableMarkup('Author of the target translation @langcode correctly stored for translatable owner field.', ['@langcode' => $langcode]));
 
       $this->assertNotEquals($metadata_target_translation->getAuthor()->id(), $metadata_source_translation->getAuthor()->id(),
-        "Author of the target translation $langcode different from the author of the source translation $default_langcode for translatable owner field.");
+        new FormattableMarkup('Author of the target translation @target different from the author of the source translation @source for translatable owner field.',
+          ['@target' => $langcode, '@source' => $default_langcode]));
     }
     else {
       $this->assertEquals($this->editor->id(), $metadata_target_translation->getAuthor()->id(), 'Author of the entity remained untouched after translation for non translatable owner field.');
@@ -203,7 +205,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
       foreach ($property_values as $property => $value) {
         $stored_value = $this->getValue($translation, $property, $langcode);
         $value = is_array($value) ? $value[0]['value'] : $value;
-        $message = "$property correctly stored with language $langcode.";
+        $message = new FormattableMarkup('%property correctly stored with language %language.', ['%property' => $property, '%language' => $langcode]);
         $this->assertEquals($value, $stored_value, $message);
       }
     }
@@ -377,7 +379,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
     $language = ConfigurableLanguage::load($langcode);
     $url = $entity->toUrl('edit-form', ['language' => $language]);
     $this->drupalGet($url);
-    $this->clickLink('Delete translation');
+    $this->submitForm([], 'Delete translation');
     $this->submitForm([], 'Delete ' . $language->getName() . ' translation');
     $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId, TRUE);
@@ -575,7 +577,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
         $entity = $storage->load($this->entityId);
         $this->assertEquals(
           $entity->getChangedTimeAcrossTranslations(), $entity->getTranslation($langcode)->getChangedTime(),
-          "Changed time for language {$language->getName()} is the latest change over all languages."
+          new FormattableMarkup('Changed time for language %language is the latest change over all languages.', ['%language' => $language->getName()])
         );
       }
 

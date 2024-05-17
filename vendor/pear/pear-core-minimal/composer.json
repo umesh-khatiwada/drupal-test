@@ -10,9 +10,9 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-0": {
+            "": "src/"
+        }
     },
     "include-path": [
         "src/"
@@ -23,7 +23,6 @@
     },
     "type": "library",
     "require": {
-        "php": ">=5.4",
         "pear/console_getopt": "~1.4",
         "pear/pear_exception": "~1.0"
     },

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\system\Functional\Database;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Query\PagerSelectExtender;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,7 @@ class SelectPagerDefaultTest extends DatabaseTestBase {
         $correct_number = $count - ($limit * $page);
       }
 
-      $this->assertCount($correct_number, $data->names, "Correct number of records returned by pager: $correct_number");
+      $this->assertCount($correct_number, $data->names, new FormattableMarkup('Correct number of records returned by pager: @number', ['@number' => $correct_number]));
     }
   }
 
@@ -82,7 +83,7 @@ class SelectPagerDefaultTest extends DatabaseTestBase {
         $correct_number = $count - ($limit * $page);
       }
 
-      $this->assertCount($correct_number, $data->names, "Correct number of records returned by pager: $correct_number");
+      $this->assertCount($correct_number, $data->names, new FormattableMarkup('Correct number of records returned by pager: @number', ['@number' => $correct_number]));
     }
   }
 

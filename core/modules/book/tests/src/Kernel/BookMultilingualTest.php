@@ -51,7 +51,7 @@ class BookMultilingualTest extends KernelTestBase {
     parent::setUp();
     // Create the translation language.
     $this->installConfig(['language']);
-    ConfigurableLanguage::createFromLangcode(self::LANGCODE)->save();
+    ConfigurableLanguage::create(['id' => self::LANGCODE])->save();
     // Set up language negotiation.
     $config = $this->config('language.types');
     $config->set('configurable', [
@@ -85,6 +85,7 @@ class BookMultilingualTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installSchema('book', ['book']);
     $this->installSchema('node', ['node_access']);
+    $this->installSchema('system', ['sequences']);
     $this->installConfig(['node', 'book', 'field']);
     $node_type = NodeType::create([
       'type' => $this->randomMachineName(),
@@ -174,7 +175,7 @@ class BookMultilingualTest extends KernelTestBase {
     $books = $bm->getAllBooks();
     $this->assertNotEmpty($books);
     foreach ($books as $book) {
-      $bid = (int) $book['bid'];
+      $bid = $book['bid'];
       $build = $bm->bookTreeOutput($bm->bookTreeAllData($bid));
       $items = $build['#items'];
       $this->assertBookItemIsCorrectlyTranslated($items[$bid], $langcode);
@@ -217,7 +218,7 @@ class BookMultilingualTest extends KernelTestBase {
     $bbb = $this->container->get('book.breadcrumb');
     $links = $bbb->build($route_match)->getLinks();
     $link = array_shift($links);
-    $rendered_link = (string) Link::fromTextAndUrl($link->getText(), $link->getUrl())->toString();
+    $rendered_link = Link::fromTextAndUrl($link->getText(), $link->getUrl())->toString();
     $this->assertStringContainsString("http://$langcode.book.test.domain/", $rendered_link);
     $link = array_shift($links);
     $this->assertNodeLinkIsCorrectlyTranslated(1, $link->getText(), $link->getUrl(), $langcode);
@@ -292,7 +293,7 @@ class BookMultilingualTest extends KernelTestBase {
    * @internal
    */
   protected function assertBookItemIsCorrectlyTranslated(array $item, string $langcode): void {
-    $this->assertNodeLinkIsCorrectlyTranslated((int) $item['original_link']['nid'], $item['title'], $item['url'], $langcode);
+    $this->assertNodeLinkIsCorrectlyTranslated($item['original_link']['nid'], $item['title'], $item['url'], $langcode);
   }
 
   /**
@@ -312,7 +313,7 @@ class BookMultilingualTest extends KernelTestBase {
   protected function assertNodeLinkIsCorrectlyTranslated(int $nid, string $title, Url $url, string $langcode): void {
     $node = Node::load($nid);
     $this->assertSame($node->getTranslation($langcode)->label(), $title);
-    $rendered_link = (string) Link::fromTextAndUrl($title, $url)->toString();
+    $rendered_link = Link::fromTextAndUrl($title, $url)->toString();
     $this->assertStringContainsString("http://$langcode.book.test.domain/node/$nid", $rendered_link);
   }
 

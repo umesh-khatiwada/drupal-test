@@ -27,7 +27,7 @@ class FormTestFileForm extends FormBase {
       '#type' => 'file',
       '#multiple' => TRUE,
       '#attributes' => [
-        'class' => ['some-class'],
+        'class' => ['cagatio'],
       ],
     ];
     return $form;

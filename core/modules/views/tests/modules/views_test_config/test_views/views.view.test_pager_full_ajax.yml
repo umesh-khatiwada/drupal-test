@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_pager_full_ajax
-label: test_pager_full_ajax
+label: ''
 module: views
 description: ''
 tag: ''

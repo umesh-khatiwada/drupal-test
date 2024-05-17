@@ -2,8 +2,6 @@
 
 namespace Drupal\node\Plugin\migrate\source\d6;
 
-// cspell:ignore cnfi
-
 /**
  * Drupal 6 view mode source from database.
  *

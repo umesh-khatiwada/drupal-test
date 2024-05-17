@@ -45,21 +45,12 @@ class AliasRepository implements AliasRepositoryInterface {
 
     $this->addLanguageFallback($select, $langcode);
 
-    $select->orderBy('base_table.id', 'DESC');
+    // We order by ID ASC so that fetchAllKeyed() returns the most recently
+    // created alias for each source. Subsequent queries using fetchField() must
+    // use ID DESC to have the same effect.
+    $select->orderBy('base_table.id', 'ASC');
 
-    // We want the most recently created alias for each source, however that
-    // will be at the start of the result-set, so fetch everything and reverse
-    // it. Note that it would not be sufficient to reverse the ordering of the
-    // 'base_table.id' column, as that would not guarantee other conditions
-    // added to the query, such as those in ::addLanguageFallback, would be
-    // reversed.
-    $results = $select->execute()->fetchAll(\PDO::FETCH_ASSOC);
-    $aliases = [];
-    foreach (array_reverse($results) as $result) {
-      $aliases[$result['path']] = $result['alias'];
-    }
-
-    return $aliases;
+    return $select->execute()->fetchAllKeyed();
   }
 
   /**

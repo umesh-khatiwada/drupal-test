@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Menu\LocalTaskDefaultTest.
+ */
 
 namespace Drupal\Tests\Core\Menu;
 

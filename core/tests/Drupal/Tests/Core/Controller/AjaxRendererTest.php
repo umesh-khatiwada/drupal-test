@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Controller;
 
 use Drupal\Core\Render\MainContent\AjaxRenderer;
@@ -33,8 +31,6 @@ class AjaxRendererTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $element_info_manager = $this->createMock('Drupal\Core\Render\ElementInfoManagerInterface');
     $element_info_manager->expects($this->any())
       ->method('getInfo')

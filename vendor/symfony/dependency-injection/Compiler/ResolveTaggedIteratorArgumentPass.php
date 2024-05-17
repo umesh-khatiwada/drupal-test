@@ -22,20 +22,13 @@ class ResolveTaggedIteratorArgumentPass extends AbstractRecursivePass
 {
     use PriorityTaggedServiceTrait;
 
-    protected bool $skipScalars = true;
-
     protected function processValue(mixed $value, bool $isRoot = false): mixed
     {
         if (!$value instanceof TaggedIteratorArgument) {
             return parent::processValue($value, $isRoot);
         }
 
-        $exclude = $value->getExclude();
-        if ($value->excludeSelf()) {
-            $exclude[] = $this->currentId;
-        }
-
-        $value->setValues($this->findAndSortTaggedServices($value, $this->container, $exclude));
+        $value->setValues($this->findAndSortTaggedServices($value, $this->container));
 
         return $value;
     }

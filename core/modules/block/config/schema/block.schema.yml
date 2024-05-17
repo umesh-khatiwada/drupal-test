@@ -5,15 +5,8 @@ block.block.*:
   label: 'Block'
   mapping:
     id:
-      type: machine_name
+      type: string
       label: 'ID'
-      # Blocks have atypical machine names: they allow periods for historical reasons.
-      # @see https://www.drupal.org/project/drupal/issues/2685917
-      # @see https://www.drupal.org/project/drupal/issues/2043527
-      constraints:
-        Regex:
-          pattern: '/^[a-z0-9_.]+$/'
-          message: "The %value machine name is not valid."
     theme:
       type: string
       label: 'Theme'
@@ -29,10 +22,6 @@ block.block.*:
     plugin:
       type: string
       label: 'Plugin'
-      constraints:
-        PluginExists:
-          manager: plugin.manager.block
-          interface: Drupal\Core\Block\BlockPluginInterface
     settings:
       type: block.settings.[%parent.plugin]
     visibility:

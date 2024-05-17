@@ -149,7 +149,6 @@
    *
    * @prop {function} RegExp
    * @prop {function} Function
-   * @prop {function} Array
    * @prop {function} Number
    */
   states.Dependent.comparisons = {
@@ -159,15 +158,6 @@
     Function(reference, value) {
       // The "reference" variable is a comparison function.
       return reference(value);
-    },
-    Array(reference, value) {
-      // Make sure value is an array.
-      if (!Array.isArray(value)) {
-        return false;
-      }
-
-      // The arrays values should match.
-      return JSON.stringify(reference.sort()) === JSON.stringify(value.sort());
     },
     Number(reference, value) {
       // If "reference" is a number and "value" is a string, then cast
@@ -487,7 +477,7 @@
       // Attach the event callback.
       this.element.on(
         event,
-        function (e) {
+        $.proxy(function (e) {
           const value = valueFn.call(this.element, e);
           // Only trigger the event if the value has actually changed.
           if (oldValue !== value) {
@@ -498,18 +488,18 @@
             });
             oldValue = value;
           }
-        }.bind(this),
+        }, this),
       );
 
       states.postponed.push(
-        function () {
+        $.proxy(function () {
           // Trigger the event once for initialization purposes.
           this.element.trigger({
             type: `state:${this.state}`,
             value: oldValue,
             oldValue: null,
           });
-        }.bind(this),
+        }, this),
       );
     },
   };
@@ -583,7 +573,7 @@
       collapsed(e) {
         return typeof e !== 'undefined' && 'value' in e
           ? e.value
-          : !this[0].hasAttribute('open');
+          : !this.is('[open]');
       },
     },
   };
@@ -691,15 +681,15 @@
   $document.on('state:disabled', (e) => {
     // Only act when this change was triggered by a dependency and not by the
     // element monitoring itself.
-    const tagsSupportDisable =
-      'button, fieldset, optgroup, option, select, textarea, input';
     if (e.trigger) {
       $(e.target)
         .closest('.js-form-item, .js-form-submit, .js-form-wrapper')
         .toggleClass('form-disabled', e.value)
-        .find(tagsSupportDisable)
-        .addBack(tagsSupportDisable)
+        .find('select, input, textarea')
         .prop('disabled', e.value);
+
+      // Note: WebKit nightlies don't reflect that change correctly.
+      // See https://bugs.webkit.org/show_bug.cgi?id=23789
     }
   });
 
@@ -737,14 +727,9 @@
 
   $document.on('state:visible', (e) => {
     if (e.trigger) {
-      let $element = $(e.target).closest(
-        '.js-form-item, .js-form-submit, .js-form-wrapper',
-      );
-      // For links, update the state of itself instead of the wrapper.
-      if (e.target.tagName === 'A') {
-        $element = $(e.target);
-      }
-      $element.toggle(e.value);
+      $(e.target)
+        .closest('.js-form-item, .js-form-submit, .js-form-wrapper')
+        .toggle(e.value);
     }
   });
 
@@ -760,7 +745,7 @@
 
   $document.on('state:collapsed', (e) => {
     if (e.trigger) {
-      if (e.target.hasAttribute('open') === e.value) {
+      if ($(e.target).is('[open]') === e.value) {
         $(e.target).find('> summary').trigger('click');
       }
     }

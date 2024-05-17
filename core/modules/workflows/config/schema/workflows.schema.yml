@@ -3,10 +3,10 @@ workflows.workflow.*:
   label: 'Workflow'
   mapping:
     id:
-      type: machine_name
+      type: string
       label: 'ID'
     label:
-      type: required_label
+      type: label
       label: 'Label'
     type:
       type: string

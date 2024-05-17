@@ -291,12 +291,6 @@ class DbLogController extends ControllerBase {
         ['data' => ['#markup' => $dblog->link]],
       ],
     ];
-    if (isset($dblog->backtrace)) {
-      $rows[] = [
-        ['data' => $this->t('Backtrace'), 'header' => TRUE],
-        $dblog->backtrace,
-      ];
-    }
     $build['dblog_table'] = [
       '#type' => 'table',
       '#rows' => $rows,
@@ -356,10 +350,6 @@ class DbLogController extends ControllerBase {
    *   The record from the watchdog table. The object properties are: wid, uid,
    *   severity, type, timestamp, message, variables, link, name.
    *
-   *   If the variables contain a @backtrace_string placeholder which is not
-   *   used in the message, the formatted backtrace will be assigned to a new
-   *   backtrace property on the row object which can be displayed separately.
-   *
    * @return string|\Drupal\Core\StringTranslation\TranslatableMarkup|false
    *   The formatted log message or FALSE if the message or variables properties
    *   are not set.
@@ -382,10 +372,6 @@ class DbLogController extends ControllerBase {
           $variables['@backtrace_string'] = new FormattableMarkup(
             '<pre class="backtrace">@backtrace_string</pre>', $variables
           );
-          // Save a reference so the backtrace can be displayed separately.
-          if (!str_contains($row->message, '@backtrace_string')) {
-            $row->backtrace = $variables['@backtrace_string'];
-          }
         }
         $message = $this->t(Xss::filterAdmin($row->message), $variables);
       }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\comment\Unit\Plugin\views\field;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -96,6 +94,7 @@ class CommentBulkFormTest extends UnitTestCase {
     $comment_bulk_form->init($executable, $display, $options);
 
     $reflected_actions = (new \ReflectionObject($comment_bulk_form))->getProperty('actions');
+    $reflected_actions->setAccessible(TRUE);
     $this->assertEquals(array_slice($actions, 0, -1, TRUE), $reflected_actions->getValue($comment_bulk_form));
   }
 

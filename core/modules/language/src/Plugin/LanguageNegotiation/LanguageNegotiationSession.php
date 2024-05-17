@@ -4,14 +4,11 @@ namespace Drupal\language\Plugin\LanguageNegotiation;
 
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\PathProcessor\OutboundPathProcessorInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Url;
 use Drupal\language\LanguageNegotiationMethodBase;
 use Drupal\language\LanguageSwitcherInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Identify language from a request/session parameter.
@@ -24,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *   config_route_name = "language.negotiation_session"
  * )
  */
-class LanguageNegotiationSession extends LanguageNegotiationMethodBase implements OutboundPathProcessorInterface, LanguageSwitcherInterface, ContainerFactoryPluginInterface {
+class LanguageNegotiationSession extends LanguageNegotiationMethodBase implements OutboundPathProcessorInterface, LanguageSwitcherInterface {
 
   /**
    * Flag used to determine whether query rewriting is active.
@@ -48,52 +45,21 @@ class LanguageNegotiationSession extends LanguageNegotiationMethodBase implement
   protected $queryValue;
 
   /**
-   * The request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  protected $requestStack;
-
-  /**
    * The language negotiation method id.
    */
   const METHOD_ID = 'language-session';
-
-  /**
-   * Constructs a LanguageNegotiationSession object.
-   *
-   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
-   *   The request stack.
-   */
-  public function __construct(RequestStack $request_stack) {
-    $this->requestStack = $request_stack;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $container->get('request_stack')
-    );
-  }
 
   /**
    * {@inheritdoc}
    */
   public function getLangcode(Request $request = NULL) {
     $config = $this->config->get('language.negotiation')->get('session');
-    if (($param = $config['parameter']) && $request) {
-      if ($request->query->has($param)) {
-        return $request->query->get($param);
-      }
-      // @todo Remove hasSession() from condition in
-      //   https://www.drupal.org/node/2484991
-      if ($request->hasSession() && $request->getSession()->has($param)) {
-        return $request->getSession()->get($param);
-      }
+    $param = $config['parameter'];
+    $langcode = $request && $request->query->get($param) ? $request->query->get($param) : NULL;
+    if (!$langcode && isset($_SESSION[$param])) {
+      $langcode = $_SESSION[$param];
     }
-    return NULL;
+    return $langcode;
   }
 
   /**
@@ -107,7 +73,7 @@ class LanguageNegotiationSession extends LanguageNegotiationMethodBase implement
       $languages = $this->languageManager->getLanguages();
       if ($this->currentUser->isAuthenticated() && isset($languages[$langcode])) {
         $config = $this->config->get('language.negotiation')->get('session');
-        $this->requestStack->getCurrentRequest()->getSession()->set($config['parameter'], $langcode);
+        $_SESSION[$config['parameter']] = $langcode;
       }
     }
   }
@@ -163,7 +129,7 @@ class LanguageNegotiationSession extends LanguageNegotiationMethodBase implement
     parse_str($request->getQueryString() ?? '', $query);
     $config = $this->config->get('language.negotiation')->get('session');
     $param = $config['parameter'];
-    $language_query = $request->getSession()->has($param) ? $request->getSession()->get($param) : $this->languageManager->getCurrentLanguage($type)->getId();
+    $language_query = $_SESSION[$param] ?? $this->languageManager->getCurrentLanguage($type)->getId();
 
     foreach ($this->languageManager->getNativeLanguages() as $language) {
       $langcode = $language->getId();

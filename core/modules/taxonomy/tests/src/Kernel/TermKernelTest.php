@@ -5,7 +5,6 @@ namespace Drupal\Tests\taxonomy\Kernel;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\taxonomy\Traits\TaxonomyTestTrait;
-use Drupal\Tests\user\Traits\UserCreationTrait;
 
 /**
  * Kernel tests for taxonomy term functions.
@@ -15,12 +14,11 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
 class TermKernelTest extends KernelTestBase {
 
   use TaxonomyTestTrait;
-  use UserCreationTrait;
 
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['filter', 'taxonomy', 'text', 'user', 'system'];
+  protected static $modules = ['filter', 'taxonomy', 'text', 'user'];
 
   /**
    * {@inheritdoc}
@@ -29,7 +27,6 @@ class TermKernelTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig(['filter']);
     $this->installEntitySchema('taxonomy_term');
-    $this->installEntitySchema('user');
   }
 
   /**
@@ -167,59 +164,8 @@ class TermKernelTest extends KernelTestBase {
     $this->assertNotEmpty($render_array, 'Term view builder is built.');
 
     // Confirm we can render said view.
-    $rendered = (string) \Drupal::service('renderer')->renderPlain($render_array);
+    $rendered = \Drupal::service('renderer')->renderPlain($render_array);
     $this->assertNotEmpty(trim($rendered), 'Term is able to be rendered.');
-  }
-
-  /**
-   * @covers \Drupal\taxonomy\TermStorage::deleteTermHierarchy
-   * @group legacy
-   */
-  public function testDeleteTermHierarchyDeprecation(): void {
-    $vocabulary = $this->createVocabulary();
-    $term = $this->createTerm($vocabulary);
-
-    /** @var \Drupal\taxonomy\TermStorageInterface $storage */
-    $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-    $this->expectDeprecation('Drupal\taxonomy\TermStorage::deleteTermHierarchy() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. It is a no-op since 8.6.0. Parent references are automatically cleared when deleting a taxonomy term. See https://www.drupal.org/node/2936675');
-    $storage->deleteTermHierarchy([$term->tid]);
-  }
-
-  /**
-   * @covers \Drupal\taxonomy\TermStorage::updateTermHierarchy
-   * @group legacy
-   */
-  public function testUpdateTermHierarchyDeprecation(): void {
-    $vocabulary = $this->createVocabulary();
-    $term = $this->createTerm($vocabulary);
-
-    /** @var \Drupal\taxonomy\TermStorageInterface $storage */
-    $storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
-    $this->expectDeprecation('Drupal\taxonomy\TermStorage::updateTermHierarchy() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. It is a no-op since 8.6.0. Parent references are automatically updated when updating a taxonomy term. See https://www.drupal.org/node/2936675');
-    $storage->updateTermHierarchy($term);
-  }
-
-  /**
-   * Tests revision log access.
-   */
-  public function testRevisionLogAccess(): void {
-    $vocabulary = $this->createVocabulary();
-    $entity = $this->createTerm($vocabulary, ['status' => TRUE]);
-    $admin = $this->createUser([
-      'administer taxonomy',
-      'access content',
-    ]);
-    $editor = $this->createUser([
-      'edit terms in ' . $vocabulary->id(),
-      'access content',
-    ]);
-    $viewer = $this->createUser([
-      'access content',
-    ]);
-
-    $this->assertTrue($entity->get('revision_log_message')->access('view', $admin));
-    $this->assertTrue($entity->get('revision_log_message')->access('view', $editor));
-    $this->assertFalse($entity->get('revision_log_message')->access('view', $viewer));
   }
 
 }

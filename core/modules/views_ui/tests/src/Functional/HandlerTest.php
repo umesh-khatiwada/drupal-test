@@ -94,7 +94,7 @@ class HandlerTest extends UITestBase {
   /**
    * Tests UI CRUD.
    */
-  public function testUiCrud() {
+  public function testUICRUD() {
     $handler_types = ViewExecutable::getHandlerTypes();
     foreach ($handler_types as $type => $type_info) {
       // Test adding handlers.

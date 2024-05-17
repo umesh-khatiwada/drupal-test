@@ -15,7 +15,7 @@ class ObjectSerialization {
   }
 
   /**
-   * ObjectSerialization destructor.
+   * ObjectSerialization deconstructor.
    */
   public function __destruct() {
     throw new \Exception('This object should never be destructed');

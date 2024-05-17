@@ -22,7 +22,7 @@ final class FormErrorNormalizer implements NormalizerInterface, CacheableSupport
     public const TYPE = 'type';
     public const CODE = 'status_code';
 
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array
+    public function normalize(mixed $object, string $format = null, array $context = []): array
     {
         $data = [
             'title' => $context[self::TITLE] ?? 'Validation Failed',
@@ -38,14 +38,7 @@ final class FormErrorNormalizer implements NormalizerInterface, CacheableSupport
         return $data;
     }
 
-    public function getSupportedTypes(?string $format): array
-    {
-        return [
-            FormInterface::class => false,
-        ];
-    }
-
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $data instanceof FormInterface && $data->isSubmitted() && !$data->isValid();
     }
@@ -83,13 +76,8 @@ final class FormErrorNormalizer implements NormalizerInterface, CacheableSupport
         return $children;
     }
 
-    /**
-     * @deprecated since Symfony 6.3, use "getSupportedTypes()" instead
-     */
     public function hasCacheableSupportsMethod(): bool
     {
-        trigger_deprecation('symfony/serializer', '6.3', 'The "%s()" method is deprecated, use "getSupportedTypes()" instead.', __METHOD__);
-
-        return true;
+        return __CLASS__ === static::class;
     }
 }

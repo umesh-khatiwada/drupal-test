@@ -5,8 +5,7 @@ namespace Drupal\Tests\locale\Functional;
 use Drupal\Component\Gettext\PoItem;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Tests\BrowserTestBase;
-
-// cspell:ignore descripcion mostrar
+use Drupal\Component\Render\FormattableMarkup;
 
 /**
  * Tests parsing js files for translatable strings.
@@ -94,9 +93,10 @@ class LocaleJavascriptTranslationTest extends BrowserTestBase {
 
       // Assert that all strings were found properly.
       foreach ($test_strings as $str => $context) {
+        $args = ['%source' => $str, '%context' => $context];
 
         // Make sure that the string was found in the file.
-        $this->assertTrue(isset($source_strings[$str]), "Found source string: $str");
+        $this->assertTrue(isset($source_strings[$str]), new FormattableMarkup('Found source string: %source', $args));
 
         // Make sure that the proper context was matched.
         $this->assertArrayHasKey($str, $source_strings);

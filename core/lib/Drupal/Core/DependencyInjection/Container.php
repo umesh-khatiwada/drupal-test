@@ -5,7 +5,7 @@ namespace Drupal\Core\DependencyInjection;
 use Drupal\Component\DependencyInjection\Container as DrupalContainer;
 
 /**
- * Extends the container to prevent serialization.
+ * Extends the Drupal container to set the service ID on the created object.
  */
 class Container extends DrupalContainer {
 

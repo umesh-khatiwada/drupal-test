@@ -13,6 +13,11 @@ class ContentEntityNormalizer extends EntityNormalizer {
   /**
    * {@inheritdoc}
    */
+  protected $supportedInterfaceOrClass = ContentEntityInterface::class;
+
+  /**
+   * {@inheritdoc}
+   */
   public function normalize($entity, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
     $context += [
       'account' => NULL,
@@ -27,15 +32,6 @@ class ContentEntityNormalizer extends EntityNormalizer {
     }
 
     return $attributes;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      ContentEntityInterface::class => TRUE,
-    ];
   }
 
 }

@@ -27,6 +27,7 @@
    * dialog system uses to expand dialog widths.
    */
 }
+
 @media (max-width: 48rem) {
   #drupal-off-canvas-wrapper {
     width: 100% !important;
@@ -40,11 +41,9 @@
 }
 /* This is a page level content wrapper that shrinks when off-canvas is open. */
 .dialog-off-canvas-main-canvas {
-  transition:
-    padding-right 0.7s ease,
-    padding-left 0.7s ease,
-    padding-top 0.3s ease;
+  transition: padding-right 0.7s ease, padding-left 0.7s ease, padding-top 0.3s ease;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .dialog-off-canvas-main-canvas {
     transition: none;

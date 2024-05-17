@@ -55,8 +55,6 @@ class Store implements StoreInterface
 
     /**
      * Cleanups storage.
-     *
-     * @return void
      */
     public function cleanup()
     {
@@ -249,8 +247,6 @@ class Store implements StoreInterface
     /**
      * Invalidates all cache entries that match the request.
      *
-     * @return void
-     *
      * @throws \RuntimeException
      */
     public function invalidate(Request $request)
@@ -417,9 +413,6 @@ class Store implements StoreInterface
         return true;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(string $key)
     {
         return $this->root.\DIRECTORY_SEPARATOR.substr($key, 0, 2).\DIRECTORY_SEPARATOR.substr($key, 2, 2).\DIRECTORY_SEPARATOR.substr($key, 4, 2).\DIRECTORY_SEPARATOR.substr($key, 6);
@@ -474,7 +467,7 @@ class Store implements StoreInterface
     /**
      * Restores a Response from the HTTP headers and body.
      */
-    private function restoreResponse(array $headers, ?string $path = null): ?Response
+    private function restoreResponse(array $headers, string $path = null): ?Response
     {
         $status = $headers['X-Status'][0];
         unset($headers['X-Status']);

@@ -42,7 +42,7 @@ class EntityLink extends LinkBase {
       return NULL;
     }
     if ($this->languageManager->isMultilingual()) {
-      $entity = $this->getEntityTranslationByRelationship($entity, $row);
+      $entity = $this->getEntityTranslation($entity, $row);
     }
     return $entity->toUrl($template)->setAbsolute($this->options['absolute']);
   }
@@ -50,7 +50,7 @@ class EntityLink extends LinkBase {
   /**
    * Returns the entity link template name identifying the link route.
    *
-   * @return string
+   * @returns string
    *   The link template name.
    */
   protected function getEntityLinkTemplate() {

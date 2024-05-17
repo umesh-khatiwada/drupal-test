@@ -79,7 +79,12 @@
    */
   function toggleStickyHeaderState(pinnedState) {
     if (isDesktopNav()) {
-      siteHeaderFixable.classList.toggle('is-expanded', pinnedState);
+      if (pinnedState === true) {
+        siteHeaderFixable.classList.add('is-expanded');
+      } else {
+        siteHeaderFixable.classList.remove('is-expanded');
+      }
+
       stickyHeaderToggleButton.setAttribute('aria-checked', pinnedState);
       setStickyHeaderStorage(pinnedState);
     }
@@ -128,9 +133,11 @@
       entries.forEach((entry) => {
         // Firefox doesn't seem to support entry.isIntersecting properly,
         // so we check the intersectionRatio.
-        fixableElements.forEach((el) =>
-          el.classList.toggle('is-fixed', entry.intersectionRatio < 1),
-        );
+        if (entry.intersectionRatio < 1) {
+          fixableElements.forEach((el) => el.classList.add('is-fixed'));
+        } else {
+          fixableElements.forEach((el) => el.classList.remove('is-fixed'));
+        }
       });
     }
 

@@ -5,8 +5,6 @@ namespace Drupal\views\Plugin\views\query;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 
-// cspell:ignore unixepoch
-
 /**
  * SQLite-specific date handling.
  *

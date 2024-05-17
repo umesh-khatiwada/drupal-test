@@ -3,25 +3,18 @@
 namespace Drupal\Core\Cache\Context;
 
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Menu\MenuActiveTrailInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Defines the MenuActiveTrailsCacheContext service.
+ *
+ * This class is container-aware to avoid initializing the 'menu.active_trails'
+ * service (and its dependencies) when it is not necessary.
  */
-class MenuActiveTrailsCacheContext implements CalculatedCacheContextInterface {
+class MenuActiveTrailsCacheContext implements CalculatedCacheContextInterface, ContainerAwareInterface {
 
-  /**
-   * Constructs a MenuActiveTrailsCacheContext object.
-   *
-   * @param \Drupal\Core\Menu\MenuActiveTrailInterface|null $menuActiveTrailService
-   *   The menu active trail service.
-   */
-  public function __construct(protected ?MenuActiveTrailInterface $menuActiveTrailService = NULL) {
-    if ($this->menuActiveTrailService === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . ' without the $menuActiveTrailService argument is deprecated in drupal:10.2.0 and it will be required in drupal:11.0.0. See https://www.drupal.org/node/3397515', E_USER_DEPRECATED);
-      $this->menuActiveTrailService = \Drupal::service('menu.active_trail');
-    }
-  }
+  use ContainerAwareTrait;
 
   /**
    * {@inheritdoc}
@@ -38,7 +31,8 @@ class MenuActiveTrailsCacheContext implements CalculatedCacheContextInterface {
       throw new \LogicException('No menu name provided for menu.active_trails cache context.');
     }
 
-    $active_trail = $this->menuActiveTrailService->getActiveTrailIds($menu_name);
+    $active_trail = $this->container->get('menu.active_trail')
+      ->getActiveTrailIds($menu_name);
     return 'menu_trail.' . $menu_name . '|' . implode('|', $active_trail);
   }
 

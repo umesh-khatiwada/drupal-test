@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\file\Unit\Plugin\migrate\field\d6;
 
 use Drupal\migrate\Plugin\MigrationInterface;
@@ -32,8 +30,6 @@ class FileFieldTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->plugin = new FileField([], 'file', []);
 
     $migration = $this->prophesize(MigrationInterface::class);

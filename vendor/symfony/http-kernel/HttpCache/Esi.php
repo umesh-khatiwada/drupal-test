@@ -32,9 +32,6 @@ class Esi extends AbstractSurrogate
         return 'esi';
     }
 
-    /**
-     * @return void
-     */
     public function addSurrogateControl(Response $response)
     {
         if (str_contains($response->getContent(), '<esi:include')) {
@@ -42,7 +39,7 @@ class Esi extends AbstractSurrogate
         }
     }
 
-    public function renderIncludeTag(string $uri, ?string $alt = null, bool $ignoreErrors = true, string $comment = ''): string
+    public function renderIncludeTag(string $uri, string $alt = null, bool $ignoreErrors = true, string $comment = ''): string
     {
         $html = sprintf('<esi:include src="%s"%s%s />',
             $uri,

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Database;
 
 /**
@@ -67,6 +65,7 @@ trait SchemaIntrospectionTestTrait {
 
     $schema = \Drupal::database()->schema();
     $introspect_index_schema = new \ReflectionMethod(get_class($schema), 'introspectIndexSchema');
+    $introspect_index_schema->setAccessible(TRUE);
     $index_schema = $introspect_index_schema->invoke($schema, $table_name);
 
     // Filter the indexes by type.

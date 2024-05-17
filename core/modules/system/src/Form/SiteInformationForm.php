@@ -3,7 +3,6 @@
 namespace Drupal\system\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\PathValidatorInterface;
@@ -44,8 +43,6 @@ class SiteInformationForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
-   *   The typed config manager.
    * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
    *   The path alias manager.
    * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
@@ -53,8 +50,8 @@ class SiteInformationForm extends ConfigFormBase {
    * @param \Drupal\Core\Routing\RequestContext $request_context
    *   The request context.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, AliasManagerInterface $alias_manager, PathValidatorInterface $path_validator, RequestContext $request_context) {
-    parent::__construct($config_factory, $typedConfigManager);
+  public function __construct(ConfigFactoryInterface $config_factory, AliasManagerInterface $alias_manager, PathValidatorInterface $path_validator, RequestContext $request_context) {
+    parent::__construct($config_factory);
     $this->aliasManager = $alias_manager;
     $this->pathValidator = $path_validator;
     $this->requestContext = $request_context;
@@ -66,7 +63,6 @@ class SiteInformationForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('config.typed'),
       $container->get('path_alias.manager'),
       $container->get('path.validator'),
       $container->get('router.request_context')
@@ -127,13 +123,13 @@ class SiteInformationForm extends ConfigFormBase {
       '#title' => $this->t('Front page'),
       '#open' => TRUE,
     ];
+    $front_page = $site_config->get('page.front') != '/user/login' ? $this->aliasManager->getAliasByPath($site_config->get('page.front')) : '';
     $form['front_page']['site_frontpage'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Default front page'),
-      '#default_value' => $this->aliasManager->getAliasByPath($site_config->get('page.front')),
-      '#required' => TRUE,
+      '#default_value' => $front_page,
       '#size' => 40,
-      '#description' => $this->t('Specify a relative URL to display as the front page.'),
+      '#description' => $this->t('Optionally, specify a relative URL to display as the front page. Leave blank to display the default front page.'),
       '#field_prefix' => $this->requestContext->getCompleteBaseUrl(),
     ];
     $form['error_page'] = [
@@ -163,8 +159,15 @@ class SiteInformationForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Get the normal path of the front page.
-    $form_state->setValueForElement($form['front_page']['site_frontpage'], $this->aliasManager->getPathByAlias($form_state->getValue('site_frontpage')));
+    // Check for empty front page path.
+    if ($form_state->isValueEmpty('site_frontpage')) {
+      // Set to default "user/login".
+      $form_state->setValueForElement($form['front_page']['site_frontpage'], '/user/login');
+    }
+    else {
+      // Get the normal path of the front page.
+      $form_state->setValueForElement($form['front_page']['site_frontpage'], $this->aliasManager->getPathByAlias($form_state->getValue('site_frontpage')));
+    }
     // Validate front page path.
     if (($value = $form_state->getValue('site_frontpage')) && $value[0] !== '/') {
       $form_state->setErrorByName('site_frontpage', $this->t("The path '%path' has to start with a slash.", ['%path' => $form_state->getValue('site_frontpage')]));

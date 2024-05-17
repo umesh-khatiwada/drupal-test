@@ -6,8 +6,6 @@ use Drupal\Core\Url;
 use Drupal\locale\StringStorageInterface;
 use Drupal\Tests\BrowserTestBase;
 
-// cspell:ignore espagnol
-
 /**
  * Adds a new language with translations and tests language list order.
  *

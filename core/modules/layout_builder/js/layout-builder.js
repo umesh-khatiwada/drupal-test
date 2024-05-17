@@ -44,14 +44,11 @@
          */
         const toggleBlockEntry = (index, link) => {
           const $link = $(link);
-          const textMatch = link.textContent.toLowerCase().includes(query);
+          const textMatch =
+            link.textContent.toLowerCase().indexOf(query) !== -1;
           // Checks if a category is currently hidden.
           // Toggles the category on if so.
-          if (
-            Drupal.elementIsHidden(
-              $link.closest('.js-layout-builder-category')[0],
-            )
-          ) {
+          if ($link.closest('.js-layout-builder-category').is(':hidden')) {
             $link.closest('.js-layout-builder-category').show();
           }
           // Toggle the li tag of the matching link.
@@ -408,7 +405,7 @@
       };
 
       $('#layout-builder-content-preview', context).on('change', (event) => {
-        const isChecked = event.currentTarget.checked;
+        const isChecked = $(event.currentTarget).is(':checked');
 
         localStorage.setItem(contentPreviewId, JSON.stringify(isChecked));
 
@@ -455,13 +452,4 @@
 
     return `<div class="layout-builder-block__content-preview-placeholder-label js-layout-builder-content-preview-placeholder-label">${contentPreviewPlaceholderText}</div>`;
   };
-
-  // Remove all contextual links outside the layout.
-  $(window).on('drupalContextualLinkAdded', (event, data) => {
-    const element = data.$el;
-    const contextualId = element.attr('data-contextual-id');
-    if (contextualId && !contextualId.startsWith('layout_builder_block:')) {
-      element.remove();
-    }
-  });
 })(jQuery, Drupal, Sortable);

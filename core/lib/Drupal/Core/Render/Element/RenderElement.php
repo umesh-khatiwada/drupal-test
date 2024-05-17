@@ -244,7 +244,6 @@ abstract class RenderElement extends PluginBase implements ElementInterface {
    *   - #ajax['event']
    *   - #ajax['prevent']
    *   - #ajax['url']
-   *   - #ajax['httpMethod']
    *   - #ajax['callback']
    *   - #ajax['options']
    *   - #ajax['wrapper']
@@ -271,12 +270,6 @@ abstract class RenderElement extends PluginBase implements ElementInterface {
     // Add a data attribute to disable automatic refocus after ajax call.
     if (!empty($element['#ajax']['disable-refocus'])) {
       $element['#attributes']['data-disable-refocus'] = "true";
-    }
-
-    // Add a data attribute to attempt to focus element that was focused before
-    // executing ajax commands.
-    if ($element['#ajax']['refocus-blur'] ?? FALSE) {
-      $element['#attributes']['data-refocus-blur'] = "true";
     }
 
     // Add a reasonable default event handler if none was specified.
@@ -333,17 +326,6 @@ abstract class RenderElement extends PluginBase implements ElementInterface {
 
     // Attach JavaScript settings to the element.
     if (isset($element['#ajax']['event'])) {
-      // By default, focus should return to the element focused prior to the
-      // execution of AJAX commands within event listeners attached to the blur
-      // event. This behavior can be explicitly overridden if needed.
-      if (!isset($element['#ajax']['refocus-blur'])) {
-        // The change event on text input types is triggered on blur.
-        $text_types = ['password', 'textfield', 'number', 'tel', 'textarea', 'machine_name'];
-        if ($element['#ajax']['event'] === 'blur' || ($element['#ajax']['event'] === 'change' && in_array($element['#type'], $text_types))) {
-          $element['#attributes']['data-refocus-blur'] = "true";
-        }
-      }
-
       $element['#attached']['library'][] = 'core/internal.jquery.form';
       $element['#attached']['library'][] = 'core/drupal.ajax';
 
@@ -358,7 +340,6 @@ abstract class RenderElement extends PluginBase implements ElementInterface {
       // to be substantially different for a JavaScript triggered submission.
       $settings += [
         'url' => NULL,
-        'httpMethod' => 'POST',
         'options' => ['query' => []],
         'dialogType' => 'ajax',
       ];

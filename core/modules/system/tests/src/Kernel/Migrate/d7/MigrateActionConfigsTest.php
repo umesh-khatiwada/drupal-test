@@ -17,6 +17,11 @@ class MigrateActionConfigsTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
+  protected static $modules = ['action'];
+
+  /**
+   * {@inheritdoc}
+   */
   protected function setUp(): void {
     parent::setUp();
     $this->executeMigration('action_settings');

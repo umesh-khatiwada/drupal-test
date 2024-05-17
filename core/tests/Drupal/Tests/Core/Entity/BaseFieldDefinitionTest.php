@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Entity;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -37,8 +35,6 @@ class BaseFieldDefinitionTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     // Mock the field type manager and place it in the container.
     $field_type_manager = $this->createMock('Drupal\Core\Field\FieldTypePluginManagerInterface');
 
@@ -220,7 +216,7 @@ class BaseFieldDefinitionTest extends UnitTestCase {
     // Set the field item list class to be used to avoid requiring the typed
     // data manager to retrieve it.
     $definition->setClass('Drupal\Core\Field\FieldItemList');
-    $this->assertEquals($expected_default_value, $definition->getInitialValue());
+    $this->assertEquals($expected_default_value, $definition->getInitialValue($entity));
 
     $data_definition = $this->getMockBuilder('Drupal\Core\TypedData\DataDefinition')
       ->disableOriginalConstructor()
@@ -232,19 +228,19 @@ class BaseFieldDefinitionTest extends UnitTestCase {
 
     // Set default value only with a literal.
     $definition->setInitialValue($default_value['value']);
-    $this->assertEquals($expected_default_value, $definition->getInitialValue());
+    $this->assertEquals($expected_default_value, $definition->getInitialValue($entity));
 
     // Set default value with an indexed array.
     $definition->setInitialValue($expected_default_value);
-    $this->assertEquals($expected_default_value, $definition->getInitialValue());
+    $this->assertEquals($expected_default_value, $definition->getInitialValue($entity));
 
     // Set default value with an empty array.
     $definition->setInitialValue([]);
-    $this->assertEquals([], $definition->getInitialValue());
+    $this->assertEquals([], $definition->getInitialValue($entity));
 
     // Set default value with NULL.
     $definition->setInitialValue(NULL);
-    $this->assertEquals([], $definition->getInitialValue());
+    $this->assertEquals([], $definition->getInitialValue($entity));
   }
 
   /**

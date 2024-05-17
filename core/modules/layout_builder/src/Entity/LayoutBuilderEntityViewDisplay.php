@@ -122,6 +122,7 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
    * {@inheritdoc}
    */
   public function preSave(EntityStorageInterface $storage) {
+    parent::preSave($storage);
 
     $original_value = isset($this->original) ? $this->original->isOverridable() : FALSE;
     $new_value = $this->isOverridable();
@@ -136,8 +137,6 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
         $this->removeSectionField($entity_type_id, $bundle, OverridesSectionStorage::FIELD_NAME);
       }
     }
-
-    parent::preSave($storage);
 
     $already_enabled = isset($this->original) ? $this->original->isLayoutBuilderEnabled() : FALSE;
     $set_enabled = $this->isLayoutBuilderEnabled();
@@ -173,9 +172,7 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
    *   The name for the layout section field.
    */
   protected function removeSectionField($entity_type_id, $bundle, $field_name) {
-    /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $storage */
-    $storage = $this->entityTypeManager()->getStorage($this->getEntityTypeId());
-    $query = $storage->getQuery()
+    $query = $this->entityTypeManager()->getStorage($this->getEntityTypeId())->getQuery()
       ->condition('targetEntityType', $this->getTargetEntityTypeId())
       ->condition('bundle', $this->getTargetBundle())
       ->condition('mode', $this->getMode(), '<>')
@@ -304,6 +301,7 @@ class LayoutBuilderEntityViewDisplay extends BaseEntityViewDisplay implements La
    */
   protected function buildSections(FieldableEntityInterface $entity) {
     $contexts = $this->getContextsForEntity($entity);
+    // @todo Remove in https://www.drupal.org/project/drupal/issues/3018782.
     $label = new TranslatableMarkup('@entity being viewed', [
       '@entity' => $entity->getEntityType()->getSingularLabel(),
     ]);

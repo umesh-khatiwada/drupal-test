@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\node\Kernel\Plugin\migrate\source\d7;
 
-// cspell:ignore tnid
-
 /**
  * Tests D7 node translation source plugin.
  *

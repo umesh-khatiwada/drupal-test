@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\DrupalKernel;
 
 use Composer\Autoload\ClassLoader;
@@ -31,6 +29,7 @@ class DiscoverServiceProvidersTest extends UnitTestCase {
     $kernel->discoverServiceProviders();
 
     $reflected_yamls = (new \ReflectionObject($kernel))->getProperty('serviceYamls');
+    $reflected_yamls->setAccessible(TRUE);
 
     $expect = [
       'app' => [
@@ -52,6 +51,7 @@ class DiscoverServiceProvidersTest extends UnitTestCase {
     $kernel->discoverServiceProviders();
 
     $reflected_yamls = (new \ReflectionObject($kernel))->getProperty('serviceYamls');
+    $reflected_yamls->setAccessible(TRUE);
 
     $expect = [
       'app' => [

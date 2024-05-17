@@ -210,8 +210,7 @@ class Combine extends StringFilter {
 
   protected function opRegex($expression) {
     $placeholder = $this->placeholder();
-    $operator = $this->getConditionOperator('REGEXP');
-    $this->query->addWhereExpression($this->options['group'], "$expression $operator $placeholder", [$placeholder => $this->value]);
+    $this->query->addWhereExpression($this->options['group'], "$expression REGEXP $placeholder", [$placeholder => $this->value]);
   }
 
   protected function opEmpty($expression) {

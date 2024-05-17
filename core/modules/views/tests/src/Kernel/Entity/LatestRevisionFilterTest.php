@@ -32,10 +32,7 @@ class LatestRevisionFilterTest extends ViewsKernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('node');
     $this->installSchema('node', ['node_access']);
-    NodeType::create([
-      'type' => 'article',
-      'name' => 'Article',
-    ])->save();
+    NodeType::create(['type' => 'article'])->save();
 
     // Create a node that goes through various default/pending revision stages.
     $node = Node::create([

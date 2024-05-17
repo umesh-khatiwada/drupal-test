@@ -2,8 +2,7 @@
 
 namespace Drupal\Tests\content_translation\Functional;
 
-use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
-use Drupal\Tests\image\Kernel\ImageFieldCreationTrait;
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\node\Functional\NodeTestBase;
 use Drupal\Tests\TestFileCreationTrait;
 
@@ -14,8 +13,6 @@ use Drupal\Tests\TestFileCreationTrait;
  */
 class ContentTranslationLanguageChangeTest extends NodeTestBase {
 
-  use ContentTranslationTestTrait;
-  use ImageFieldCreationTrait;
   use TestFileCreationTrait {
     getTestFiles as drupalGetTestFiles;
   }
@@ -47,7 +44,7 @@ class ContentTranslationLanguageChangeTest extends NodeTestBase {
     parent::setUp();
     $langcodes = ['de', 'fr'];
     foreach ($langcodes as $langcode) {
-      static::createLanguageFromLangcode($langcode);
+      ConfigurableLanguage::createFromLangcode($langcode)->save();
     }
     $this->drupalPlaceBlock('local_tasks_block');
     $user = $this->drupalCreateUser([
@@ -65,12 +62,25 @@ class ContentTranslationLanguageChangeTest extends NodeTestBase {
     ]);
     $this->drupalLogin($user);
 
-    // Enable translations for article.
-    $this->enableContentTranslation('node', 'article');
+    // Enable translation for article.
+    $edit = [
+      'entity_types[node]' => TRUE,
+      'settings[node][article][translatable]' => TRUE,
+      'settings[node][article][settings][language][language_alterable]' => TRUE,
+    ];
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
-    $this->rebuildContainer();
-
-    $this->createImageField('field_image_field', 'article');
+    // Add an image field.
+    $this->drupalGet('admin/structure/types/manage/article/fields/add-field');
+    $edit = [
+      'new_storage_type' => 'image',
+      'field_name' => 'image_field',
+      'label' => 'image_field',
+    ];
+    $this->submitForm($edit, 'Save and continue');
+    $this->submitForm([], 'Save field settings');
+    $this->submitForm([], 'Save settings');
   }
 
   /**

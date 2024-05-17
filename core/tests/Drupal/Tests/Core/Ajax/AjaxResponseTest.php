@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Ajax;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -28,8 +26,6 @@ class AjaxResponseTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->ajaxResponse = new AjaxResponse();
   }
 

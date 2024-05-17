@@ -230,7 +230,7 @@ class ConfigEntityTest extends BrowserTestBase {
       'administer site configuration',
     ]));
 
-    $id = $this->randomMachineName();
+    $id = strtolower($this->randomMachineName());
     $label1 = $this->randomMachineName();
     $label2 = $this->randomMachineName();
     $label3 = $this->randomMachineName();
@@ -290,7 +290,7 @@ class ConfigEntityTest extends BrowserTestBase {
 
     // Rename the configuration entity's ID/machine name.
     $edit = [
-      'id' => $this->randomMachineName(),
+      'id' => strtolower($this->randomMachineName()),
       'label' => $label3,
     ];
     $this->drupalGet("admin/structure/config_test/manage/{$id}");
@@ -326,7 +326,7 @@ class ConfigEntityTest extends BrowserTestBase {
     // @see \Drupal\Tests\config\FunctionalJavascript\ConfigEntityTest::testAjaxOnAddPage()
     $this->drupalGet('admin/structure/config_test/add');
 
-    $id = $this->randomMachineName();
+    $id = strtolower($this->randomMachineName());
     $edit = [
       'id' => $id,
       'label' => $this->randomString(),

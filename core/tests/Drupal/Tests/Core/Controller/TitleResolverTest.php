@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Controller\TitleResolverTest.
+ */
 
 namespace Drupal\Tests\Core\Controller;
 
@@ -49,8 +52,6 @@ class TitleResolverTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->controllerResolver = $this->createMock('\Drupal\Core\Controller\ControllerResolverInterface');
     $this->translationManager = $this->createMock('\Drupal\Core\StringTranslation\TranslationInterface');
     $this->argumentResolver = $this->createMock('\Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface');

@@ -1,7 +1,7 @@
 services:
-  form_test.form.service_form:
+  form_test.form.serviceform:
     class: Drupal\form_test\FormTestServiceObject
-    arguments: ['@config.factory', '@config.typed']
+    arguments: ['@config.factory']
   form_test.event_subscriber:
     class: Drupal\form_test\EventSubscriber\FormTestEventSubscriber
     tags:

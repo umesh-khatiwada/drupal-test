@@ -5,7 +5,7 @@ namespace Drupal\Core\Entity;
 /**
  * A storage that supports content entity types.
  */
-interface ContentEntityStorageInterface extends TranslatableRevisionableStorageInterface {
+interface ContentEntityStorageInterface extends EntityStorageInterface, TranslatableRevisionableStorageInterface {
 
   /**
    * Creates an entity with sample field values.

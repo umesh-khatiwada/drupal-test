@@ -32,6 +32,7 @@ class ContentEntityHasChangesTest extends KernelTestBase {
 
     $this->installEntitySchema('user');
     $this->installEntitySchema('entity_test_mulrev_changed_rev');
+    $this->installSchema('system', 'sequences');
   }
 
   /**
@@ -50,7 +51,7 @@ class ContentEntityHasChangesTest extends KernelTestBase {
     ]);
     $user2->save();
 
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
     $storage = $this->container->get('entity_type.manager')
       ->getStorage('entity_test_mulrev_changed_rev');
     /** @var \Drupal\entity_test\Entity\EntityTestMulRevChangedWithRevisionLog $entity */

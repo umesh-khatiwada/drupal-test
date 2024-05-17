@@ -25,7 +25,7 @@ class FormObjectTest extends ConfigFormTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->form = new FormTestObject($this->container->get('config.factory'), $this->container->get('config.typed'));
+    $this->form = new FormTestObject($this->container->get('config.factory'));
     $this->values = [
       'bananas' => [
         '#value' => $this->randomString(10),

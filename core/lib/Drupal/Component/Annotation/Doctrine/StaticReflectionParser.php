@@ -133,13 +133,6 @@ class StaticReflectionParser
     protected $parentStaticReflectionParser;
 
     /**
-     * The class attributes.
-     *
-     * @var string[]
-     */
-    protected array $classAttributes = [];
-
-    /**
      * Parses a class residing in a PSR-0 hierarchy.
      *
      * @param string               $className               The full, namespaced class name.
@@ -185,7 +178,6 @@ class StaticReflectionParser
         $tokenParser = new TokenParser($contents);
         $docComment  = '';
         $last_token  = false;
-        $attributeNames = [];
 
         while ($token = $tokenParser->next(false)) {
             switch ($token[0]) {
@@ -195,17 +187,7 @@ class StaticReflectionParser
                 case T_DOC_COMMENT:
                     $docComment = $token[1];
                     break;
-                case T_ATTRIBUTE:
-                    while ($token = $tokenParser->next()) {
-                        if ($token[0] === T_NAME_FULLY_QUALIFIED || $token[0] === T_NAME_QUALIFIED || $token[0] === T_NAME_RELATIVE || $token[0] === T_STRING) {
-                            $attributeNames[] = $token[1];
-                            break 2;
-                        }
-                    }
-                    break;
                 case T_CLASS:
-                    // Convert the attributes to fully qualified names.
-                    $this->classAttributes = array_map(fn($name) => $this->fullySpecifyName($name), $attributeNames);
                     if ($last_token !== T_PAAMAYIM_NEKUDOTAYIM && $last_token !== T_NEW) {
                         $this->docComment['class'] = $docComment;
                         $docComment                = '';
@@ -241,7 +223,31 @@ class StaticReflectionParser
                     $docComment                              = '';
                     break;
                 case T_EXTENDS:
-                    $this->parentClassName = $this->fullySpecifyName($tokenParser->parseClass());
+                    $this->parentClassName = $tokenParser->parseClass();
+                    $nsPos                 = strpos($this->parentClassName, '\\');
+                    $fullySpecified        = false;
+                    if ($nsPos === 0) {
+                        $fullySpecified = true;
+                    } else {
+                        if ($nsPos) {
+                            $prefix  = strtolower(substr($this->parentClassName, 0, $nsPos));
+                            $postfix = substr($this->parentClassName, $nsPos);
+                        } else {
+                            $prefix  = strtolower($this->parentClassName);
+                            $postfix = '';
+                        }
+                        foreach ($this->useStatements as $alias => $use) {
+                            if ($alias !== $prefix) {
+                                continue;
+                            }
+
+                            $this->parentClassName = '\\' . $use . $postfix;
+                            $fullySpecified        = true;
+                        }
+                    }
+                    if (! $fullySpecified) {
+                        $this->parentClassName = '\\' . $this->namespace . '\\' . $this->parentClassName;
+                    }
                     break;
             }
 
@@ -334,60 +340,5 @@ class StaticReflectionParser
             return $this->getParentStaticReflectionParser()->getStaticReflectionParserForDeclaringClass($type, $name);
         }
         throw new ReflectionException('Invalid ' . $type . ' "' . $name . '"');
-    }
-
-    /**
-     * Determines if the class has the provided class attribute.
-     *
-     * @param string $attribute The fully qualified attribute to check for.
-     *
-     * @return bool
-     */
-    public function hasClassAttribute(string $attribute): bool
-    {
-        $this->parse();
-        foreach ($this->classAttributes as $classAttribute) {
-            if (is_a($classAttribute, $attribute, TRUE)) {
-                return TRUE;
-            }
-        }
-
-        return FALSE;
-    }
-
-    /**
-     * Converts a name into a fully specified name.
-     *
-     * @param string $name The name to convert.
-     *
-     * @return string
-     */
-    private function fullySpecifyName(string $name): string
-    {
-        $nsPos          = strpos($name, '\\');
-        $fullySpecified = false;
-        if ($nsPos === 0) {
-            $fullySpecified = true;
-        } else {
-            if ($nsPos) {
-                $prefix  = strtolower(substr($name, 0, $nsPos));
-                $postfix = substr($name, $nsPos);
-            } else {
-                $prefix  = strtolower($name);
-                $postfix = '';
-            }
-            foreach ($this->useStatements as $alias => $use) {
-                if ($alias !== $prefix) {
-                    continue;
-                }
-
-                $name = '\\' . $use . $postfix;
-                $fullySpecified        = true;
-            }
-        }
-        if (! $fullySpecified) {
-            $name = '\\' . $this->namespace . '\\' . $name;
-        }
-        return $name;
     }
 }

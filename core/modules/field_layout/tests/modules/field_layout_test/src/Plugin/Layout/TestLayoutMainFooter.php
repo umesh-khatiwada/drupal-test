@@ -22,7 +22,7 @@ use Drupal\Core\Layout\LayoutDefault;
  *   },
  *   config_dependencies = {
  *     "module" = {
- *       "layout_discovery",
+ *       "dependency_from_annotation",
  *     },
  *   },
  * )
@@ -43,7 +43,7 @@ class TestLayoutMainFooter extends LayoutDefault {
    */
   public function calculateDependencies() {
     $dependencies = parent::calculateDependencies();
-    $dependencies['module'][] = 'system';
+    $dependencies['module'][] = 'dependency_from_calculateDependencies';
     return $dependencies;
   }
 

@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_entity_field_renderers
-label: test_entity_field_renderers
+label: ''
 module: views
 description: ''
 tag: ''

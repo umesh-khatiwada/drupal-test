@@ -125,10 +125,8 @@ class ModerationStateWidget extends OptionsSelectWidget {
     // The moderation state of the saved revision will be used to display the
     // current state as well determine the appropriate transitions.
     if (!$entity->isNew()) {
-      /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
-      $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
       /** @var \Drupal\Core\Entity\ContentEntityInterface $original_entity */
-      $original_entity = $storage->loadRevision($entity->getLoadedRevisionId());
+      $original_entity = $this->entityTypeManager->getStorage($entity->getEntityTypeId())->loadRevision($entity->getLoadedRevisionId());
       if (!$entity->isDefaultTranslation() && $original_entity->hasTranslation($entity->language()->getId())) {
         $original_entity = $original_entity->getTranslation($entity->language()->getId());
       }

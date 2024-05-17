@@ -5,14 +5,14 @@ namespace Drupal\Tests\taxonomy\Functional;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 
 /**
  * Provides common testing base for translated taxonomy terms.
  */
 trait TaxonomyTranslationTestTrait {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
 
   /**
    * The vocabulary.

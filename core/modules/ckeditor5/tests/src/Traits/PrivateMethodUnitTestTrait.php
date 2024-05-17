@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\ckeditor5\Traits;
 
 /**
@@ -25,6 +23,7 @@ trait PrivateMethodUnitTestTrait {
   protected static function getMethod(string $fqcn, string $name): \ReflectionMethod {
     $class = new \ReflectionClass($fqcn);
     $method = $class->getMethod($name);
+    $method->setAccessible(TRUE);
     return $method;
   }
 

@@ -2,11 +2,12 @@
 
 namespace Drupal\book\Cache;
 
-use Drupal\book\BookManagerInterface;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\Context\CacheContextInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Defines the book navigation cache context service.
@@ -16,8 +17,13 @@ use Drupal\node\NodeInterface;
  * This allows for book navigation location-aware caching. It depends on:
  * - whether the current route represents a book node at all
  * - and if so, where in the book hierarchy we are
+ *
+ * This class is container-aware to avoid initializing the 'book.manager'
+ * service when it is not necessary.
  */
-class BookNavigationCacheContext implements CacheContextInterface {
+class BookNavigationCacheContext implements CacheContextInterface, ContainerAwareInterface {
+
+  use ContainerAwareTrait;
 
   /**
    * The current route match.
@@ -31,15 +37,9 @@ class BookNavigationCacheContext implements CacheContextInterface {
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
-   * @param \Drupal\book\BookManagerInterface|null $bookManagerService
-   *   The book manager service.
    */
-  public function __construct(RouteMatchInterface $route_match, public ?BookManagerInterface $bookManagerService = NULL) {
+  public function __construct(RouteMatchInterface $route_match) {
     $this->routeMatch = $route_match;
-    if ($this->bookManagerService === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . ' without the $bookManagerService argument is deprecated in drupal:10.2.0 and it will be required in drupal:11.0.0. See https://www.drupal.org/node/3397515', E_USER_DEPRECATED);
-      $this->bookManagerService = \Drupal::service('book.manager');
-    }
   }
 
   /**
@@ -66,7 +66,7 @@ class BookNavigationCacheContext implements CacheContextInterface {
     }
 
     // If we're looking at a book node, get the trail for that node.
-    $active_trail = $this->bookManagerService
+    $active_trail = $this->container->get('book.manager')
       ->getActiveTrailIds($node->book['bid'], $node->book);
     return implode('|', $active_trail);
   }

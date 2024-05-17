@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Plugin\Context\ContextTest.
+ */
 
 namespace Drupal\Tests\Core\Plugin\Context;
 
@@ -85,7 +88,9 @@ class ContextTest extends UnitTestCase {
    */
   public function testSetContextValueTypedData() {
 
-    $this->contextDefinition = $this->createMock('Drupal\Core\Plugin\Context\ContextDefinitionInterface');
+    $this->contextDefinition = $this->getMockBuilder('Drupal\Core\Plugin\Context\ContextDefinitionInterface')
+      ->onlyMethods(['getDefaultValue', 'getDataDefinition'])
+      ->getMockForAbstractClass();
 
     $typed_data = $this->createMock('Drupal\Core\TypedData\TypedDataInterface');
     $context = new Context($this->contextDefinition, $typed_data);
@@ -139,7 +144,9 @@ class ContextTest extends UnitTestCase {
   protected function setUpDefaultValue($default_value = NULL) {
     $mock_data_definition = $this->createMock('Drupal\Core\TypedData\DataDefinitionInterface');
 
-    $this->contextDefinition = $this->createMock('Drupal\Core\Plugin\Context\ContextDefinitionInterface');
+    $this->contextDefinition = $this->getMockBuilder('Drupal\Core\Plugin\Context\ContextDefinitionInterface')
+      ->onlyMethods(['getDefaultValue', 'getDataDefinition'])
+      ->getMockForAbstractClass();
 
     $this->contextDefinition->expects($this->once())
       ->method('getDefaultValue')

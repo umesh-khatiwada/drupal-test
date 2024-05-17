@@ -9,7 +9,6 @@ use Drupal\Core\Url;
  * JSON:API integration test for the "CommentType" config entity type.
  *
  * @group jsonapi
- * @group #slow
  */
 class CommentTypeTest extends ConfigEntityResourceTestBase {
 

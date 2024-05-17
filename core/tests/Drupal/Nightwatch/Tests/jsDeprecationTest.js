@@ -1,7 +1,17 @@
 module.exports = {
   '@tags': ['core'],
   before(browser) {
-    browser.drupalInstall().drupalInstallModule('js_deprecation_test');
+    browser.drupalInstall().drupalLoginAsAdmin(() => {
+      browser
+        .drupalRelativeURL('/admin/modules')
+        .setValue('input[type="search"]', 'JS Deprecation test')
+        .waitForElementVisible(
+          'input[name="modules[js_deprecation_test][enable]"]',
+          1000,
+        )
+        .click('input[name="modules[js_deprecation_test][enable]"]')
+        .click('input[type="submit"]'); // Submit module form.
+    });
   },
   after(browser) {
     browser.drupalUninstall();

@@ -2,8 +2,6 @@
 
 namespace Drupal\field\Plugin\migrate\source\d6;
 
-// cspell:ignore cnfi
-
 /**
  * Drupal 6 i18n field instance option labels source from database.
  *

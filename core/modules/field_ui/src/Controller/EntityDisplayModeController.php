@@ -2,7 +2,6 @@
 
 namespace Drupal\field_ui\Controller;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 
@@ -23,26 +22,14 @@ class EntityDisplayModeController extends ControllerBase {
       if ($entity_type->get('field_ui_base_route') && $entity_type->hasViewBuilderClass()) {
         $entity_types[$entity_type_id] = [
           'title' => $entity_type->getLabel(),
-          'url' => Url::fromRoute('entity.entity_view_mode.add_form', ['entity_type_id' => $entity_type_id])->setOption('attributes', [
-            'class' => ['use-ajax'],
-            'data-dialog-type' => 'modal',
-            'data-dialog-options' => Json::encode([
-              'width' => '880',
-            ]),
-          ]),
+          'url' => Url::fromRoute('entity.entity_view_mode.add_form', ['entity_type_id' => $entity_type_id]),
+          'localized_options' => [],
         ];
       }
     }
-    // Move content at the top.
-    array_splice($entity_types, 0, 0, array_splice($entity_types, array_search('node', array_keys($entity_types)), 1));
     return [
       '#theme' => 'admin_block_content',
       '#content' => $entity_types,
-      '#attached' => [
-        'library' => [
-          'core/drupal.dialog.ajax',
-        ],
-      ],
     ];
   }
 
@@ -58,26 +45,14 @@ class EntityDisplayModeController extends ControllerBase {
       if ($entity_type->get('field_ui_base_route') && $entity_type->hasFormClasses()) {
         $entity_types[$entity_type_id] = [
           'title' => $entity_type->getLabel(),
-          'url' => Url::fromRoute('entity.entity_form_mode.add_form', ['entity_type_id' => $entity_type_id])->setOption('attributes', [
-            'class' => ['use-ajax'],
-            'data-dialog-type' => 'modal',
-            'data-dialog-options' => Json::encode([
-              'width' => '880',
-            ]),
-          ]),
+          'url' => Url::fromRoute('entity.entity_form_mode.add_form', ['entity_type_id' => $entity_type_id]),
+          'localized_options' => [],
         ];
       }
     }
-    // Move content at the top.
-    array_splice($entity_types, 0, 0, array_splice($entity_types, array_search('node', array_keys($entity_types)), 1));
     return [
       '#theme' => 'admin_block_content',
       '#content' => $entity_types,
-      '#attached' => [
-        'library' => [
-          'core/drupal.dialog.ajax',
-        ],
-      ],
     ];
   }
 

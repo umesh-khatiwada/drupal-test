@@ -37,15 +37,6 @@ class FormTestRedirectForm extends FormBase {
         ],
       ],
     ];
-    $form['ignore_destination'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Ignore destination query parameter'),
-      '#states' => [
-        'visible' => [
-          ':input[name="redirection"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => t('Submit'),
@@ -64,7 +55,6 @@ class FormTestRedirectForm extends FormBase {
         // @todo Revisit this in https://www.drupal.org/node/2418219.
         $form_state->setRedirectUrl(Url::fromUserInput('/' . $form_state->getValue('destination')));
       }
-      $form_state->setIgnoreDestination((bool) $form_state->getValue('ignore_destination'));
     }
     else {
       $form_state->disableRedirect();

@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_store_pager_settings
-label: test_store_pager_settings
+label: ''
 module: views
 description: ''
 tag: ''

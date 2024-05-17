@@ -154,13 +154,8 @@ class LoggingTest extends DatabaseTestBase {
    * @covers ::findCaller
    *
    * @dataProvider providerContribDriverLog
-   *
-   * @group legacy
    */
   public function testContribDriverLog($driver_namespace, $stack, array $expected_entry) {
-    $this->expectDeprecation('Drupal\Core\Database\Log::findCaller() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use Connection::findCallerFromDebugBacktrace(). See https://www.drupal.org/node/3328053');
-    $this->expectDeprecation('Drupal\Core\Database\Log::removeDatabaseEntries() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use Connection::removeDatabaseEntriesFromDebugBacktrace(). See https://www.drupal.org/node/3328053');
-
     $mock_builder = $this->getMockBuilder(Log::class);
     $log = $mock_builder
       ->onlyMethods(['getDebugBacktrace'])
@@ -200,7 +195,7 @@ class LoggingTest extends DatabaseTestBase {
         ],
       ],
       [
-        'file' => '/var/www/libraries/test/lib/Statement.php',
+        'file' => '/var/www/libraries/drudbal/lib/Statement.php',
         'line' => 264,
         'function' => 'log',
         'class' => 'Drupal\\Core\\Database\\Log',
@@ -211,7 +206,7 @@ class LoggingTest extends DatabaseTestBase {
         ],
       ],
       [
-        'file' => '/var/www/libraries/test/lib/Connection.php',
+        'file' => '/var/www/libraries/drudbal/lib/Connection.php',
         'line' => 213,
         'function' => 'execute',
         'class' => 'Drupal\\Driver\\Database\\dbal\\Statement',
@@ -323,7 +318,7 @@ class LoggingTest extends DatabaseTestBase {
         [
           'class' => 'Drupal\\Driver\\Database\\dbal\\Statement',
           'function' => 'execute',
-          'file' => '/var/www/libraries/test/lib/Statement.php',
+          'file' => '/var/www/libraries/drudbal/lib/Statement.php',
           'line' => 264,
           'type' => '->',
           'args' => [

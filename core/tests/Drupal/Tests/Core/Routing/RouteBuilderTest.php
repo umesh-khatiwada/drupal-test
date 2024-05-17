@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Routing\RouteBuilderTest.
+ */
 
 namespace Drupal\Tests\Core\Routing;
 
@@ -78,8 +81,6 @@ class RouteBuilderTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->dumper = $this->createMock('Drupal\Core\Routing\MatcherDumperInterface');
     $this->lock = $this->createMock('Drupal\Core\Lock\LockBackendInterface');
     $this->dispatcher = $this->createMock('\Symfony\Contracts\EventDispatcher\EventDispatcherInterface');

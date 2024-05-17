@@ -2,7 +2,6 @@
 
 namespace Drupal\Core\Asset;
 
-use Drupal\Core\DependencyInjection\DeprecatedServicePropertyTrait;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\State\StateInterface;
 
@@ -11,19 +10,12 @@ use Drupal\Core\State\StateInterface;
  */
 class CssCollectionRenderer implements AssetCollectionRendererInterface {
 
-  use DeprecatedServicePropertyTrait;
-
   /**
-   * {@inheritdoc}
-   */
-  protected array $deprecatedProperties = ['state' => 'state'];
-
-  /**
-   * The asset query string.
+   * The state key/value store.
    *
-   * @var \Drupal\Core\Asset\AssetQueryStringInterface
+   * @var \Drupal\Core\State\StateInterface
    */
-  protected AssetQueryStringInterface $assetQueryString;
+  protected $state;
 
   /**
    * The file URL generator.
@@ -35,17 +27,13 @@ class CssCollectionRenderer implements AssetCollectionRendererInterface {
   /**
    * Constructs a CssCollectionRenderer.
    *
-   * @param \Drupal\Core\Asset\AssetQueryStringInterface|\Drupal\Core\State\StateInterface $asset_query_string
-   *   The asset query string.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state key/value store.
    * @param \Drupal\Core\File\FileUrlGeneratorInterface $file_url_generator
    *   The file URL generator.
    */
-  public function __construct(AssetQueryStringInterface|StateInterface $asset_query_string, FileUrlGeneratorInterface $file_url_generator) {
-    if ($asset_query_string instanceof StateInterface) {
-      @trigger_error('Calling ' . __METHOD__ . '() with an $asset_query_string argument as \Drupal\Core\State\StateInterface instead of \Drupal\Core\Asset\AssetQueryStringInterface is deprecated in drupal:10.2.0 and will be required in drupal:11.0.0. See https://www.drupal.org/node/3358337', E_USER_DEPRECATED);
-      $asset_query_string = \Drupal::service('asset.query_string');
-    }
-    $this->assetQueryString = $asset_query_string;
+  public function __construct(StateInterface $state, FileUrlGeneratorInterface $file_url_generator) {
+    $this->state = $state;
     $this->fileUrlGenerator = $file_url_generator;
   }
 
@@ -59,7 +47,7 @@ class CssCollectionRenderer implements AssetCollectionRendererInterface {
     // browser-caching. The string changes on every update or full cache
     // flush, forcing browsers to load a new copy of the files, as the
     // URL changed.
-    $query_string = $this->assetQueryString->get();
+    $query_string = $this->state->get('system.css_js_query_string', '0');
 
     // Defaults for LINK and STYLE elements.
     $link_element_defaults = [
@@ -81,7 +69,7 @@ class CssCollectionRenderer implements AssetCollectionRendererInterface {
           // Only add the cache-busting query string if this isn't an aggregate
           // file.
           if (!isset($css_asset['preprocessed'])) {
-            $query_string_separator = str_contains($css_asset['data'], '?') ? '&' : '?';
+            $query_string_separator = (strpos($css_asset['data'], '?') !== FALSE) ? '&' : '?';
             $element['#attributes']['href'] .= $query_string_separator . $query_string;
           }
           break;

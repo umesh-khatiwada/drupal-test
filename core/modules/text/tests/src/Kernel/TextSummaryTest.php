@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\text\Kernel;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\field\Entity\FieldConfig;
@@ -244,7 +245,7 @@ class TextSummaryTest extends KernelTestBase {
    */
   public function assertTextSummary(string $text, string $expected, ?string $format = NULL, int $size = NULL): void {
     $summary = text_summary($text, $format, $size);
-    $this->assertSame($expected, $summary, '<pre style="white-space: pre-wrap">' . $summary . '</pre> is identical to <pre style="white-space: pre-wrap">' . $expected . '</pre>');
+    $this->assertSame($expected, $summary, new FormattableMarkup('<pre style="white-space: pre-wrap">@actual</pre> is identical to <pre style="white-space: pre-wrap">@expected</pre>', ['@actual' => $summary, '@expected' => $expected]));
   }
 
   /**

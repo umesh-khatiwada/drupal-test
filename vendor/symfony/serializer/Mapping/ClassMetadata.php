@@ -21,7 +21,7 @@ class ClassMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getName()} instead.
      */
-    public string $name;
+    public $name;
 
     /**
      * @var AttributeMetadataInterface[]
@@ -30,21 +30,26 @@ class ClassMetadata implements ClassMetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getAttributesMetadata()} instead.
      */
-    public array $attributesMetadata = [];
-
-    private ?\ReflectionClass $reflClass = null;
+    public $attributesMetadata = [];
 
     /**
+     * @var \ReflectionClass
+     */
+    private $reflClass;
+
+    /**
+     * @var ClassDiscriminatorMapping|null
+     *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getClassDiscriminatorMapping()} instead.
      */
-    public ?ClassDiscriminatorMapping $classDiscriminatorMapping = null;
+    public $classDiscriminatorMapping;
 
     /**
      * Constructs a metadata for the given class.
      */
-    public function __construct(string $class, ?ClassDiscriminatorMapping $classDiscriminatorMapping = null)
+    public function __construct(string $class, ClassDiscriminatorMapping $classDiscriminatorMapping = null)
     {
         $this->name = $class;
         $this->classDiscriminatorMapping = $classDiscriminatorMapping;
@@ -55,7 +60,7 @@ class ClassMetadata implements ClassMetadataInterface
         return $this->name;
     }
 
-    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata): void
+    public function addAttributeMetadata(AttributeMetadataInterface $attributeMetadata)
     {
         $this->attributesMetadata[$attributeMetadata->getName()] = $attributeMetadata;
     }
@@ -65,7 +70,7 @@ class ClassMetadata implements ClassMetadataInterface
         return $this->attributesMetadata;
     }
 
-    public function merge(ClassMetadataInterface $classMetadata): void
+    public function merge(ClassMetadataInterface $classMetadata)
     {
         foreach ($classMetadata->getAttributesMetadata() as $attributeMetadata) {
             if (isset($this->attributesMetadata[$attributeMetadata->getName()])) {
@@ -90,7 +95,7 @@ class ClassMetadata implements ClassMetadataInterface
         return $this->classDiscriminatorMapping;
     }
 
-    public function setClassDiscriminatorMapping(?ClassDiscriminatorMapping $mapping = null): void
+    public function setClassDiscriminatorMapping(ClassDiscriminatorMapping $mapping = null)
     {
         if (1 > \func_num_args()) {
             trigger_deprecation('symfony/serializer', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);

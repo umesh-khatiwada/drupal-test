@@ -169,7 +169,7 @@ class StreamWrapperManager implements ContainerAwareInterface, StreamWrapperMana
   }
 
   /**
-   * Deregisters the tagged stream wrappers.
+   * Unregisters the tagged stream wrappers.
    *
    * Internal use only.
    */

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Form\EventSubscriber;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -169,8 +167,19 @@ class FormAjaxSubscriberTest extends UnitTestCase {
     $this->messenger->expects($this->once())
       ->method('addError');
 
-    $this->subscriber = new FormAjaxSubscriber($this->formAjaxResponseBuilder, $this->getStringTranslationStub(), $this->messenger);
+    $this->subscriber = $this->getMockBuilder('\Drupal\Core\Form\EventSubscriber\FormAjaxSubscriber')
+      ->setConstructorArgs([
+        $this->formAjaxResponseBuilder,
+        $this->getStringTranslationStub(),
+        $this->messenger,
+      ])
+      ->onlyMethods(['formatSize'])
+      ->getMock();
 
+    $this->subscriber->expects($this->once())
+      ->method('formatSize')
+      ->with(32 * 1e6)
+      ->willReturn('32M');
     $rendered_output = 'the rendered output';
     // CommandWithAttachedAssetsTrait::getRenderedContent() will call the
     // renderer service via the container.
@@ -186,7 +195,7 @@ class FormAjaxSubscriberTest extends UnitTestCase {
     $container->set('renderer', $renderer);
     \Drupal::setContainer($container);
 
-    $exception = new BrokenPostRequestException((int) (32 * 1e6));
+    $exception = new BrokenPostRequestException(32 * 1e6);
     $request = new Request([FormBuilderInterface::AJAX_FORM_REQUEST => TRUE]);
 
     $event = new ExceptionEvent($this->httpKernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);

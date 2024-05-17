@@ -41,7 +41,9 @@ class MenuAccessControlHandlerTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->installEntitySchema('menu');
     $this->installEntitySchema('user');
+    $this->installSchema('system', 'sequences');
     $this->accessControlHandler = $this->container->get('entity_type.manager')->getAccessControlHandler('menu');
   }
 
@@ -67,7 +69,7 @@ class MenuAccessControlHandlerTest extends KernelTestBase {
     $entity_values = ($which_entity === 'unlocked')
       ? ['locked' => FALSE]
       : ['locked' => TRUE];
-    $entity_values['id'] = $entity_values['label'] = 'llama';
+    $entity_values['id'] = 'llama';
     $entity = Menu::create($entity_values);
     $entity->save();
 

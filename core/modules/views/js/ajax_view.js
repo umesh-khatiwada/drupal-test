@@ -69,7 +69,7 @@
 
     // If there are multiple views this might've ended up showing up multiple
     // times.
-    if (ajaxPath.constructor.toString().includes('Array')) {
+    if (ajaxPath.constructor.toString().indexOf('Array') !== -1) {
       ajaxPath = ajaxPath[0];
     }
 
@@ -81,7 +81,7 @@
         .slice(1)
         .replace(/q=[^&]+&?|&?render=[^&]+/, '');
       if (queryString !== '') {
-        // If there is a '?' in ajaxPath, clean URL are on and & should be
+        // If there is a '?' in ajaxPath, clean url are on and & should be
         // used to add parameters.
         queryString = (/\?/.test(ajaxPath) ? '&' : '?') + queryString;
       }
@@ -90,7 +90,6 @@
     this.element_settings = {
       url: ajaxPath + queryString,
       submit: settings,
-      httpMethod: 'GET',
       setClick: true,
       event: 'click',
       selector,
@@ -107,7 +106,7 @@
       )}-${settings.view_display_id.replace(/_/g, '-')}`,
     );
     once('exposed-form', this.$exposed_form).forEach(
-      this.attachExposedFormAjax.bind(this),
+      $.proxy(this.attachExposedFormAjax, this),
     );
 
     // Add the ajax to pagers.
@@ -116,8 +115,8 @@
       this.$view
         // Don't attach to nested views. Doing so would attach multiple behaviors
         // to a given element.
-        .filter(this.filterNestedViews.bind(this)),
-    ).forEach(this.attachPagerAjax.bind(this));
+        .filter($.proxy(this.filterNestedViews, this)),
+    ).forEach($.proxy(this.attachPagerAjax, this));
 
     // Add a trigger to update this view specifically. In order to trigger a
     // refresh use the following code.
@@ -128,7 +127,6 @@
     const selfSettings = $.extend({}, this.element_settings, {
       event: 'RefreshView',
       base: this.selector,
-      httpMethod: 'GET',
       element: this.$view.get(0),
     });
     this.refreshViewAjax = Drupal.ajax(selfSettings);
@@ -172,9 +170,9 @@
   Drupal.views.ajaxView.prototype.attachPagerAjax = function () {
     this.$view
       .find(
-        '.js-pager__items a, th.views-field a, .attachment .views-summary a',
+        'ul.js-pager__items > li > a, th.views-field a, .attachment .views-summary a',
       )
-      .each(this.attachPagerLinkAjax.bind(this));
+      .each($.proxy(this.attachPagerLinkAjax, this));
   };
 
   /**
@@ -203,7 +201,6 @@
       submit: viewData,
       base: false,
       element: link,
-      httpMethod: 'GET',
     });
     this.pagerAjax = Drupal.ajax(selfSettings);
   };
@@ -217,13 +214,23 @@
    *   Ajax response.
    * @param {string} response.selector
    *   Selector to use.
-   *
-   * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0.
-   *   Use Drupal.AjaxCommands.prototype.scrollTop().
-   *
-   * @see https://www.drupal.org/node/3344141
    */
   Drupal.AjaxCommands.prototype.viewsScrollTop = function (ajax, response) {
-    Drupal.AjaxCommands.prototype.scrollTop(ajax, response);
+    // Scroll to the top of the view. This will allow users
+    // to browse newly loaded content after e.g. clicking a pager
+    // link.
+    const offset = $(response.selector).offset();
+    // We can't guarantee that the scrollable object should be
+    // the body, as the view could be embedded in something
+    // more complex such as a modal popup. Recurse up the DOM
+    // and scroll the first element that has a non-zero top.
+    let scrollTarget = response.selector;
+    while ($(scrollTarget).scrollTop() === 0 && $(scrollTarget).parent()) {
+      scrollTarget = $(scrollTarget).parent();
+    }
+    // Only scroll upward.
+    if (offset.top - 10 < $(scrollTarget).scrollTop()) {
+      $(scrollTarget).animate({ scrollTop: offset.top - 10 }, 500);
+    }
   };
 })(jQuery, Drupal, drupalSettings);

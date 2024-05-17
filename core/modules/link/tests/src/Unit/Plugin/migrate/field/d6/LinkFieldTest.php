@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\link\Unit\Plugin\migrate\field\d6;
 
 use Drupal\migrate\Plugin\MigrationInterface;
@@ -29,8 +27,6 @@ class LinkFieldTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->plugin = new LinkField([], 'link', []);
 
     $migration = $this->prophesize(MigrationInterface::class);

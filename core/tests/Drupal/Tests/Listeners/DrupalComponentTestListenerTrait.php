@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Listeners;
 
 use Drupal\KernelTests\KernelTestBase;
@@ -26,7 +24,7 @@ trait DrupalComponentTestListenerTrait {
    */
   protected function componentEndTest($test, $time) {
     /** @var \PHPUnit\Framework\Test $test */
-    if (str_starts_with($test->toString(), 'Drupal\Tests\Component')) {
+    if (substr($test->toString(), 0, 22) == 'Drupal\Tests\Component') {
       if ($test instanceof BrowserTestBase || $test instanceof KernelTestBase || $test instanceof UnitTestCase) {
         $error = new AssertionFailedError('Component tests should not extend a core test base class.');
         $test->getTestResultObject()->addFailure($test, $error, $time);

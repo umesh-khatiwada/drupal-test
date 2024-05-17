@@ -13,16 +13,10 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  * @FieldType(
  *   id = "text_with_summary",
  *   label = @Translation("Text (formatted, long, with summary)"),
- *   description = {
- *     @Translation("Ideal for longer texts, like body or description with a summary"),
- *     @Translation("Allows specifying a summary for the text"),
- *     @Translation("Supports long text without specifying a maximum length"),
- *     @Translation("May use more storage and be slower for searching and sorting"),
- *   },
- *   category = "formatted_text",
+ *   description = @Translation("This field stores long text with a format and an optional summary."),
+ *   category = @Translation("Text"),
  *   default_widget = "text_textarea_with_summary",
- *   default_formatter = "text_default",
- *   list_class = "\Drupal\text\Plugin\Field\FieldType\TextFieldItemList"
+ *   default_formatter = "text_default"
  * )
  */
 class TextWithSummaryItem extends TextItemBase {
@@ -93,7 +87,7 @@ class TextWithSummaryItem extends TextItemBase {
    * {@inheritdoc}
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-    $element = parent::fieldSettingsForm($form, $form_state);
+    $element = [];
     $settings = $this->getSettings();
 
     $element['display_summary'] = [

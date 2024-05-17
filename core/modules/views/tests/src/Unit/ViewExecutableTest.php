@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\views\Unit;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
@@ -86,9 +84,9 @@ class ViewExecutableTest extends UnitTestCase {
   protected $viewsData;
 
   /**
-   * The mocked display router handler.
+   * The mocked display handler.
    *
-   * @var \Drupal\views\Plugin\views\display\DisplayRouterInterface|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\views\Plugin\views\display\DisplayPluginInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $displayHandler;
 

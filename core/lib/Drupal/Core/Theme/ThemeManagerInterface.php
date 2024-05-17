@@ -18,9 +18,8 @@ interface ThemeManagerInterface {
    * See the @link themeable Default theme implementations topic @endlink for
    * details.
    *
-   * @param string|string[] $hook
-   *   The name of the theme hook to call or an array of names of theme hooks to
-   *   call.
+   * @param string $hook
+   *   The name of the theme hook to call.
    * @param array $variables
    *   An associative array of theme variables.
    *

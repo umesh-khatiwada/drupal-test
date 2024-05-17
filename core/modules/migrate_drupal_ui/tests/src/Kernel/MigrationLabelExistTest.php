@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\migrate_drupal_ui\Kernel;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\KernelTests\FileSystemModuleDiscoveryDataProviderTrait;
 use Drupal\Tests\migrate_drupal\Kernel\MigrateDrupalTestBase;
 
@@ -32,7 +33,7 @@ class MigrationLabelExistTest extends MigrateDrupalTestBase {
     /** @var \Drupal\migrate\Plugin\Migration $migration */
     foreach ($migrations as $migration) {
       $migration_id = $migration->getPluginId();
-      $this->assertNotEmpty($migration->label(), "Label found for $migration_id.");
+      $this->assertNotEmpty($migration->label(), new FormattableMarkup('Label found for @migration_id.', ['@migration_id' => $migration_id]));
     }
   }
 

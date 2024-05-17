@@ -50,7 +50,6 @@ class TermTranslationUITest extends ContentTranslationUITestBase {
     $this->entityTypeId = 'taxonomy_term';
     $this->bundle = 'tags';
     parent::setUp();
-    $this->doSetup();
   }
 
   /**

@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\user\Functional\Views;
 
-use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drupal\user\RoleInterface;
 use Drupal\views\Views;
@@ -57,8 +56,7 @@ class BulkFormTest extends UserTestBase {
 
     // Assign a role to a user.
     $account = $user_storage->load($this->users[0]->id());
-    $roles = Role::loadMultiple();
-    unset($roles[RoleInterface::ANONYMOUS_ID]);
+    $roles = user_role_names(TRUE);
     unset($roles[RoleInterface::AUTHENTICATED_ID]);
     $role = key($roles);
 
@@ -147,7 +145,7 @@ class BulkFormTest extends UserTestBase {
     User::load($this->users[0]->id());
     $view = Views::getView('test_user_bulk_form_combine_filter');
     $errors = $view->validate();
-    $this->assertEquals(sprintf('Field User: Bulk update set in Global: Combine fields filter is not usable for this filter type. Combined field filter only works for simple fields.'), reset($errors['default']));
+    $this->assertEquals(t('Field %field set in %filter is not usable for this filter type. Combined field filter only works for simple fields.', ['%field' => 'User: Bulk update', '%filter' => 'Global: Combine fields filter']), reset($errors['default']));
   }
 
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\PhpStorage;
 
 use Drupal\Component\FileSecurity\FileSecurity;
@@ -61,6 +59,11 @@ abstract class MTimeProtectedFileStorageBase extends PhpStorageTestBase {
 
   /**
    * Tests basic load/save/delete operations.
+   *
+   * @covers ::load
+   * @covers ::save
+   * @covers ::delete
+   * @covers ::exists
    */
   public function testCRUD() {
     $php = new $this->storageClass($this->settings);

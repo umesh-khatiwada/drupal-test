@@ -90,13 +90,6 @@ class LocalActionManager extends DefaultPluginManager implements LocalActionMana
   protected $account;
 
   /**
-   * The language manager.
-   *
-   * @var \Drupal\Core\Language\LanguageManagerInterface
-   */
-  protected LanguageManagerInterface $languageManager;
-
-  /**
    * The plugin instances.
    *
    * @var \Drupal\Core\Menu\LocalActionInterface[]
@@ -136,9 +129,8 @@ class LocalActionManager extends DefaultPluginManager implements LocalActionMana
     $this->accessManager = $access_manager;
     $this->moduleHandler = $module_handler;
     $this->account = $account;
-    $this->languageManager = $language_manager;
     $this->alterInfo('menu_local_actions');
-    $this->setCacheBackend($cache_backend, 'local_action_plugins:' . $language_manager->getCurrentLanguage()->getId());
+    $this->setCacheBackend($cache_backend, 'local_action_plugins:' . $language_manager->getCurrentLanguage()->getId(), ['local_action']);
   }
 
   /**
@@ -206,18 +198,6 @@ class LocalActionManager extends DefaultPluginManager implements LocalActionMana
     $cacheability->applyTo($links);
 
     return $links;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function clearCachedDefinitions() {
-    $cids = [];
-    foreach ($this->languageManager->getLanguages() as $language) {
-      $cids[] = 'local_action_plugins:' . $language->getId();
-    }
-    $this->cacheBackend->deleteMultiple($cids);
-    $this->definitions = NULL;
   }
 
 }

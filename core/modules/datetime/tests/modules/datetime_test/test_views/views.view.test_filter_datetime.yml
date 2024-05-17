@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_filter_datetime
-label: test_filter_datetime
+label: ''
 module: views
 description: ''
 tag: ''

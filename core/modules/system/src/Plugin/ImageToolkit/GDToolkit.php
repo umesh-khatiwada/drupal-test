@@ -28,9 +28,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class GDToolkit extends ImageToolkitBase {
 
   /**
-   * A GD image.
+   * A GD image resource.
+   *
+   * @var \GdImage|null
    */
-  protected ?\GdImage $image = NULL;
+  protected $resource = NULL;
 
   /**
    * Image type represented by a PHP IMAGETYPE_* constant (e.g. IMAGETYPE_JPEG).
@@ -40,16 +42,16 @@ class GDToolkit extends ImageToolkitBase {
   protected $type;
 
   /**
-   * Image information from a file, available prior to loading the GD object.
+   * Image information from a file, available prior to loading the GD resource.
    *
    * This contains a copy of the array returned by executing getimagesize()
    * on the image file when the image object is instantiated. It gets reset
-   * to NULL as soon as the GD object is loaded.
+   * to NULL as soon as the GD resource is loaded.
    *
    * @var array|null
    *
    * @see \Drupal\system\Plugin\ImageToolkit\GDToolkit::parseFile()
-   * @see \Drupal\system\Plugin\ImageToolkit\GDToolkit::setImage()
+   * @see \Drupal\system\Plugin\ImageToolkit\GDToolkit::setResource()
    * @see http://php.net/manual/function.getimagesize.php
    */
   protected $preLoadInfo = NULL;
@@ -111,47 +113,6 @@ class GDToolkit extends ImageToolkitBase {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function __get(string $name) {
-    if ($name === 'resource') {
-      @trigger_error('Accessing the \Drupal\system\Plugin\ImageToolkit\GDToolkit::resource property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::image instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
-      return $this->image;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __set(string $name, mixed $value): void {
-    if ($name === 'resource') {
-      @trigger_error('Setting the \Drupal\system\Plugin\ImageToolkit\GDToolkit::resource property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::image instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
-      $this->image = $value;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __isset(string $name): bool {
-    if ($name === 'resource') {
-      @trigger_error('Checking the \Drupal\system\Plugin\ImageToolkit\GDToolkit::resource property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::image instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
-      return isset($this->image);
-    }
-    return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __unset(string $name): void {
-    if ($name === 'resource') {
-      @trigger_error('Unsetting the \Drupal\system\Plugin\ImageToolkit\GDToolkit::resource property is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::image instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
-      unset($this->image);
-    }
-  }
-
-  /**
    * Sets the GD image resource.
    *
    * @param \GdImage $resource
@@ -159,18 +120,14 @@ class GDToolkit extends ImageToolkitBase {
    *
    * @return $this
    *   An instance of the current toolkit object.
-   *
-   * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use
-   *   \Drupal\system\Plugin\ImageToolkit\GDToolkit::setImage() instead.
-   *
-   * @see https://www.drupal.org/node/3265963
    */
   public function setResource($resource) {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::setImage() instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
     if (!$resource instanceof \GdImage) {
       throw new \InvalidArgumentException('Invalid resource argument');
     }
-    return $this->setImage($resource);
+    $this->preLoadInfo = NULL;
+    $this->resource = $resource;
+    return $this;
   }
 
   /**
@@ -178,43 +135,12 @@ class GDToolkit extends ImageToolkitBase {
    *
    * @return \GdImage|null
    *   The GD image resource, or NULL if not available.
-   *
-   * @deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use
-   *   \Drupal\system\Plugin\ImageToolkit\GDToolkit::getImage() instead.
-   *
-   * @see https://www.drupal.org/node/3265963
    */
   public function getResource() {
-    @trigger_error(__METHOD__ . '() is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use \Drupal\system\Plugin\ImageToolkit\GDToolkit::getImage() instead. See https://www.drupal.org/node/3265963', E_USER_DEPRECATED);
-    return $this->getImage();
-  }
-
-  /**
-   * Sets an image or resets existing one.
-   *
-   * @param \GdImage|null $image
-   *   The GD image object or NULL.
-   *
-   * @return $this
-   *   An instance of the current toolkit object.
-   */
-  public function setImage(?\GdImage $image): static {
-    $this->preLoadInfo = NULL;
-    $this->image = $image;
-    return $this;
-  }
-
-  /**
-   * Retrieves the image.
-   *
-   * @return \GdImage|null
-   *   The GD image object, or NULL if not available.
-   */
-  public function getImage(): ?\GdImage {
-    if (!$this->image) {
+    if (!$this->resource) {
       $this->load();
     }
-    return $this->image;
+    return $this->resource;
   }
 
   /**
@@ -243,7 +169,7 @@ class GDToolkit extends ImageToolkitBase {
   }
 
   /**
-   * Loads an image from a file.
+   * Loads a GD resource from a file.
    *
    * @return bool
    *   TRUE or FALSE, based on success.
@@ -254,60 +180,38 @@ class GDToolkit extends ImageToolkitBase {
       return FALSE;
     }
 
-    // Invalidate the image object and return if there's no function to load the
-    // image file.
     $function = 'imagecreatefrom' . image_type_to_extension($this->getType(), FALSE);
-    if (!function_exists($function)) {
-      $this->logger->error("The image toolkit '@toolkit' can not process image '@image'.", [
-        '@toolkit' => $this->getPluginId(),
-        '@image' => $this->getSource(),
-      ]);
-      $this->preLoadInfo = NULL;
-      return FALSE;
-    }
-
-    // Invalidate the image object and return if the load fails.
-    try {
-      $image = $function($this->getSource());
-    }
-    catch (\Throwable $t) {
-      $this->logger->error("The image toolkit '@toolkit' failed loading image '@image'. Reported error: @class - @message", [
-        '@toolkit' => $this->getPluginId(),
-        '@image' => $this->getSource(),
-        '@class' => get_class($t),
-        '@message' => $t->getMessage(),
-      ]);
-      $this->preLoadInfo = NULL;
-      return FALSE;
-    }
-
-    $this->setImage($image);
-    if (imageistruecolor($image)) {
-      return TRUE;
-    }
-    else {
-      // Convert indexed images to truecolor, copying the image to a new
-      // truecolor image, so that filters work correctly and don't result
-      // in unnecessary dither.
-      $data = [
-        'width' => imagesx($image),
-        'height' => imagesy($image),
-        'extension' => image_type_to_extension($this->getType(), FALSE),
-        'transparent_color' => $this->getTransparentColor(),
-        'is_temp' => TRUE,
-      ];
-      if ($this->apply('create_new', $data)) {
-        imagecopy($this->getImage(), $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
+    if (function_exists($function) && $resource = $function($this->getSource())) {
+      $this->setResource($resource);
+      if (imageistruecolor($resource)) {
+        return TRUE;
       }
+      else {
+        // Convert indexed images to truecolor, copying the image to a new
+        // truecolor resource, so that filters work correctly and don't result
+        // in unnecessary dither.
+        $data = [
+          'width' => imagesx($resource),
+          'height' => imagesy($resource),
+          'extension' => image_type_to_extension($this->getType(), FALSE),
+          'transparent_color' => $this->getTransparentColor(),
+          'is_temp' => TRUE,
+        ];
+        if ($this->apply('create_new', $data)) {
+          imagecopy($this->getResource(), $resource, 0, 0, 0, 0, imagesx($resource), imagesy($resource));
+          imagedestroy($resource);
+        }
+      }
+      return (bool) $this->getResource();
     }
-    return (bool) $this->getImage();
+    return FALSE;
   }
 
   /**
    * {@inheritdoc}
    */
   public function isValid() {
-    return ((bool) $this->preLoadInfo || isset($this->image));
+    return ((bool) $this->preLoadInfo || (bool) $this->resource);
   }
 
   /**
@@ -332,37 +236,15 @@ class GDToolkit extends ImageToolkitBase {
       return FALSE;
     }
     if ($this->getType() == IMAGETYPE_JPEG) {
-      try {
-        $success = $function($this->getImage(), $destination, $this->configFactory->get('system.image.gd')->get('jpeg_quality'));
-      }
-      catch (\Throwable $t) {
-        $this->logger->error("The image toolkit '@toolkit' failed saving image '@image'. Reported error: @class - @message", [
-          '@toolkit' => $this->getPluginId(),
-          '@image' => $destination,
-          '@class' => get_class($t),
-          '@message' => $t->getMessage(),
-        ]);
-        $success = FALSE;
-      }
+      $success = $function($this->getResource(), $destination, $this->configFactory->get('system.image.gd')->get('jpeg_quality'));
     }
     else {
       // Image types that support alpha need to be saved accordingly.
       if (in_array($this->getType(), [IMAGETYPE_PNG, IMAGETYPE_WEBP], TRUE)) {
-        imagealphablending($this->getImage(), FALSE);
-        imagesavealpha($this->getImage(), TRUE);
+        imagealphablending($this->getResource(), FALSE);
+        imagesavealpha($this->getResource(), TRUE);
       }
-      try {
-        $success = $function($this->getImage(), $destination);
-      }
-      catch (\Throwable $t) {
-        $this->logger->error("The image toolkit '@toolkit' failed saving image '@image'. Reported error: @class - @message", [
-          '@toolkit' => $this->getPluginId(),
-          '@image' => $destination,
-          '@class' => get_class($t),
-          '@message' => $t->getMessage(),
-        ]);
-        $success = FALSE;
-      }
+      $success = $function($this->getResource(), $destination);
     }
     // Move temporary local file to remote destination.
     if (isset($permanent_destination) && $success) {
@@ -397,16 +279,16 @@ class GDToolkit extends ImageToolkitBase {
    *   A color string like '#rrggbb', or NULL if not set or not relevant.
    */
   public function getTransparentColor() {
-    if (!$this->getImage() || $this->getType() != IMAGETYPE_GIF) {
+    if (!$this->getResource() || $this->getType() != IMAGETYPE_GIF) {
       return NULL;
     }
     // Find out if a transparent color is set, will return -1 if no
     // transparent color has been defined in the image.
-    $transparent = imagecolortransparent($this->getImage());
+    $transparent = imagecolortransparent($this->getResource());
     if ($transparent >= 0) {
       // Find out the number of colors in the image palette. It will be 0 for
       // truecolor images.
-      $palette_size = imagecolorstotal($this->getImage());
+      $palette_size = imagecolorstotal($this->getResource());
       if ($palette_size == 0 || $transparent < $palette_size) {
         // Return the transparent color, either if it is a truecolor image
         // or if the transparent color is part of the palette.
@@ -414,7 +296,7 @@ class GDToolkit extends ImageToolkitBase {
         // image rather than of the palette, it is possible that an image
         // could be created with this index set outside the palette size.
         // (see http://stackoverflow.com/a/3898007).
-        $rgb = imagecolorsforindex($this->getImage(), $transparent);
+        $rgb = imagecolorsforindex($this->getResource(), $transparent);
         unset($rgb['alpha']);
         return Color::rgbToHex($rgb);
       }
@@ -429,7 +311,7 @@ class GDToolkit extends ImageToolkitBase {
     if ($this->preLoadInfo) {
       return $this->preLoadInfo[0];
     }
-    elseif ($res = $this->getImage()) {
+    elseif ($res = $this->getResource()) {
       return imagesx($res);
     }
     else {
@@ -444,7 +326,7 @@ class GDToolkit extends ImageToolkitBase {
     if ($this->preLoadInfo) {
       return $this->preLoadInfo[1];
     }
-    elseif ($res = $this->getImage()) {
+    elseif ($res = $this->getResource()) {
       return imagesy($res);
     }
     else {

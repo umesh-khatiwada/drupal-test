@@ -21,8 +21,12 @@ class DrupalKernelTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function bootKernel() {
-    // Do not boot the kernel, because we are testing aspects of this process.
+  protected function setUp(): void {
+    // Do not invoke KernelTestBase::setUp(), since that would set up further
+    // environment aspects, which would distort this test, because it tests the
+    // DrupalKernel (re-)building itself.
+    $this->root = static::getDrupalRoot();
+    $this->bootEnvironment();
   }
 
   /**

@@ -111,7 +111,7 @@ class ExecutionContext implements ExecutionContextInterface
     /**
      * @internal Called by {@link ExecutionContextFactory}. Should not be used in user code.
      */
-    public function __construct(ValidatorInterface $validator, mixed $root, TranslatorInterface $translator, ?string $translationDomain = null)
+    public function __construct(ValidatorInterface $validator, mixed $root, TranslatorInterface $translator, string $translationDomain = null)
     {
         $this->validator = $validator;
         $this->root = $root;
@@ -121,7 +121,7 @@ class ExecutionContext implements ExecutionContextInterface
         $this->cachedObjectsRefs = new \SplObjectStorage();
     }
 
-    public function setNode(mixed $value, ?object $object, ?MetadataInterface $metadata, string $propertyPath): void
+    public function setNode(mixed $value, ?object $object, MetadataInterface $metadata = null, string $propertyPath)
     {
         $this->value = $value;
         $this->object = $object;
@@ -129,17 +129,17 @@ class ExecutionContext implements ExecutionContextInterface
         $this->propertyPath = $propertyPath;
     }
 
-    public function setGroup(?string $group): void
+    public function setGroup(?string $group)
     {
         $this->group = $group;
     }
 
-    public function setConstraint(Constraint $constraint): void
+    public function setConstraint(Constraint $constraint)
     {
         $this->constraint = $constraint;
     }
 
-    public function addViolation(string|\Stringable $message, array $parameters = []): void
+    public function addViolation(string $message, array $parameters = [])
     {
         $this->violations->add(new ConstraintViolation(
             $this->translator->trans($message, $parameters, $this->translationDomain),
@@ -154,7 +154,7 @@ class ExecutionContext implements ExecutionContextInterface
         ));
     }
 
-    public function buildViolation(string|\Stringable $message, array $parameters = []): ConstraintViolationBuilderInterface
+    public function buildViolation(string $message, array $parameters = []): ConstraintViolationBuilderInterface
     {
         return new ConstraintViolationBuilder(
             $this->violations,
@@ -228,7 +228,7 @@ class ExecutionContext implements ExecutionContextInterface
         return PropertyPath::append($this->propertyPath, $subPath);
     }
 
-    public function markGroupAsValidated(string $cacheKey, string $groupHash): void
+    public function markGroupAsValidated(string $cacheKey, string $groupHash)
     {
         if (!isset($this->validatedObjects[$cacheKey])) {
             $this->validatedObjects[$cacheKey] = [];
@@ -242,7 +242,7 @@ class ExecutionContext implements ExecutionContextInterface
         return isset($this->validatedObjects[$cacheKey][$groupHash]);
     }
 
-    public function markConstraintAsValidated(string $cacheKey, string $constraintHash): void
+    public function markConstraintAsValidated(string $cacheKey, string $constraintHash)
     {
         $this->validatedConstraints[$cacheKey.':'.$constraintHash] = true;
     }
@@ -252,7 +252,7 @@ class ExecutionContext implements ExecutionContextInterface
         return isset($this->validatedConstraints[$cacheKey.':'.$constraintHash]);
     }
 
-    public function markObjectAsInitialized(string $cacheKey): void
+    public function markObjectAsInitialized(string $cacheKey)
     {
         $this->initializedObjects[$cacheKey] = true;
     }

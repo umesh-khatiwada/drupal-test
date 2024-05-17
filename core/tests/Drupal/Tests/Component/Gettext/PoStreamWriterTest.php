@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Gettext;
 
 use Drupal\Component\Gettext\PoHeader;
@@ -46,7 +44,7 @@ class PoStreamWriterTest extends TestCase {
     $this->poWriter->setHeader($poHeader->reveal());
 
     $root = vfsStream::setup();
-    $this->poFile = new vfsStreamFile('poWriter.po');
+    $this->poFile = new vfsStreamFile('powriter.po');
     $root->addChild($this->poFile);
   }
 

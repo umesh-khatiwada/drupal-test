@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\migrate\Unit\destination\PerComponentEntityDisplayTest.
+ */
 
 namespace Drupal\Tests\migrate\Unit\destination;
 

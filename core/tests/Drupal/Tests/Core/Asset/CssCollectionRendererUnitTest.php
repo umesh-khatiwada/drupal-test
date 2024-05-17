@@ -1,14 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Asset;
 
-use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\CssCollectionRenderer;
 use Drupal\Core\File\FileUrlGeneratorInterface;
-use Drupal\Core\State\StateInterface;
 use Drupal\Tests\UnitTestCase;
+use Drupal\Core\State\StateInterface;
 
 /**
  * Tests the CSS asset collection renderer.
@@ -37,7 +34,6 @@ class CssCollectionRendererUnitTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
     $state = $this->prophesize(StateInterface::class);
-    $assetQueryString = $this->prophesize(AssetQueryStringInterface::class);
     $file_url_generator = $this->createMock(FileUrlGeneratorInterface::class);
     $file_url_generator->expects($this->any())
       ->method('generateString')
@@ -45,8 +41,8 @@ class CssCollectionRendererUnitTest extends UnitTestCase {
       ->willReturnCallback(function ($uri) {
          return 'generated-relative-url:' . $uri;
       });
-    $assetQueryString->get()->shouldBeCalledOnce()->willReturn('');
-    $this->renderer = new CssCollectionRenderer($assetQueryString->reveal(), $file_url_generator);
+    $state->get('system.css_js_query_string', '0')->shouldBeCalledOnce()->willReturn(NULL);
+    $this->renderer = new CssCollectionRenderer($state->reveal(), $file_url_generator);
     $this->fileCssGroup = [
       'group' => -100,
       'type' => 'file',
@@ -98,7 +94,6 @@ class CssCollectionRendererUnitTest extends UnitTestCase {
       return ['group' => 0, 'type' => 'file', 'media' => $media, 'preprocess' => $preprocess, 'data' => $data];
     };
 
-    // cspell:disable-next-line
     $custom_attributes = ['integrity' => 'sha384-psK1OYPAYjYUhtDYW+Pj2yc', 'crossorigin' => 'anonymous', 'random-attribute' => 'test'];
 
     return [

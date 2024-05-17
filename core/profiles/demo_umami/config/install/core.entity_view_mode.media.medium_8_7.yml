@@ -5,6 +5,5 @@ dependencies:
     - media
 id: media.medium_8_7
 label: 'Medium 8:7'
-description: ''
 targetEntityType: media
 cache: true

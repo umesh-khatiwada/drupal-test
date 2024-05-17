@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Database\Database;
-use Drupal\pgsql\Update10101;
 
 /**
  * Implements hook_requirements().
@@ -40,11 +39,4 @@ function pgsql_requirements() {
   }
 
   return $requirements;
-}
-
-/**
- * Update sequences' owner created from serial columns in PostgreSQL.
- */
-function pgsql_update_10101(&$sandbox) {
-  \Drupal::classResolver(Update10101::class)->update($sandbox);
 }

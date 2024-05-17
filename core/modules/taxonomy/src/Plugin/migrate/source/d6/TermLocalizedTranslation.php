@@ -4,8 +4,6 @@ namespace Drupal\taxonomy\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
 
-// cspell:ignore ltlanguage objectid
-
 /**
  * Drupal 6 i18n taxonomy terms source from database.
  *

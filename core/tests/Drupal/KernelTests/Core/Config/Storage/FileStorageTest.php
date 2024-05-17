@@ -56,7 +56,7 @@ class FileStorageTest extends ConfigStorageTestBase {
   /**
    * Tests the FileStorage::listAll method with a relative and absolute path.
    */
-  public function testListAll() {
+  public function testlistAll() {
     $expected_files = [
       'core.extension',
       'system.performance',

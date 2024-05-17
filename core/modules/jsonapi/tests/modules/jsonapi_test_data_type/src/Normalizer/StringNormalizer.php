@@ -14,6 +14,11 @@ class StringNormalizer extends NormalizerBase implements DenormalizerInterface {
   /**
    * {@inheritdoc}
    */
+  protected $supportedInterfaceOrClass = StringData::class;
+
+  /**
+   * {@inheritdoc}
+   */
   public function normalize($object, $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|NULL {
     return str_replace('super', 'NOT', $object->getValue());
   }
@@ -28,8 +33,8 @@ class StringNormalizer extends NormalizerBase implements DenormalizerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getSupportedTypes(?string $format): array {
-    return [StringData::class => TRUE];
+  public function hasCacheableSupportsMethod(): bool {
+    return TRUE;
   }
 
 }

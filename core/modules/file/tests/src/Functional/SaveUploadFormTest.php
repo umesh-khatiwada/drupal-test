@@ -10,7 +10,6 @@ use Drupal\Tests\TestFileCreationTrait;
  * Tests the _file_save_upload_from_form() function.
  *
  * @group file
- * @group #slow
  *
  * @see _file_save_upload_from_form()
  */
@@ -25,7 +24,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
    *
    * @var array
    */
-  protected static $modules = ['dblog', 'file_validator_test'];
+  protected static $modules = ['dblog'];
 
   /**
    * {@inheritdoc}
@@ -548,8 +547,8 @@ class SaveUploadFormTest extends FileManagedTestBase {
    * Tests that multiple validation errors are combined in one message.
    */
   public function testCombinedErrorMessages() {
-    $text_file = current($this->drupalGetTestFiles('text'));
-    $this->assertFileExists($text_file->uri);
+    $textfile = current($this->drupalGetTestFiles('text'));
+    $this->assertFileExists($textfile->uri);
 
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
@@ -565,7 +564,7 @@ class SaveUploadFormTest extends FileManagedTestBase {
     ];
     $edit += $form->getPhpValues();
     $files['files']['file_test_upload'][0] = $file_system->realpath($this->phpfile->uri);
-    $files['files']['file_test_upload'][1] = $file_system->realpath($text_file->uri);
+    $files['files']['file_test_upload'][1] = $file_system->realpath($textfile->uri);
     $client->request($form->getMethod(), $form->getUri(), $edit, $files);
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains("Epic upload FAIL!");

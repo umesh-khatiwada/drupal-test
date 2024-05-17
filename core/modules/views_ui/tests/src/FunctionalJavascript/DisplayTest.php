@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\views_ui\FunctionalJavascript;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -74,7 +72,7 @@ class DisplayTest extends WebDriverTestBase {
     $page->find('css', '#views-display-menu-tabs .add')->click();
 
     // Wait for the animation to complete.
-    $this->getSession()->wait(1000, "jQuery(':animated').length === 0;");
+    $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Add the display.
     $page->find('css', '#edit-displays-top-add-display-block')->click();
@@ -180,7 +178,7 @@ class DisplayTest extends WebDriverTestBase {
     $page->find('css', '#views-display-menu-tabs .add')->click();
 
     // Wait for the animation to complete.
-    $this->getSession()->wait(1000, "jQuery(':animated').length === 0;");
+    $this->assertSession()->assertWaitOnAjaxRequest();
 
     // Look for the input element, always in second spot.
     $elements = $page->findAll('css', '.add ul input');

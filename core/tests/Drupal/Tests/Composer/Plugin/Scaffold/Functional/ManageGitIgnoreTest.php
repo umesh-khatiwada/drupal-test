@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Composer\Plugin\Scaffold\Functional;
 
 use Composer\Util\Filesystem;
@@ -248,7 +246,7 @@ Scaffolding files for fixtures/drupal-composer-drupal-project:
   - Copy [web-root]/robots.txt from assets/robots-default.txt
 
 EOT;
-    $this->assertStringContainsString($expected, $output);
+    $this->assertEquals($expected, $output);
     $this->assertFileExists($sut . '/docroot/index.php');
     $this->assertFileDoesNotExist($sut . '/docroot/sites/default/.gitignore');
   }

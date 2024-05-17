@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_argument_default_fixed
-label: test_argument_default_fixed
+label: ''
 module: views
 description: ''
 tag: ''

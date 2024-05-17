@@ -73,13 +73,6 @@ class ContextualLinkManager extends DefaultPluginManager implements ContextualLi
   protected $requestStack;
 
   /**
-   * The language manager.
-   *
-   * @var \Drupal\Core\Language\LanguageManagerInterface
-   */
-  protected LanguageManagerInterface $languageManager;
-
-  /**
    * A static cache of all the contextual link plugins by group name.
    *
    * @var array
@@ -111,9 +104,8 @@ class ContextualLinkManager extends DefaultPluginManager implements ContextualLi
     $this->account = $account;
     $this->moduleHandler = $module_handler;
     $this->requestStack = $request_stack;
-    $this->languageManager = $language_manager;
     $this->alterInfo('contextual_links_plugins');
-    $this->setCacheBackend($cache_backend, 'contextual_links_plugins:' . $language_manager->getCurrentLanguage()->getId());
+    $this->setCacheBackend($cache_backend, 'contextual_links_plugins:' . $language_manager->getCurrentLanguage()->getId(), ['contextual_links_plugins']);
   }
 
   /**
@@ -197,18 +189,6 @@ class ContextualLinkManager extends DefaultPluginManager implements ContextualLi
     $this->moduleHandler->alter('contextual_links', $links, $group_name, $route_parameters);
 
     return $links;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function clearCachedDefinitions() {
-    $cids = [];
-    foreach ($this->languageManager->getLanguages() as $language) {
-      $cids[] = 'contextual_links_plugins:' . $language->getId();
-    }
-    $this->cacheBackend->deleteMultiple($cids);
-    $this->definitions = NULL;
   }
 
 }

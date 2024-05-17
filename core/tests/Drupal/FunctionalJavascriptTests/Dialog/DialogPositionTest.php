@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests\Dialog;
 
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -45,6 +43,7 @@ class DialogPositionTest extends WebDriverTestBase {
     // Close the dialog again.
     $closeButton = $page->find('css', '.ui-dialog-titlebar-close');
     $closeButton->click();
+    $assert_session->assertWaitOnAjaxRequest();
     $dialog = $page->find('css', '.ui-dialog');
     $this->assertNull($dialog, 'Dialog is closed after clicking the close button.');
 
@@ -52,7 +51,7 @@ class DialogPositionTest extends WebDriverTestBase {
     // finish as no Javascript errors should have been triggered. If there were
     // javascript errors the test will fail on that.
     $session->resizeWindow(625, 625);
-    usleep(5000);
+    $assert_session->assertWaitOnAjaxRequest();
   }
 
 }

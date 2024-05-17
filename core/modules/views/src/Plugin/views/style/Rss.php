@@ -132,11 +132,6 @@ class Rss extends StylePluginBase {
       '#view' => $this->view,
       '#options' => $this->options,
       '#rows' => $rows,
-      '#attached' => [
-        'http_header' => [
-          ['Content-Type', 'application/rss+xml; charset=utf-8'],
-        ],
-      ],
     ];
     unset($this->view->row_index);
     return $build;

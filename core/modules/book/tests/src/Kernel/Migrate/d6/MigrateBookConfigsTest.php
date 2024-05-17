@@ -8,7 +8,7 @@ use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
 /**
  * Upgrade variables to book.settings.yml.
  *
- * @group book
+ * @group migrate_drupal_6
  */
 class MigrateBookConfigsTest extends MigrateDrupal6TestBase {
 
@@ -18,13 +18,6 @@ class MigrateBookConfigsTest extends MigrateDrupal6TestBase {
    * {@inheritdoc}
    */
   protected static $modules = ['book'];
-
-  /**
-   * Gets the path to the fixture file.
-   */
-  protected function getFixtureFilePath() {
-    return __DIR__ . '/../../../../fixtures/drupal6.php';
-  }
 
   /**
    * Data provider for testBookSettings().

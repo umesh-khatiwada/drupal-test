@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Plugin;
 
 use Drupal\Component\Plugin\Definition\PluginDefinition;
@@ -39,8 +37,6 @@ class DefaultPluginManagerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->expectedDefinitions = [
       'apple' => [
         'id' => 'apple',

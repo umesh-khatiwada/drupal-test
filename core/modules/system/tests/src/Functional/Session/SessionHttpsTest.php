@@ -64,7 +64,7 @@ class SessionHttpsTest extends BrowserTestBase {
    * Tests HTTPS sessions.
    */
   public function testHttpsSession() {
-    $user = $this->drupalCreateUser(['access administration pages', 'administer site configuration']);
+    $user = $this->drupalCreateUser(['access administration pages']);
 
     /** @var \Symfony\Component\BrowserKit\CookieJar $browser_kit_cookie_jar */
     $browser_kit_cookie_jar = $this->getSession()->getDriver()->getClient()->getCookieJar();

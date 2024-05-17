@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\block\FunctionalJavascript;
 
 use Behat\Mink\Element\NodeElement;
@@ -63,7 +61,7 @@ class BlockFilterTest extends WebDriverTestBase {
 
     // Test Drupal.announce() message when multiple matches are expected.
     $expected_message = count($visible_rows) . ' blocks are available in the modified list.';
-    $this->assertAnnounceContains($expected_message);
+    $assertSession->elementTextContains('css', '#drupal-live-announce', $expected_message);
 
     // Test Drupal.announce() message when only one match is expected.
     $filter->setValue('Powered by');
@@ -71,7 +69,7 @@ class BlockFilterTest extends WebDriverTestBase {
     $visible_rows = $this->filterVisibleElements($block_rows);
     $this->assertCount(1, $visible_rows);
     $expected_message = '1 block is available in the modified list.';
-    $this->assertAnnounceContains($expected_message);
+    $assertSession->elementTextContains('css', '#drupal-live-announce', $expected_message);
 
     // Test Drupal.announce() message when no matches are expected.
     $filter->setValue('Pan-Galactic Gargle Blaster');
@@ -79,7 +77,7 @@ class BlockFilterTest extends WebDriverTestBase {
     $visible_rows = $this->filterVisibleElements($block_rows);
     $this->assertCount(0, $visible_rows);
     $expected_message = '0 blocks are available in the modified list.';
-    $this->assertAnnounceContains($expected_message);
+    $assertSession->elementTextContains('css', '#drupal-live-announce', $expected_message);
   }
 
   /**
@@ -95,19 +93,6 @@ class BlockFilterTest extends WebDriverTestBase {
       return $element->isVisible();
     });
     return $elements;
-  }
-
-  /**
-   * Checks for inclusion of text in #drupal-live-announce.
-   *
-   * @param string $expected_message
-   *   The text expected to be present in #drupal-live-announce.
-   *
-   * @internal
-   */
-  protected function assertAnnounceContains(string $expected_message): void {
-    $assert_session = $this->assertSession();
-    $this->assertNotEmpty($assert_session->waitForElement('css', "#drupal-live-announce:contains('$expected_message')"));
   }
 
 }

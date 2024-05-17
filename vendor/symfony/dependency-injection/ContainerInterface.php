@@ -30,18 +30,9 @@ interface ContainerInterface extends PsrContainerInterface
     public const IGNORE_ON_INVALID_REFERENCE = 3;
     public const IGNORE_ON_UNINITIALIZED_REFERENCE = 4;
 
-    /**
-     * @return void
-     */
     public function set(string $id, ?object $service);
 
     /**
-     * @template B of self::*_REFERENCE
-     *
-     * @param B $invalidBehavior
-     *
-     * @psalm-return (B is self::EXCEPTION_ON_INVALID_REFERENCE|self::RUNTIME_EXCEPTION_ON_INVALID_REFERENCE ? object : object|null)
-     *
      * @throws ServiceCircularReferenceException When a circular reference is detected
      * @throws ServiceNotFoundException          When the service is not defined
      *
@@ -65,8 +56,5 @@ interface ContainerInterface extends PsrContainerInterface
 
     public function hasParameter(string $name): bool;
 
-    /**
-     * @return void
-     */
     public function setParameter(string $name, array|bool|string|int|float|\UnitEnum|null $value);
 }

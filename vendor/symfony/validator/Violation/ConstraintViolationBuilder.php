@@ -33,13 +33,13 @@ class ConstraintViolationBuilder implements ConstraintViolationBuilderInterface
     private mixed $invalidValue;
     private string $propertyPath;
     private TranslatorInterface $translator;
-    private string|false|null $translationDomain;
+    private ?string $translationDomain;
     private ?int $plural = null;
     private ?Constraint $constraint;
     private ?string $code = null;
     private mixed $cause = null;
 
-    public function __construct(ConstraintViolationList $violations, ?Constraint $constraint, string|\Stringable $message, array $parameters, mixed $root, ?string $propertyPath, mixed $invalidValue, TranslatorInterface $translator, string|false|null $translationDomain = null)
+    public function __construct(ConstraintViolationList $violations, ?Constraint $constraint, string|\Stringable $message, array $parameters, mixed $root, ?string $propertyPath, mixed $invalidValue, TranslatorInterface $translator, string $translationDomain = null)
     {
         $this->violations = $violations;
         $this->message = $message;
@@ -80,16 +80,6 @@ class ConstraintViolationBuilder implements ConstraintViolationBuilderInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function disableTranslation(): static
-    {
-        $this->translationDomain = false;
-
-        return $this;
-    }
-
     public function setInvalidValue(mixed $invalidValue): static
     {
         $this->invalidValue = $invalidValue;
@@ -118,15 +108,18 @@ class ConstraintViolationBuilder implements ConstraintViolationBuilderInterface
         return $this;
     }
 
-    public function addViolation(): void
+    public function addViolation()
     {
-        $parameters = null === $this->plural ? $this->parameters : (['%count%' => $this->plural] + $this->parameters);
-        if (false === $this->translationDomain) {
-            $translatedMessage = strtr($this->message, $parameters);
+        if (null === $this->plural) {
+            $translatedMessage = $this->translator->trans(
+                $this->message,
+                $this->parameters,
+                $this->translationDomain
+            );
         } else {
             $translatedMessage = $this->translator->trans(
                 $this->message,
-                $parameters,
+                ['%count%' => $this->plural] + $this->parameters,
                 $this->translationDomain
             );
         }

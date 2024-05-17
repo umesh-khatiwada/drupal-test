@@ -35,7 +35,7 @@ class FilterDefaultFormatTest extends BrowserTestBase {
     $formats = [];
     for ($i = 0; $i < 2; $i++) {
       $edit = [
-        'format' => $this->randomMachineName(),
+        'format' => mb_strtolower($this->randomMachineName()),
         'name' => $this->randomMachineName(),
       ];
       $this->drupalGet('admin/config/content/formats/add');

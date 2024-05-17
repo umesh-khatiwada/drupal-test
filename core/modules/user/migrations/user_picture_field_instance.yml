@@ -11,7 +11,7 @@ source:
     bundle: user
     name: user_picture
     settings:
-      file_extensions: 'png gif jpg jpeg webp'
+      file_extensions: 'png gif jpg jpeg'
       alt_field: false
       title_field: false
       min_resolution: ''

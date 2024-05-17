@@ -28,14 +28,14 @@ class ContextAwarePluginTraitTest extends KernelTestBase {
   /**
    * The plugin instance under test.
    *
-   * @var \Drupal\KernelTests\Core\Plugin\Context\TestContextAwarePlugin
+   * @var \Drupal\Core\Plugin\ContextAwarePluginTrait
    */
   private $plugin;
 
   /**
    * The configurable plugin instance under test.
    *
-   * @var \Drupal\KernelTests\Core\Plugin\Context\TestConfigurableContextAwarePlugin
+   * @var \Drupal\Core\Plugin\ContextAwarePluginTrait
    */
   private $configurablePlugin;
 

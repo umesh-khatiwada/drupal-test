@@ -10,6 +10,19 @@
  * Buttons.
  */
 
+/*
+ * Media query breakpoints.
+ * Processed by postcss/postcss-custom-media.
+ */
+
+/* Navigation related breakpoints */
+
+/* Grid related breakpoints */
+
+/* Grid shifts from 6 to 14 columns. */
+
+/* Width of the entire grid maxes out. */
+
 .button {
   display: inline-block;
   height: var(--sp3);
@@ -20,7 +33,6 @@
   padding-inline: var(--sp1-5);
   cursor: pointer;
   text-align: center;
-  -webkit-text-decoration: none;
   text-decoration: none;
   color: var(--color-text-primary-medium);
   border: solid 2px currentColor;
@@ -36,7 +48,6 @@
 
 .button:hover,
 .button:focus {
-  -webkit-text-decoration: none;
   text-decoration: none;
   color: var(--color-text-primary-loud);
   border: solid 2px currentColor;
@@ -67,6 +78,7 @@
   */
 
 @supports (display: inline-flex) {
+
   .button {
     display: inline-flex;
     align-items: center;
@@ -96,7 +108,6 @@
 
 .button--primary {
   color: var(--color--white);
-  border-color: var(--color--primary-40);
   background-color: var(--color--primary-40);
 }
 
@@ -123,7 +134,7 @@
   align-items: center;
 }
 
-.button--icon-back::before {
+.button--icon-back:before {
   display: block;
   width: 0.5em;
   height: 0.5em;
@@ -134,7 +145,7 @@
   border-inline-start: solid 2px currentColor;
 }
 
-[dir="rtl"] .button--icon-back::before {
+[dir="rtl"] .button--icon-back:before {
   transform: rotate(-45deg);
 }
 

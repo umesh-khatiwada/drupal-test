@@ -69,6 +69,12 @@ class Composer {
         $vendor_dir . '/psr/container/src/ContainerInterface.php',
       ]);
     }
+    if ($repository->findPackage('laminas/laminas-zendframework-bridge', $constraint)) {
+      $autoload['classmap'] = array_merge($autoload['classmap'], [
+        $vendor_dir . '/laminas/laminas-zendframework-bridge/src/Autoloader.php',
+        $vendor_dir . '/laminas/laminas-zendframework-bridge/src/RewriteRules.php',
+      ]);
+    }
     $package->setAutoload($autoload);
   }
 

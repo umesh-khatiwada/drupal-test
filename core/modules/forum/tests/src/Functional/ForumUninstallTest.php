@@ -14,7 +14,6 @@ use Drupal\Tests\BrowserTestBase;
  * Tests forum module uninstallation.
  *
  * @group forum
- * @group #slow
  */
 class ForumUninstallTest extends BrowserTestBase {
 
@@ -122,7 +121,7 @@ class ForumUninstallTest extends BrowserTestBase {
       'type' => 'forum',
     ];
     $this->drupalGet('admin/structure/types/add');
-    $this->submitForm($edit, 'Save');
+    $this->submitForm($edit, 'Save content type');
     $this->assertTrue((bool) NodeType::load('forum'), 'Node type with machine forum created.');
     $this->drupalGet('admin/structure/types/manage/forum');
     $this->clickLink('Delete');
@@ -170,7 +169,7 @@ class ForumUninstallTest extends BrowserTestBase {
 
     // Now attempt to uninstall forum.
     $this->drupalGet('admin/modules/uninstall');
-    $this->assertSession()->responseNotContains('The website encountered an unexpected error. Try again later');
+    $this->assertSession()->responseNotContains('The website encountered an unexpected error. Please try again later');
     $this->assertSession()->statusCodeEquals(200);
 
     // Assert forum is no longer required.

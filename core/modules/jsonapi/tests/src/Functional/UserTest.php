@@ -17,7 +17,6 @@ use GuzzleHttp\RequestOptions;
  * JSON:API integration test for the "User" content entity type.
  *
  * @group jsonapi
- * @group #slow
  */
 class UserTest extends ResourceTestBase {
 
@@ -187,7 +186,7 @@ class UserTest extends ResourceTestBase {
       'data' => [
         'type' => 'user--user',
         'attributes' => [
-          'name' => 'Drama llama',
+          'name' => 'Dramallama',
         ],
       ],
     ];

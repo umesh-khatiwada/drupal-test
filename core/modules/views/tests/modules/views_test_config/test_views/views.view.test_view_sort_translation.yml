@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies: {  }
 id: test_view_sort_translation
-label: test_view_sort_translation
 module: views
 description: ''
 tag: ''

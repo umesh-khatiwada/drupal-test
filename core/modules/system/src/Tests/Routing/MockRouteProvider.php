@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\system\Tests\Routing;
 
 use Symfony\Component\HttpFoundation\Request;

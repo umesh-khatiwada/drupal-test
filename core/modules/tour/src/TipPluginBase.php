@@ -66,7 +66,15 @@ abstract class TipPluginBase extends PluginBase implements TipPluginInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Determines the placement of the tip relative to the element.
+   *
+   * If null, the tip will automatically determine the best position based on
+   * the element's position in the viewport.
+   *
+   * @return string|null
+   *   The tip placement relative to the element.
+   *
+   * @see https://shepherdjs.dev/docs/Step.html
    */
   public function getLocation(): ?string {
     $location = $this->get('position');
@@ -96,17 +104,18 @@ abstract class TipPluginBase extends PluginBase implements TipPluginInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * The selector the tour tip will attach to.
+   *
+   * This is mapped to the `attachTo.element` property of the Shepherd tooltip
+   * options.
+   *
+   * @return null|string
+   *   A selector string, or null for an unattached tip.
+   *
+   * @see https://shepherdjs.dev/docs/Step.html
    */
   public function getSelector(): ?string {
     return $this->get('selector');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getBody(): array {
-    return [];
   }
 
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\PageCache;
 
 use Drupal\Core\PageCache\ResponsePolicyInterface;
@@ -41,8 +39,6 @@ class ChainResponsePolicyTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->policy = new ChainResponsePolicy();
     $this->response = new Response();
     $this->request = new Request();
@@ -55,7 +51,7 @@ class ChainResponsePolicyTest extends UnitTestCase {
    */
   public function testEmptyChain() {
     $result = $this->policy->check($this->response, $this->request);
-    $this->assertNull($result);
+    $this->assertSame(NULL, $result);
   }
 
   /**
@@ -73,7 +69,7 @@ class ChainResponsePolicyTest extends UnitTestCase {
     $this->policy->addPolicy($rule);
 
     $result = $this->policy->check($this->response, $this->request);
-    $this->assertNull($result);
+    $this->assertSame(NULL, $result);
   }
 
   /**

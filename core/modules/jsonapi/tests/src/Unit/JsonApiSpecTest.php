@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\jsonapi\Unit;
 
 use Drupal\jsonapi\JsonApiSpec;
@@ -28,7 +26,7 @@ class JsonApiSpecTest extends UnitTestCase {
   /**
    * Data provider for testIsValidMemberName.
    */
-  public static function providerTestIsValidMemberName() {
+  public function providerTestIsValidMemberName() {
     // Copied from http://jsonapi.org/format/upcoming/#document-member-names.
     $data = [];
     $data['alphanumeric-lowercase'] = ['12kittens', TRUE];
@@ -109,8 +107,8 @@ class JsonApiSpecTest extends UnitTestCase {
   /**
    * Data provider for testIsValidCustomQueryParameter.
    */
-  public static function providerTestIsValidCustomQueryParameter() {
-    $data = static::providerTestIsValidMemberName();
+  public function providerTestIsValidCustomQueryParameter() {
+    $data = $this->providerTestIsValidMemberName();
 
     // All valid member names are also valid custom query parameters, except for
     // single-character ones.
@@ -120,7 +118,7 @@ class JsonApiSpecTest extends UnitTestCase {
     $data['custom-query-parameter-lowercase'] = ['foobar', FALSE];
     $data['custom-query-parameter-dash'] = ['foo-bar', TRUE];
     $data['custom-query-parameter-underscore'] = ['foo_bar', TRUE];
-    $data['custom-query-parameter-camel-case'] = ['fooBar', TRUE];
+    $data['custom-query-parameter-camelcase'] = ['fooBar', TRUE];
 
     return $data;
   }

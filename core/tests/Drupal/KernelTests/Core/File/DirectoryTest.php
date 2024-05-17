@@ -4,6 +4,7 @@ namespace Drupal\KernelTests\Core\File;
 
 use Drupal\Component\FileSecurity\FileSecurity;
 use Drupal\Component\FileSystem\FileSystem;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Database\Database;
 use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\FileSystemInterface;
@@ -76,7 +77,7 @@ class DirectoryTest extends FileTestBase {
     // Make sure directory actually exists.
     $this->assertDirectoryExists($directory);
     $file_system = \Drupal::service('file_system');
-    if (!str_starts_with(PHP_OS, 'WIN')) {
+    if (substr(PHP_OS, 0, 3) != 'WIN') {
       // PHP on Windows doesn't support any kind of useful read-only mode for
       // directories. When executing a chmod() on a directory, PHP only sets the
       // read-only flag, which doesn't prevent files to actually be written
@@ -123,14 +124,14 @@ class DirectoryTest extends FileTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
     $path = $file_system->createFilename($basename, $directory);
-    $this->assertEquals($original, $path, "New filepath $path equals $original.");
+    $this->assertEquals($original, $path, new FormattableMarkup('New filepath %new equals %original.', ['%new' => $path, '%original' => $original]));
 
     // Then we test against a file that already exists within that directory.
     $basename = 'druplicon.png';
     $original = $directory . '/' . $basename;
     $expected = $directory . '/druplicon_0.png';
     $path = $file_system->createFilename($basename, $directory);
-    $this->assertEquals($expected, $path, "Creating a new filepath from $path equals $original (expected $expected).");
+    $this->assertEquals($expected, $path, new FormattableMarkup('Creating a new filepath from %original equals %new (expected %expected).', ['%new' => $path, '%original' => $original, '%expected' => $expected]));
 
     // @TODO: Finally we copy a file into a directory several times, to ensure a properly iterating filename suffix.
   }

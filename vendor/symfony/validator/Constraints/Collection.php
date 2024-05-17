@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 /**
@@ -42,9 +41,11 @@ class Collection extends Composite
     public $extraFieldsMessage = 'This field was not expected.';
     public $missingFieldsMessage = 'This field is missing.';
 
-    public function __construct(mixed $fields = null, ?array $groups = null, mixed $payload = null, ?bool $allowExtraFields = null, ?bool $allowMissingFields = null, ?string $extraFieldsMessage = null, ?string $missingFieldsMessage = null)
+    public function __construct(mixed $fields = null, array $groups = null, mixed $payload = null, bool $allowExtraFields = null, bool $allowMissingFields = null, string $extraFieldsMessage = null, string $missingFieldsMessage = null)
     {
-        if (self::isFieldsOption($fields)) {
+        // no known options set? $fields is the fields array
+        if (\is_array($fields)
+            && !array_intersect(array_keys($fields), ['groups', 'fields', 'allowExtraFields', 'allowMissingFields', 'extraFieldsMessage', 'missingFieldsMessage'])) {
             $fields = ['fields' => $fields];
         }
 
@@ -56,9 +57,6 @@ class Collection extends Composite
         $this->missingFieldsMessage = $missingFieldsMessage ?? $this->missingFieldsMessage;
     }
 
-    /**
-     * @return void
-     */
     protected function initializeNestedConstraints()
     {
         parent::initializeNestedConstraints();
@@ -88,32 +86,5 @@ class Collection extends Composite
     protected function getCompositeOption(): string
     {
         return 'fields';
-    }
-
-    private static function isFieldsOption($options): bool
-    {
-        if (!\is_array($options)) {
-            return false;
-        }
-
-        foreach ($options as $optionOrField) {
-            if ($optionOrField instanceof Constraint) {
-                return true;
-            }
-
-            if (null === $optionOrField) {
-                continue;
-            }
-
-            if (!\is_array($optionOrField)) {
-                return false;
-            }
-
-            if ($optionOrField && !($optionOrField[0] ?? null) instanceof Constraint) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

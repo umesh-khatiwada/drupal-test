@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Entity\Access;
 
 use Drupal\Core\Entity\Entity\Access\EntityViewDisplayAccessControlHandler;
@@ -34,9 +32,9 @@ class EntityViewDisplayAccessControlHandlerTest extends EntityFormDisplayAccessC
 
     $this->entity = new EntityViewDisplay([
       'targetEntityType' => 'foobar',
-      'bundle' => 'new_bundle',
+      'bundle' => 'bazqux',
       'mode' => 'default',
-      'id' => 'foobar.new_bundle.default',
+      'id' => 'foobar.bazqux.default',
       'uuid' => '6f2f259a-f3c7-42ea-bdd5-111ad1f85ed1',
     ], 'entity_display');
     $this->accessControlHandler = new EntityViewDisplayAccessControlHandler($this->entity->getEntityType());

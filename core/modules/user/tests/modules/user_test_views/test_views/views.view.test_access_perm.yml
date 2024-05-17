@@ -4,7 +4,7 @@ dependencies:
   module:
     - user
 id: test_access_perm
-label: test_access_perm
+label: ''
 module: views
 description: ''
 tag: ''

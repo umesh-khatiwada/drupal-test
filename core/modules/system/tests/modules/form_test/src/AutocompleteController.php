@@ -10,17 +10,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AutocompleteController {
 
   /**
-   * Returns some autocompletion content with a slight delay.
-   *
-   * The delay is present so tests can make assertions on the "processing"
-   * layout of autocompletion.
+   * Returns some autocompletion content.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   A JSON response.
    */
-  public function delayed_autocomplete() {
-    sleep(1);
-    return new JsonResponse([['value' => 'value', 'label' => 'label']]);
+  public function autocomplete1() {
+    return new JsonResponse(['key' => 'value']);
   }
 
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Utility;
 
 use Drupal\Component\Render\MarkupInterface;
@@ -10,8 +8,6 @@ use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Random;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
-
-// cspell:ignore répét répété
 
 /**
  * Tests \Drupal\Component\Utility\Html.
@@ -31,7 +27,8 @@ class HtmlTest extends TestCase {
     parent::setUp();
 
     $property = new \ReflectionProperty('Drupal\Component\Utility\Html', 'seenIdsInit');
-    $property->setValue(NULL, NULL);
+    $property->setAccessible(TRUE);
+    $property->setValue(NULL);
   }
 
   /**
@@ -79,21 +76,21 @@ class HtmlTest extends TestCase {
       // stripped from the identifier.
       ['invalididentifier', 'invalid !"#$%&\'()*+,./:;<=>?@[\\]^`{|}~ identifier', []],
       // Verify that an identifier starting with a digit is replaced.
-      ['_css_identifier', '1css_identifier', []],
+      ['_cssidentifier', '1cssidentifier', []],
       // Verify that an identifier starting with a hyphen followed by a digit is
       // replaced.
-      ['__css_identifier', '-1css_identifier', []],
+      ['__cssidentifier', '-1cssidentifier', []],
       // Verify that an identifier starting with two hyphens is replaced.
-      ['__css_identifier', '--css_identifier', []],
+      ['__cssidentifier', '--cssidentifier', []],
       // Verify that passing double underscores as a filter is processed.
-      ['_css_identifier', '__css_identifier', ['__' => '_']],
+      ['_cssidentifier', '__cssidentifier', ['__' => '_']],
     ];
   }
 
   /**
    * Tests that Html::getClass() cleans the class name properly.
    *
-   * @covers ::getClass
+   * @coversDefaultClass ::getClass
    */
   public function testHtmlClass() {
     // Verify Drupal coding standards are enforced.
@@ -168,7 +165,7 @@ class HtmlTest extends TestCase {
 
     // Note, we truncate two hyphens at the end.
     // @see \Drupal\Component\Utility\Html::getId()
-    if (str_contains($source, '--')) {
+    if (strpos($source, '--') !== FALSE) {
       $random_suffix = substr($id, strlen($source) + 1);
     }
     else {
@@ -304,7 +301,6 @@ class HtmlTest extends TestCase {
       ['→', '→'],
       ['➼', '➼'],
       ['€', '€'],
-      // cspell:disable-next-line
       ['Drup�al', "Drup\x80al"],
     ];
   }
@@ -383,7 +379,6 @@ class HtmlTest extends TestCase {
         "$tag_name, srcset, $base_path: root-relative" => ["<$tag_name srcset=\"http://example.com{$base_path}already-absolute 200w, {$base_path}root-relative 300w\">root-relative test</$tag_name>", 'http://example.com', "<$tag_name srcset=\"http://example.com{$base_path}already-absolute 200w, http://example.com{$base_path}root-relative 300w\">root-relative test</$tag_name>"],
         "$tag_name, srcset, $base_path: protocol-relative" => ["<$tag_name srcset=\"http://example.com{$base_path}already-absolute 200w, //example.com{$base_path}protocol-relative 300w\">protocol-relative test</$tag_name>", 'http://example.com', FALSE],
         "$tag_name, srcset, $base_path: absolute" => ["<$tag_name srcset=\"http://example.com{$base_path}already-absolute 200w, http://example.com{$base_path}absolute 300w\">absolute test</$tag_name>", 'http://example.com', FALSE],
-        "$tag_name, empty srcset" => ["<$tag_name srcset>empty test</$tag_name>", 'http://example.com', FALSE],
       ];
 
       foreach (['href', 'poster', 'src', 'cite', 'data', 'action', 'formaction', 'about'] as $attribute) {
@@ -394,11 +389,6 @@ class HtmlTest extends TestCase {
         ];
       }
     }
-
-    // Double-character carriage return should be normalized.
-    $data['line break with double special character'] = ["Test without links but with\r\nsome special characters", 'http://example.com', "Test without links but with\nsome special characters"];
-    $data['line break with single special character'] = ["Test without links but with&#13;\nsome special characters", 'http://example.com', "Test without links but with\nsome special characters"];
-    $data['carriage return within html'] = ["<a\rhref='/node'>My link</a>", 'http://example.com', '<a href="http://example.com/node">My link</a>'];
 
     return $data;
   }

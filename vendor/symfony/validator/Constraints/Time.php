@@ -35,19 +35,16 @@ class Time extends Constraint
      */
     protected static $errorNames = self::ERROR_NAMES;
 
-    public $withSeconds = true;
     public $message = 'This value is not a valid time.';
 
     public function __construct(
-        ?array $options = null,
-        ?string $message = null,
-        ?array $groups = null,
-        mixed $payload = null,
-        ?bool $withSeconds = null,
+        array $options = null,
+        string $message = null,
+        array $groups = null,
+        mixed $payload = null
     ) {
         parent::__construct($options, $groups, $payload);
 
-        $this->withSeconds = $withSeconds ?? $this->withSeconds;
         $this->message = $message ?? $this->message;
     }
 }

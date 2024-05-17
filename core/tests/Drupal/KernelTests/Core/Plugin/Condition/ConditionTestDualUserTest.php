@@ -38,6 +38,7 @@ class ConditionTestDualUserTest extends KernelTestBase {
   protected function setUp(): void {
     parent::setUp();
 
+    $this->installSchema('system', 'sequences');
     $this->installEntitySchema('user');
 
     $this->anonymous = User::create(['uid' => 0]);

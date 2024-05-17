@@ -3,7 +3,6 @@
 namespace Drupal\file\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\StringTranslation\ByteSizeMarkup;
 
 /**
  * Plugin implementation of the 'file_table' formatter.
@@ -40,7 +39,7 @@ class TableFormatter extends DescriptionAwareFileFormatterBase {
               ],
             ],
           ],
-          ['data' => $file->getSize() !== NULL ? ByteSizeMarkup::create($file->getSize()) : $this->t('Unknown')],
+          ['data' => format_size($file->getSize())],
         ];
       }
 

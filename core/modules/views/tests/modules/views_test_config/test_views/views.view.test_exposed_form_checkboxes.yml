@@ -7,7 +7,7 @@ dependencies:
     - node
     - taxonomy
 id: test_exposed_form_checkboxes
-label: test_exposed_form_checkboxes
+label: ''
 module: views
 description: ''
 tag: ''

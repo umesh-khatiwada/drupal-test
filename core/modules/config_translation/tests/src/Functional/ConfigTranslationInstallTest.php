@@ -3,7 +3,6 @@
 namespace Drupal\Tests\config_translation\Functional;
 
 use Drupal\FunctionalTests\Installer\InstallerTestBase;
-use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 
 /**
  * Installs the config translation module on a site installed in non english.
@@ -11,8 +10,6 @@ use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
  * @group config_translation
  */
 class ConfigTranslationInstallTest extends InstallerTestBase {
-
-  use ContentTypeCreationTrait;
 
   /**
    * {@inheritdoc}
@@ -22,7 +19,7 @@ class ConfigTranslationInstallTest extends InstallerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $profile = 'standard';
 
   /**
    * {@inheritdoc}
@@ -47,7 +44,7 @@ class ConfigTranslationInstallTest extends InstallerTestBase {
    *   Contents for the test .po file.
    */
   protected function getPo($langcode) {
-    return <<<PO
+    return <<<ENDPO
 msgid ""
 msgstr ""
 
@@ -59,13 +56,10 @@ msgstr "Anonymous $langcode"
 
 msgid "Language"
 msgstr "Language $langcode"
-PO;
+ENDPO;
   }
 
   public function testConfigTranslation() {
-    \Drupal::service('module_installer')->install(['node', 'field_ui']);
-    $this->createContentType(['type' => 'article']);
-
     $this->drupalGet('admin/config/regional/language/add');
     $this->submitForm(['predefined_langcode' => 'en'], 'Add custom language');
     $this->drupalGet('admin/config/regional/language/add');

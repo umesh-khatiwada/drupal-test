@@ -29,9 +29,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class MergeExtensionConfigurationPass implements CompilerPassInterface
 {
-    /**
-     * @return void
-     */
     public function process(ContainerBuilder $container)
     {
         $parameters = $container->getParameterBag()->all();
@@ -109,7 +106,7 @@ class MergeExtensionConfigurationParameterBag extends EnvPlaceholderParameterBag
         $this->mergeEnvPlaceholders($parameterBag);
     }
 
-    public function freezeAfterProcessing(Extension $extension, ContainerBuilder $container): void
+    public function freezeAfterProcessing(Extension $extension, ContainerBuilder $container)
     {
         if (!$config = $extension->getProcessedConfigs()) {
             // Extension::processConfiguration() wasn't called, we cannot know how configs were merged
@@ -156,7 +153,7 @@ class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
 {
     private string $extensionClass;
 
-    public function __construct(ExtensionInterface $extension, ?ParameterBagInterface $parameterBag = null)
+    public function __construct(ExtensionInterface $extension, ParameterBagInterface $parameterBag = null)
     {
         parent::__construct($parameterBag);
 
@@ -178,7 +175,7 @@ class MergeExtensionConfigurationContainerBuilder extends ContainerBuilder
         throw new LogicException(sprintf('Cannot compile the container in extension "%s".', $this->extensionClass));
     }
 
-    public function resolveEnvPlaceholders(mixed $value, string|bool|null $format = null, ?array &$usedEnvs = null): mixed
+    public function resolveEnvPlaceholders(mixed $value, string|bool $format = null, array &$usedEnvs = null): mixed
     {
         if (true !== $format || !\is_string($value)) {
             return parent::resolveEnvPlaceholders($value, $format, $usedEnvs);

@@ -59,9 +59,6 @@ use Drupal\media\MediaTypeInterface;
  *     "entity-permissions-form" = "/admin/structure/media/manage/{media_type}/permissions",
  *     "collection" = "/admin/structure/media",
  *   },
- *   constraints = {
- *     "ImmutableProperties" = {"id", "source"},
- *   }
  * )
  */
 class MediaType extends ConfigEntityBundleBase implements MediaTypeInterface, EntityWithPluginCollectionInterface {

@@ -12,8 +12,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
-use Drupal\file\FileRepositoryInterface;
-use Drupal\file\Validation\FileValidatorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
 use Symfony\Component\HttpFoundation\File\Exception\ExtensionFileException;
@@ -86,20 +84,6 @@ class FileUploadHandler {
   protected $requestStack;
 
   /**
-   * The file Repository.
-   *
-   * @var \Drupal\file\FileRepositoryInterface
-   */
-  protected $fileRepository;
-
-  /**
-   * The file validator.
-   *
-   * @var \Drupal\file\Validation\FileValidatorInterface
-   */
-  protected FileValidatorInterface $fileValidator;
-
-  /**
    * Constructs a FileUploadHandler object.
    *
    * @param \Drupal\Core\File\FileSystemInterface $fileSystem
@@ -116,12 +100,8 @@ class FileUploadHandler {
    *   The current user.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack.
-   * @param \Drupal\file\FileRepositoryInterface|null $fileRepository
-   *   The file repository.
-   * @param \Drupal\file\Validation\FileValidatorInterface|null $file_validator
-   *   The file validator.
    */
-  public function __construct(FileSystemInterface $fileSystem, EntityTypeManagerInterface $entityTypeManager, StreamWrapperManagerInterface $streamWrapperManager, EventDispatcherInterface $eventDispatcher, MimeTypeGuesserInterface $mimeTypeGuesser, AccountInterface $currentUser, RequestStack $requestStack, FileRepositoryInterface $fileRepository = NULL, FileValidatorInterface $file_validator = NULL) {
+  public function __construct(FileSystemInterface $fileSystem, EntityTypeManagerInterface $entityTypeManager, StreamWrapperManagerInterface $streamWrapperManager, EventDispatcherInterface $eventDispatcher, MimeTypeGuesserInterface $mimeTypeGuesser, AccountInterface $currentUser, RequestStack $requestStack) {
     $this->fileSystem = $fileSystem;
     $this->entityTypeManager = $entityTypeManager;
     $this->streamWrapperManager = $streamWrapperManager;
@@ -129,16 +109,6 @@ class FileUploadHandler {
     $this->mimeTypeGuesser = $mimeTypeGuesser;
     $this->currentUser = $currentUser;
     $this->requestStack = $requestStack;
-    if ($fileRepository === NULL) {
-      @trigger_error('Calling ' . __METHOD__ . ' without the $fileRepository argument is deprecated in drupal:10.1.0 and will be required in drupal:11.0.0. See https://www.drupal.org/node/3346839', E_USER_DEPRECATED);
-      $fileRepository = \Drupal::service('file.repository');
-    }
-    $this->fileRepository = $fileRepository;
-    if (!$file_validator) {
-      @trigger_error('Calling ' . __METHOD__ . '() without the $file_validator argument is deprecated in drupal:10.2.0 and is required in drupal:11.0.0. See https://www.drupal.org/node/3363700', E_USER_DEPRECATED);
-      $file_validator = \Drupal::service('file.validator');
-    }
-    $this->fileValidator = $file_validator;
   }
 
   /**
@@ -237,14 +207,10 @@ class FileUploadHandler {
     $file->setSize($uploadedFile->getSize());
 
     // Add in our check of the file name length.
-    $validators['FileNameLength'] = [];
+    $validators['file_validate_name_length'] = [];
 
     // Call the validation functions specified by this function's caller.
-    $violations = $this->fileValidator->validate($file, $validators);
-    $errors = [];
-    foreach ($violations as $violation) {
-      $errors[] = $violation->getMessage();
-    }
+    $errors = file_validate($file, $validators);
     if (!empty($errors)) {
       throw new FileValidationException('File validation failed', $filename, $errors);
     }
@@ -341,43 +307,22 @@ class FileUploadHandler {
    *   The space delimited list of allowed file extensions.
    */
   protected function handleExtensionValidation(array &$validators): string {
-    // Handle legacy extension validation.
+    // Build a list of allowed extensions.
     if (isset($validators['file_validate_extensions'])) {
-      @trigger_error(
-        '\'file_validate_extensions\' is deprecated in drupal:10.2.0 and is removed from drupal:11.0.0. Use the \'FileExtension\' constraint instead. See https://www.drupal.org/node/3363700',
-        E_USER_DEPRECATED
-      );
-      // Empty string means all extensions are allowed so we should remove the
-      // validator.
-      if (\is_string($validators['file_validate_extensions']) && empty($validators['file_validate_extensions'])) {
+      if (!isset($validators['file_validate_extensions'][0])) {
+        // If 'file_validate_extensions' is set and the list is empty then the
+        // caller wants to allow any extension. In this case we have to remove the
+        // validator or else it will reject all extensions.
         unset($validators['file_validate_extensions']);
-        return '';
       }
-      // The deprecated 'file_validate_extensions' has configuration, so that
-      // should be used.
-      $validators['FileExtension']['extensions'] = $validators['file_validate_extensions'][0];
-      unset($validators['file_validate_extensions']);
-      return $validators['FileExtension']['extensions'];
     }
-
-    // No validator was provided, so add one using the default list.
-    // Build a default non-munged safe list for
-    // \Drupal\system\EventSubscriber\SecurityFileUploadEventSubscriber::sanitizeName().
-    if (!isset($validators['FileExtension'])) {
-      $validators['FileExtension'] = ['extensions' => self::DEFAULT_EXTENSIONS];
-      return self::DEFAULT_EXTENSIONS;
+    else {
+      // No validator was provided, so add one using the default list.
+      // Build a default non-munged safe list for
+      // \Drupal\system\EventSubscriber\SecurityFileUploadEventSubscriber::sanitizeName().
+      $validators['file_validate_extensions'] = [self::DEFAULT_EXTENSIONS];
     }
-
-    // Check if we want to allow all extensions.
-    if (!isset($validators['FileExtension']['extensions'])) {
-      // If 'FileExtension' is set and the list is empty then the caller wants
-      // to allow any extension. In this case we have to remove the validator
-      // or else it will reject all extensions.
-      unset($validators['FileExtension']);
-      return '';
-    }
-
-    return $validators['FileExtension']['extensions'];
+    return $validators['file_validate_extensions'][0] ?? '';
   }
 
   /**
@@ -388,9 +333,24 @@ class FileUploadHandler {
    *
    * @return \Drupal\file\FileInterface|null
    *   The first file with the matched URI if found, NULL otherwise.
+   *
+   * @todo replace with https://www.drupal.org/project/drupal/issues/3223209
    */
   protected function loadByUri(string $uri): ?FileInterface {
-    return $this->fileRepository->loadByUri($uri);
+    $fileStorage = $this->entityTypeManager->getStorage('file');
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = $fileStorage->loadByProperties(['uri' => $uri]);
+    if (count($files)) {
+      foreach ($files as $item) {
+        // Since some database servers sometimes use a case-insensitive
+        // comparison by default, double check that the filename is an exact
+        // match.
+        if ($item->getFileUri() === $uri) {
+          return $item;
+        }
+      }
+    }
+    return NULL;
   }
 
 }

@@ -13,7 +13,6 @@ use GuzzleHttp\RequestOptions;
  * JSON:API integration test for the "ConfigurableLanguage" config entity type.
  *
  * @group jsonapi
- * @group #slow
  */
 class ConfigurableLanguageTest extends ConfigEntityResourceTestBase {
 

@@ -6,7 +6,6 @@
 namespace Drupal\Core\DependencyInjection;
 
 use Drupal\Component\FileCache\FileCacheFactory;
-use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Drupal\Core\Serialization\Yaml;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,7 +35,6 @@ class YamlFileLoader
         'public' => 'public',
         'tags' => 'tags',
         'autowire' => 'autowire',
-        'autoconfigure' => 'autoconfigure',
     ];
 
     /**
@@ -207,7 +205,7 @@ class YamlFileLoader
      */
     private function parseDefinition(string $id, $service, string $file, array $defaults)
     {
-        if (\is_string($service) && str_starts_with($service, '@')) {
+        if (\is_string($service) && 0 === strpos($service, '@')) {
             $this->container->setAlias($id, $alias = new Alias(substr($service, 1)));
             if (isset($defaults['public'])) {
                 $alias->setPublic($defaults['public']);
@@ -255,9 +253,6 @@ class YamlFileLoader
         if (isset($defaults['autowire'])) {
             $definition->setAutowired($defaults['autowire']);
         }
-        if (isset($defaults['autoconfigure'])) {
-            $definition->setAutoconfigured($defaults['autoconfigure']);
-        }
 
         $definition->setChanges([]);
 
@@ -292,7 +287,7 @@ class YamlFileLoader
 
         if (isset($service['factory'])) {
             if (is_string($service['factory'])) {
-                if (str_contains($service['factory'], ':') && !str_contains($service['factory'], '::')) {
+                if (strpos($service['factory'], ':') !== false && strpos($service['factory'], '::') === false) {
                     $parts = explode(':', $service['factory']);
                     $definition->setFactory(array($this->resolveServices('@'.$parts[0]), $parts[1]));
                 } else {
@@ -419,14 +414,7 @@ class YamlFileLoader
             throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $file));
         }
 
-        try {
-          $valid_file = $this->validate(Yaml::decode(file_get_contents($file)), $file);
-        }
-        catch (InvalidDataTypeException $e) {
-          throw new InvalidArgumentException(sprintf('The file "%s" does not contain valid YAML: ', $file) . $e->getMessage());
-        }
-
-        return $valid_file;
+        return $this->validate(Yaml::decode(file_get_contents($file)), $file);
     }
 
     /**
@@ -450,8 +438,8 @@ class YamlFileLoader
             throw new InvalidArgumentException(sprintf('The service file "%s" is not valid. It should contain an array. Check your YAML syntax.', $file));
         }
 
-        if ($invalid_keys = array_keys(array_diff_key($content, array('parameters' => 1, 'services' => 1)))) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid: it contains invalid root key(s) "%s". Services have to be added under "services" and Parameters under "parameters".', $file, implode('", "', $invalid_keys)));
+        if ($invalid_keys = array_diff_key($content, array('parameters' => 1, 'services' => 1))) {
+            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid: it contains invalid keys %s. Services have to be added under "services" and Parameters under "parameters".', $file, $invalid_keys));
         }
 
         return $content;
@@ -468,15 +456,15 @@ class YamlFileLoader
     {
         if (is_array($value)) {
             $value = array_map(array($this, 'resolveServices'), $value);
-        } elseif (is_string($value) && str_starts_with($value, '@=')) {
+        } elseif (is_string($value) &&  0 === strpos($value, '@=')) {
             // Not supported.
             //return new Expression(substr($value, 2));
             throw new InvalidArgumentException(sprintf("'%s' is an Expression, but expressions are not supported.", $value));
-        } elseif (is_string($value) && str_starts_with($value, '@')) {
-            if (str_starts_with($value, '@@')) {
+        } elseif (is_string($value) &&  0 === strpos($value, '@')) {
+            if (0 === strpos($value, '@@')) {
                 $value = substr($value, 1);
                 $invalidBehavior = null;
-            } elseif (str_starts_with($value, '@?')) {
+            } elseif (0 === strpos($value, '@?')) {
                 $value = substr($value, 2);
                 $invalidBehavior = ContainerInterface::IGNORE_ON_INVALID_REFERENCE;
             } else {

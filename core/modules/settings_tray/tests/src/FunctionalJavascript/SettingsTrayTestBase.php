@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\settings_tray\FunctionalJavascript;
 
 use Drupal\block\Entity\Block;
@@ -48,11 +46,9 @@ class SettingsTrayTestBase extends OffCanvasTestBase {
     $this->assertNotEmpty($contextual_link);
     // When page first loads Edit Mode is not triggered until first contextual
     // link is added.
-    $this->assertNotEmpty($this->assertSession()->waitForElementVisible('css', '.dialog-off-canvas-main-canvas.js-settings-tray-edit-mode'));
-    // @todo https://www.drupal.org/project/drupal/issues/3317520 Work why the
-    //   sleep is necessary in.
-    usleep(100000);
-
+    $this->assertElementVisibleAfterWait('css', '.dialog-off-canvas-main-canvas.js-settings-tray-edit-mode');
+    // Ensure that all other Ajax activity is completed.
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $block = $this->getSession()->getPage()->find('css', $block_selector);
     $block->mouseOver();
     $block->click();
@@ -72,6 +68,7 @@ class SettingsTrayTestBase extends OffCanvasTestBase {
    * Disables edit mode by pressing edit button in the toolbar.
    */
   protected function disableEditMode() {
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->pressToolbarEditButton();
     $this->assertEditModeDisabled();
   }

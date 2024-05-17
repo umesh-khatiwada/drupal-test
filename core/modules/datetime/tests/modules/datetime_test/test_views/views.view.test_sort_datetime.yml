@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_sort_datetime
-label: test_sort_datetime
+label: ''
 module: views
 description: ''
 tag: ''

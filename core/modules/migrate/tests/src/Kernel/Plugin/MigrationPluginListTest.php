@@ -7,7 +7,7 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
 use Drupal\migrate\Plugin\RequirementsInterface;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 
 /**
  * Tests the migration plugin manager.
@@ -17,7 +17,7 @@ use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
  */
 class MigrationPluginListTest extends KernelTestBase {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
 
   /**
    * {@inheritdoc}
@@ -25,10 +25,10 @@ class MigrationPluginListTest extends KernelTestBase {
   protected static $modules = [
     'migrate',
     // Test with all modules containing Drupal migrations.
+    'action',
     'ban',
     'block',
     'block_content',
-    // @todo Remove book in https://www.drupal.org/project/drupal/issues/3376101
     'book',
     'comment',
     'contact',
@@ -37,7 +37,6 @@ class MigrationPluginListTest extends KernelTestBase {
     'field',
     'file',
     'filter',
-    // @todo Remove forum in https://www.drupal.org/project/drupal/issues/3261653
     'forum',
     'image',
     'language',

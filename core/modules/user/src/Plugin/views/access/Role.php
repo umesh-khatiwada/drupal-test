@@ -2,11 +2,9 @@
 
 namespace Drupal\user\Plugin\views\access;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\user\RoleInterface;
 use Drupal\user\RoleStorageInterface;
 use Drupal\views\Plugin\views\access\AccessPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -92,8 +90,9 @@ class Role extends AccessPluginBase implements CacheableDependencyInterface {
       return $this->t('Multiple roles');
     }
     else {
+      $rids = user_role_names();
       $rid = reset($this->options['role']);
-      return $this->roleStorage->load($rid)->label();
+      return $rids[$rid];
     }
   }
 
@@ -110,7 +109,7 @@ class Role extends AccessPluginBase implements CacheableDependencyInterface {
       '#type' => 'checkboxes',
       '#title' => $this->t('Role'),
       '#default_value' => $this->options['role'],
-      '#options' => array_map(fn(RoleInterface $role) => Html::escape($role->label()), $this->roleStorage->loadMultiple()),
+      '#options' => array_map('\Drupal\Component\Utility\Html::escape', user_role_names()),
       '#description' => $this->t('Only the checked roles will be able to access this display.'),
     ];
   }

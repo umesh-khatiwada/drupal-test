@@ -27,8 +27,6 @@ use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceExce
  */
 class ResolveChildDefinitionsPass extends AbstractRecursivePass
 {
-    protected bool $skipScalars = true;
-
     private array $currentPath;
 
     protected function processValue(mixed $value, bool $isRoot = false): mixed

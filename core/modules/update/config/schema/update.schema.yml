@@ -20,7 +20,6 @@ update.settings:
       mapping:
         url:
           type: uri
-          nullable: true
           label: 'URL for fetching available update data'
         max_attempts:
           type: integer

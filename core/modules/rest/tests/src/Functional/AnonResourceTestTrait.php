@@ -6,10 +6,7 @@ use Drupal\Core\Url;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Defines a trait for testing with no authentication provider.
- *
- * This is intended to be used with
- * \Drupal\Tests\rest\Functional\ResourceTestBase.
+ * Trait for ResourceTestBase subclasses testing $auth=NULL, i.e. authless/anon.
  *
  * Characteristics:
  * - When no authentication provider is being used, there also cannot be any

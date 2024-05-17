@@ -4,8 +4,6 @@ namespace Drupal\Tests\menu_link_content\Kernel\Plugin\migrate\source\d7;
 
 use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
 
-// cspell:ignore tsid
-
 /**
  * Tests menu link localized translation source plugin.
  *

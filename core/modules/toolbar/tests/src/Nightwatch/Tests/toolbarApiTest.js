@@ -8,7 +8,8 @@ module.exports = {
   before(browser) {
     browser
       .drupalInstall()
-      .drupalInstallModule('toolbar', true)
+      .drupalInstallModule('breakpoint')
+      .drupalInstallModule('toolbar')
       .drupalCreateUser({
         name: 'user',
         password: '123',
@@ -35,7 +36,7 @@ module.exports = {
       // To clear active tab/tray from previous tests
       .execute(function () {
         localStorage.clear();
-        // Clear escapeAdmin URL values.
+        // Clear escapeAdmin url values.
         sessionStorage.clear();
       })
       .drupalRelativeURL('/')
@@ -83,7 +84,7 @@ module.exports = {
         toReturn.toolbarModelOffsetsTop =
           models.toolbarModel.get('offsets').top === 79;
         toReturn.toolbarModelSubtrees =
-          models.menuModel.get('subtrees') === null;
+          Object.keys(models.menuModel.get('subtrees')).length === 0;
         return toReturn;
       },
       [],

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\migrate\Unit\process;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -105,7 +103,7 @@ class MenuLinkParentTest extends MigrateProcessTestCase {
     // The parent ID does not for the following tests.
     return [
       'parent link external and could not be loaded' => [
-        'source_value' => [1, 'admin', 'http://example.com'],
+        'source_value' => [1, 'admin', 'http://drupal.org'],
       ],
       'parent link path/menu name not passed' => [
         'source_value' => [1, NULL, NULL],

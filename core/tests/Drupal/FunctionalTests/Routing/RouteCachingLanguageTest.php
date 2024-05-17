@@ -7,7 +7,6 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\link\LinkItemInterface;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
 
 /**
  * Tests that route lookup is cached by the current language.
@@ -15,8 +14,6 @@ use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
  * @group routing
  */
 class RouteCachingLanguageTest extends BrowserTestBase {
-
-  use ContentTranslationTestTrait;
 
   /**
    * Modules to enable.
@@ -71,10 +68,18 @@ class RouteCachingLanguageTest extends BrowserTestBase {
     $this->drupalLogin($this->webUser);
 
     // Enable French language.
-    static::createLanguageFromLangcode('fr');
+    ConfigurableLanguage::createFromLangcode('fr')->save();
 
     // Enable translation for page node.
-    static::enableContentTranslation('node', 'page');
+    $edit = [
+      'entity_types[node]' => 1,
+      'settings[node][page][translatable]' => 1,
+      'settings[node][page][fields][path]' => 1,
+      'settings[node][page][fields][body]' => 1,
+      'settings[node][page][settings][language][language_alterable]' => 1,
+    ];
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Create a field with settings to validate.
     $field_storage = FieldStorageConfig::create([

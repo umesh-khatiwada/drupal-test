@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\serialization\Unit\EntityResolver;
 
 use Drupal\Core\Entity\EntityRepositoryInterface;
@@ -32,8 +30,6 @@ class UuidResolverTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->entityRepository = $this->createMock(EntityRepositoryInterface::class);
 
     $this->resolver = new UuidResolver($this->entityRepository);

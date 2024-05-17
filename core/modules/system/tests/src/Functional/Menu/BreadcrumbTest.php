@@ -23,14 +23,7 @@ class BreadcrumbTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
-    'block',
-    'dblog',
-    'field_ui',
-    'filter_test',
-    'menu_test',
-    'olivero_test',
-  ];
+  protected static $modules = ['menu_test', 'block'];
 
   /**
    * An administrative user.
@@ -47,9 +40,11 @@ class BreadcrumbTest extends BrowserTestBase {
   protected $webUser;
 
   /**
-   * {@inheritdoc}
+   * Test paths in the Standard profile.
+   *
+   * @var string
    */
-  protected $defaultTheme = 'olivero';
+  protected $profile = 'standard';
 
   /**
    * {@inheritdoc}
@@ -57,11 +52,6 @@ class BreadcrumbTest extends BrowserTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    // Install 'claro' and configure it as administrative theme.
-    $this->container->get('theme_installer')->install(['claro']);
-    $this->config('system.theme')->set('admin', 'claro')->save();
-
-    $this->config('system.site')->set('page.front', '/node')->save();
     $perms = array_keys(\Drupal::service('user.permissions')->getPermissions());
     $this->adminUser = $this->drupalCreateUser($perms);
     $this->drupalLogin($this->adminUser);
@@ -166,10 +156,12 @@ class BreadcrumbTest extends BrowserTestBase {
     $this->assertBreadcrumb("admin/config/content/formats/manage/$format_id/disable", $trail);
 
     // Verify node breadcrumbs (without menu link).
-    $node1 = $this->drupalCreateNode(['type' => $type]);
+    $node1 = $this->drupalCreateNode();
     $nid1 = $node1->id();
     $trail = $home;
     $this->assertBreadcrumb("node/$nid1", $trail);
+    // Also verify that the node does not appear elsewhere (e.g., menu trees).
+    $this->assertSession()->linkNotExists($node1->getTitle());
     // Also verify that the node does not appear elsewhere (e.g., menu trees).
     $this->assertSession()->linkNotExists($node1->getTitle());
 
@@ -231,6 +223,16 @@ class BreadcrumbTest extends BrowserTestBase {
     ];
     $this->drupalGet('node/' . $parent->id() . '/edit');
     $this->submitForm($edit, 'Save');
+    $expected = [
+      "node" => $link->getTitle(),
+    ];
+    $trail = $home + $expected;
+    $tree = $expected + [
+      'node/' . $parent->id() => $parent->menu['title'],
+    ];
+    $trail += [
+      'node/' . $parent->id() => $parent->menu['title'],
+    ];
 
     // Add a taxonomy term/tag to last node, and add a link for that term to the
     // Tools menu.

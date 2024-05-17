@@ -27,7 +27,7 @@ class HelpPageReverseOrderTest extends HelpPageOrderTest {
    * @var string[]
    */
   protected $stringOrder = [
-    'This description should appear',
+    'Tours guide you',
     'Module overviews are provided',
   ];
 

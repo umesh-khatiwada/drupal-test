@@ -51,7 +51,6 @@ class BlockContentTranslationUITest extends ContentTranslationUITestBase {
     $this->bundle = 'basic';
     $this->testLanguageSelector = FALSE;
     parent::setUp();
-    $this->doSetup();
 
     $this->drupalPlaceBlock('page_title_block');
   }
@@ -78,10 +77,6 @@ class BlockContentTranslationUITest extends ContentTranslationUITestBase {
       'access administration pages',
       'administer blocks',
       'administer block_content fields',
-      'access block library',
-      'create basic block content',
-      'edit any basic block content',
-      'delete any basic block content',
     ]);
   }
 
@@ -89,7 +84,7 @@ class BlockContentTranslationUITest extends ContentTranslationUITestBase {
    * {@inheritdoc}
    */
   protected function getNewEntityValues($langcode) {
-    return ['info' => $this->randomMachineName()] + parent::getNewEntityValues($langcode);
+    return ['info' => mb_strtolower($this->randomMachineName())] + parent::getNewEntityValues($langcode);
   }
 
   /**
@@ -130,8 +125,8 @@ class BlockContentTranslationUITest extends ContentTranslationUITestBase {
     }
 
     // Check that the translate operation link is shown.
-    $this->drupalGet('admin/content/block');
-    $this->assertSession()->linkByHrefExists('admin/content/block/' . $entity->id() . '/translations');
+    $this->drupalGet('admin/structure/block/block-content');
+    $this->assertSession()->linkByHrefExists('block/' . $entity->id() . '/translations');
   }
 
   /**

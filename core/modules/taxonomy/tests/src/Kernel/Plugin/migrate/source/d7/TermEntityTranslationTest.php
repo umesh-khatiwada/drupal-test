@@ -295,6 +295,7 @@ class TermEntityTranslationTest extends MigrateSqlSourceTestBase {
         'description' => 'Term Description FR',
         'format' => 'full_html',
         'machine_name' => 'tags',
+        'is_container' => FALSE,
         'field_test' => [
           [
             'value' => 'French field',
@@ -317,6 +318,7 @@ class TermEntityTranslationTest extends MigrateSqlSourceTestBase {
         'description' => 'Term Description ES',
         'format' => 'full_html',
         'machine_name' => 'tags',
+        'is_container' => FALSE,
         'field_test' => [
           [
             'value' => 'Spanish field',

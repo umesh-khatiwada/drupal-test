@@ -63,6 +63,9 @@ class NodeRevisionsAllTest extends NodeTestBase {
     // This must be different from user performing revert.
     $this->revisionUser = $this->drupalCreateUser();
 
+    $settings = get_object_vars($node);
+    $settings['revision'] = 1;
+
     $nodes = [];
     $logs = [];
 

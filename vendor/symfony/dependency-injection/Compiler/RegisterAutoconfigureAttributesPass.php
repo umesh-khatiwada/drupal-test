@@ -24,9 +24,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 final class RegisterAutoconfigureAttributesPass implements CompilerPassInterface
 {
-    private static \Closure $registerForAutoconfiguration;
+    private static $registerForAutoconfiguration;
 
-    public function process(ContainerBuilder $container): void
+    public function process(ContainerBuilder $container)
     {
         foreach ($container->getDefinitions() as $id => $definition) {
             if ($this->accept($definition) && $class = $container->getReflectionClass($definition->getClass(), false)) {
@@ -40,19 +40,17 @@ final class RegisterAutoconfigureAttributesPass implements CompilerPassInterface
         return $definition->isAutoconfigured() && !$definition->hasTag('container.ignore_attributes');
     }
 
-    public function processClass(ContainerBuilder $container, \ReflectionClass $class): void
+    public function processClass(ContainerBuilder $container, \ReflectionClass $class)
     {
         foreach ($class->getAttributes(Autoconfigure::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             self::registerForAutoconfiguration($container, $class, $attribute);
         }
     }
 
-    private static function registerForAutoconfiguration(ContainerBuilder $container, \ReflectionClass $class, \ReflectionAttribute $attribute): void
+    private static function registerForAutoconfiguration(ContainerBuilder $container, \ReflectionClass $class, \ReflectionAttribute $attribute)
     {
-        if (isset(self::$registerForAutoconfiguration)) {
-            (self::$registerForAutoconfiguration)($container, $class, $attribute);
-
-            return;
+        if (self::$registerForAutoconfiguration) {
+            return (self::$registerForAutoconfiguration)($container, $class, $attribute);
         }
 
         $parseDefinitions = new \ReflectionMethod(YamlFileLoader::class, 'parseDefinitions');
@@ -81,6 +79,6 @@ final class RegisterAutoconfigureAttributesPass implements CompilerPassInterface
             );
         };
 
-        (self::$registerForAutoconfiguration)($container, $class, $attribute);
+        return (self::$registerForAutoconfiguration)($container, $class, $attribute);
     }
 }

@@ -65,7 +65,6 @@ use Drupal\user\StatusItem;
  *     "create" = "/taxonomy/term",
  *   },
  *   permission_granularity = "bundle",
- *   collection_permission = "access taxonomy overview",
  *   constraints = {
  *     "TaxonomyHierarchy" = {}
  *   }
@@ -253,7 +252,7 @@ class Term extends EditorialContentEntityBase implements TermInterface {
    * {@inheritdoc}
    */
   public function getName() {
-    return $this->label() ?? '';
+    return $this->label();
   }
 
   /**

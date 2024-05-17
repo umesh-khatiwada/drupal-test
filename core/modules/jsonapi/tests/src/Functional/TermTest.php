@@ -280,7 +280,8 @@ class TermTest extends ResourceTestBase {
           'drupal_internal__tid' => 1,
           'status' => TRUE,
           'drupal_internal__revision_id' => 1,
-          'revision_created' => (new \DateTime())->setTimestamp((int) $this->entity->getRevisionCreationTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
+          'revision_created' => (new \DateTime())->setTimestamp($this->entity->getRevisionCreationTime())->setTimezone(new \DateTimeZone('UTC'))->format(\DateTime::RFC3339),
+          'revision_log_message' => NULL,
           // @todo Attempt to remove this in https://www.drupal.org/project/drupal/issues/2933518.
           'revision_translation_affected' => TRUE,
         ],
@@ -349,9 +350,9 @@ class TermTest extends ResourceTestBase {
       'data' => [
         'type' => 'taxonomy_term--camelids',
         'attributes' => [
-          'name' => 'Drama llama',
+          'name' => 'Dramallama',
           'description' => [
-            'value' => 'Drama llamas are the coolest camelids.',
+            'value' => 'Dramallamas are the coolest camelids.',
             'format' => NULL,
           ],
         ],
@@ -463,7 +464,7 @@ class TermTest extends ResourceTestBase {
       ->setName('Lamoids')
       ->save();
     Term::create(['vid' => Vocabulary::load('camelids')->id()])
-      ->setName('Camels')
+      ->setName('Wimoids')
       ->save();
 
     // Modify the entity under test to use the provided parent terms.

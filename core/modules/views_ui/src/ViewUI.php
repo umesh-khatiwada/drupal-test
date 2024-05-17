@@ -5,10 +5,10 @@ namespace Drupal\views_ui;
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Timer;
 use Drupal\Component\Utility\Xss;
+use Drupal\Core\EventSubscriber\AjaxResponseSubscriber;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\TempStore\Lock;
-use Drupal\views\Controller\ViewAjaxController;
 use Drupal\views\Views;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\views\ViewExecutable;
@@ -512,7 +512,7 @@ class ViewUI implements ViewEntityInterface {
   }
 
   /**
-   * Add the list of queries run during render to build info.
+   * Add the list of queries run during render to buildinfo.
    *
    * @see ViewUI::startQueryCapture()
    */
@@ -548,14 +548,13 @@ class ViewUI implements ViewEntityInterface {
     if (empty($errors)) {
       $executable->live_preview = TRUE;
 
-      // AJAX can happen via HTTP POST but everything expects exposed data to
-      // be in GET. If we're clicking on links in a preview, though, we could
-      // actually have some input in the query parameters, so we merge request()
-      // and query() to ensure we get have all the values exposed.
-      // We also make sure to remove ajax-framework specific keys and form
-      // tokens to avoid any problems.
+      // AJAX happens via HTTP POST but everything expects exposed data to
+      // be in GET. Copy stuff but remove ajax-framework specific keys.
+      // If we're clicking on links in a preview, though, we could actually
+      // have some input in the query parameters, so we merge request() and
+      // query() to ensure we get it all.
       $exposed_input = array_merge(\Drupal::request()->request->all(), \Drupal::request()->query->all());
-      foreach (array_merge(ViewAjaxController::FILTERED_QUERY_PARAMETERS, ['form_id', 'form_build_id', 'form_token']) as $key) {
+      foreach (['view_name', 'view_display_id', 'view_args', 'view_path', 'view_dom_id', 'pager_element', 'view_base_path', AjaxResponseSubscriber::AJAX_REQUEST_PARAMETER, 'ajax_page_state', 'form_id', 'form_build_id', 'form_token'] as $key) {
         if (isset($exposed_input[$key])) {
           unset($exposed_input[$key]);
         }
@@ -1005,7 +1004,7 @@ class ViewUI implements ViewEntityInterface {
   /**
    * {@inheritdoc}
    */
-  public function toUrl($rel = NULL, array $options = []) {
+  public function toUrl($rel = 'edit-form', array $options = []) {
     return $this->storage->toUrl($rel, $options);
   }
 

@@ -30,7 +30,7 @@ class BlockTemplateSuggestionsTest extends KernelTestBase {
     $block = Block::create([
       'plugin' => 'system_menu_block:admin',
       'region' => 'footer',
-      'id' => 'machine_name',
+      'id' => 'machinename',
     ]);
 
     $variables = [];
@@ -47,7 +47,7 @@ class BlockTemplateSuggestionsTest extends KernelTestBase {
       'block__system',
       'block__system_menu_block',
       'block__system_menu_block__admin',
-      'block__machine_name',
+      'block__machinename',
     ], $suggestions);
   }
 

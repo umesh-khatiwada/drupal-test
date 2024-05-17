@@ -8,6 +8,7 @@ use Drupal\entity_test\Entity\EntityTest;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\image\Entity\ImageStyle;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\media_library\MediaLibraryState;
 use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
@@ -50,6 +51,7 @@ class MediaLibraryAccessTest extends KernelTestBase {
     $this->installEntitySchema('user');
     $this->installEntitySchema('file');
     $this->installSchema('file', 'file_usage');
+    $this->installSchema('system', ['sequences']);
     $this->installEntitySchema('entity_test');
     $this->installEntitySchema('filter_format');
     $this->installEntitySchema('media');
@@ -81,6 +83,22 @@ class MediaLibraryAccessTest extends KernelTestBase {
 
     // Create an account with special UID 1.
     $this->createUser([]);
+  }
+
+  /**
+   * Tests that users can't delete the 'media_library' image style.
+   */
+  public function testMediaLibraryImageStyleAccess() {
+    // Create a user who can manage the image styles.
+    $user = $this->createUser([
+      'access administration pages',
+      'administer image styles',
+    ]);
+
+    // The user should be able to delete the 'medium' image style, but not the
+    // 'media_library' image style.
+    $this->assertTrue(ImageStyle::load('medium')->access('delete', $user));
+    $this->assertFalse(ImageStyle::load('media_library')->access('delete', $user));
   }
 
   /**

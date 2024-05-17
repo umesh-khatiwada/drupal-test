@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\Utility\VariableTest.
+ */
 
 namespace Drupal\Tests\Component\Utility;
 
@@ -18,21 +21,27 @@ use PHPUnit\Framework\TestCase;
 class VariableTest extends TestCase {
 
   /**
+   * A bogus callable for testing ::callableToString().
+   */
+  public static function fake(): void {
+  }
+
+  /**
    * Data provider for testCallableToString().
    *
    * @return array[]
    *   Sets of arguments to pass to the test method.
    */
   public function providerCallableToString(): array {
-    $mock = VariableTestMock::class;
+    $self = static::class;
     return [
       'string' => [
-        "$mock::fake",
-        "$mock::fake",
+        "$self::fake",
+        "$self::fake",
       ],
       'static method as array' => [
-        [$mock, 'fake'],
-        "$mock::fake",
+        [$self, 'fake'],
+        "$self::fake",
       ],
       'closure' => [
         function () {
@@ -41,8 +50,8 @@ class VariableTest extends TestCase {
         '[closure]',
       ],
       'object method' => [
-        [new VariableTestMock(), 'fake'],
-        "$mock::fake",
+        [new static(), 'fake'],
+        "$self::fake",
       ],
       'service method' => [
         'fake_service:method',
@@ -180,21 +189,11 @@ class VariableTest extends TestCase {
 
 }
 
-class VariableTestMock {
-
-  /**
-   * A bogus callable for testing ::callableToString().
-   */
-  public static function fake(): void {
-  }
-
-}
-
 /**
  * No-op test class for VariableTest::testExport().
  *
- * @see \Drupal\Tests\Component\Utility\VariableTest::testExport()
- * @see \Drupal\Tests\Component\Utility\VariableTest::providerTestExport()
+ * @see Drupal\Tests\Component\Utility\VariableTest::testExport()
+ * @see Drupal\Tests\Component\Utility\VariableTest::providerTestExport()
  */
 class StubVariableTestClass {
 

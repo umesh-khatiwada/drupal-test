@@ -36,7 +36,7 @@
           sources.forEach((item) => {
             sourcesConcat += item.textContent;
           });
-          const textMatch = sourcesConcat.toLowerCase().includes(query);
+          const textMatch = sourcesConcat.toLowerCase().indexOf(query) !== -1;
           $(row).closest('tr').toggle(textMatch);
         }
 

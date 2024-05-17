@@ -1,11 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\StringTranslation;
 
 use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Tests\UnitTestCase;
@@ -18,39 +15,43 @@ use Prophecy\Argument;
 class StringTranslationTraitTest extends UnitTestCase {
 
   /**
-   * The object under test that uses StringTranslationTrait.
+   * A reflection of self::$translation.
+   *
+   * @var \ReflectionClass
    */
-  protected object $testObject;
+  protected $reflection;
+
+  /**
+   * The mock under test that uses StringTranslationTrait.
+   *
+   * @var object
+   * @see \PHPUnit\Framework\MockObject\Generator::getObjectForTrait()
+   */
+  protected $translation;
 
   /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
-    // Prepare a mock translation service to pass to the trait.
-    $translation = $this->prophesize(TranslationInterface::class);
-    $translation->translate(Argument::cetera())->shouldNotBeCalled();
-    $translation->formatPlural(Argument::cetera())->shouldNotBeCalled();
-    $translation->translateString(Argument::cetera())->will(function ($args) {
+    $this->translation = $this->getObjectForTrait('\Drupal\Core\StringTranslation\StringTranslationTrait');
+    $mock = $this->prophesize(TranslationInterface::class);
+    $mock->translate(Argument::cetera())->shouldNotBeCalled();
+    $mock->formatPlural(Argument::cetera())->shouldNotBeCalled();
+    $mock->translateString(Argument::cetera())->will(function ($args) {
       return $args[0]->getUntranslatedString();
     });
-
-    // Set up the object under test.
-    $this->testObject = new class() {
-
-      use StringTranslationTrait;
-
-    };
-    $this->testObject->setStringTranslation($translation->reveal());
+    $this->translation->setStringTranslation($mock->reveal());
+    $this->reflection = new \ReflectionClass(get_class($this->translation));
   }
 
   /**
    * @covers ::t
    */
-  public function testT(): void {
-    $invokableT = new \ReflectionMethod($this->testObject, 't');
-    $result = $invokableT->invoke($this->testObject, 'something');
+  public function testT() {
+    $method = $this->reflection->getMethod('t');
+    $method->setAccessible(TRUE);
+
+    $result = $method->invoke($this->translation, 'something');
     $this->assertInstanceOf(TranslatableMarkup::class, $result);
     $this->assertEquals('something', $result);
   }
@@ -58,12 +59,11 @@ class StringTranslationTraitTest extends UnitTestCase {
   /**
    * @covers ::formatPlural
    */
-  public function testFormatPlural(): void {
-    $invokableFormatPlural = new \ReflectionMethod($this->testObject, 'formatPlural');
-    $result = $invokableFormatPlural->invoke($this->testObject, 1, 'apple', 'apples');
-    $this->assertInstanceOf(PluralTranslatableMarkup::class, $result);
-    $this->assertEquals('apple', $result);
-    $result = $invokableFormatPlural->invoke($this->testObject, 2, 'apple', 'apples');
+  public function testFormatPlural() {
+    $method = $this->reflection->getMethod('formatPlural');
+    $method->setAccessible(TRUE);
+
+    $result = $method->invoke($this->translation, 2, 'apple', 'apples');
     $this->assertInstanceOf(PluralTranslatableMarkup::class, $result);
     $this->assertEquals('apples', $result);
   }

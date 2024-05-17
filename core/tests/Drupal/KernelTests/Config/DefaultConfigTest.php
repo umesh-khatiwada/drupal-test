@@ -15,7 +15,6 @@ use Drupal\KernelTests\KernelTestBase;
  * Tests that the installed config matches the default config.
  *
  * @group Config
- * @group #slow
  */
 class DefaultConfigTest extends KernelTestBase {
 
@@ -49,7 +48,7 @@ class DefaultConfigTest extends KernelTestBase {
    *
    * @dataProvider moduleListDataProvider
    */
-  public function testModuleConfig(string $module): void {
+  public function testModuleConfig($module) {
     $this->assertExtensionConfig($module, 'module');
   }
 
@@ -171,8 +170,8 @@ class DefaultConfigTest extends KernelTestBase {
    *   An array of module names to test, with both key and value being the name
    *   of the module.
    */
-  public static function moduleListDataProvider(): array {
-    $modules_keyed = self::coreModuleListDataProvider();
+  public function moduleListDataProvider() {
+    $modules_keyed = $this->coreModuleListDataProvider();
 
     // Add a deprecated module with config.
     $modules_keyed['deprecated_module'] = ['deprecated_module'];

@@ -43,6 +43,7 @@ class EntityReferenceSupportedNewEntitiesConstraintValidatorTest extends KernelT
     parent::setUp();
 
     $this->installEntitySchema('user');
+    $this->installSchema('system', ['sequences']);
     $this->createUser();
 
     $fields['supported_reference'] = BaseFieldDefinition::create('entity_reference')->setSetting('target_type', 'entity_test_mulrevpub');
@@ -83,7 +84,7 @@ class EntityReferenceSupportedNewEntitiesConstraintValidatorTest extends KernelT
     ]);
     $violations = $entity->validate();
     $this->assertCount(1, $violations);
-    $this->assertEquals('Test entity entities can only be created in the default workspace.', $violations[0]->getMessage());
+    $this->assertEquals('<em class="placeholder">Test entity entities</em> can only be created in the default workspace.', $violations[0]->getMessage());
   }
 
 }

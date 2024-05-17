@@ -3,7 +3,6 @@
 namespace Drupal\system\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\ImageToolkit\ImageToolkitManager;
@@ -28,13 +27,11 @@ class ImageToolkitForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
-   *   The typed config manager.
    * @param \Drupal\Core\ImageToolkit\ImageToolkitManager $manager
    *   The image toolkit plugin manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, ImageToolkitManager $manager) {
-    parent::__construct($config_factory, $typedConfigManager);
+  public function __construct(ConfigFactoryInterface $config_factory, ImageToolkitManager $manager) {
+    parent::__construct($config_factory);
 
     foreach ($manager->getAvailableToolkits() as $id => $definition) {
       $this->availableToolkits[$id] = $manager->createInstance($id);
@@ -47,7 +44,6 @@ class ImageToolkitForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('config.typed'),
       $container->get('image.toolkit.manager')
     );
   }
@@ -70,10 +66,12 @@ class ImageToolkitForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $current_toolkit = $this->config('system.image')->get('toolkit');
+
     $form['image_toolkit'] = [
       '#type' => 'radios',
       '#title' => $this->t('Select an image processing toolkit'),
-      '#config_target' => 'system.image:toolkit',
+      '#default_value' => $current_toolkit,
       '#options' => [],
     ];
 
@@ -115,6 +113,10 @@ class ImageToolkitForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $this->config('system.image')
+      ->set('toolkit', $form_state->getValue('image_toolkit'))
+      ->save();
+
     // Call the form submit handler for each of the toolkits.
     foreach ($this->availableToolkits as $toolkit) {
       $toolkit->submitConfigurationForm($form, $form_state);

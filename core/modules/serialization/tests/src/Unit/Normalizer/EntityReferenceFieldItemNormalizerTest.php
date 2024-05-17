@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\serialization\Unit\Normalizer;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -72,8 +70,6 @@ class EntityReferenceFieldItemNormalizerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->entityRepository = $this->prophesize(EntityRepositoryInterface::class);
     $this->normalizer = new EntityReferenceFieldItemNormalizer($this->entityRepository->reveal());
 

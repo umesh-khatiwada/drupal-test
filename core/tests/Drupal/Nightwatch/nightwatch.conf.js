@@ -1,6 +1,5 @@
-// cspell:ignore testcases
 const path = require('path');
-const { globSync } = require('glob');
+const glob = require('glob');
 
 // Find directories which have Nightwatch tests in them.
 const regex = /(.*\/?tests\/?.*\/Nightwatch)\/.*/g;
@@ -13,15 +12,15 @@ const collectedFolders = {
 const searchDirectory = process.env.DRUPAL_NIGHTWATCH_SEARCH_DIRECTORY || '';
 const defaultIgnore = ['vendor/**'];
 
-globSync('**/tests/**/Nightwatch/**/*.js', {
-  cwd: path.resolve(process.cwd(), `../${searchDirectory}`),
-  ignore: process.env.DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES
-    ? process.env.DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES.split(',').concat(
-        defaultIgnore,
-      )
-    : defaultIgnore,
-})
-  .sort()
+glob
+  .sync('**/tests/**/Nightwatch/**/*.js', {
+    cwd: path.resolve(process.cwd(), `../${searchDirectory}`),
+    ignore: process.env.DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES
+      ? process.env.DRUPAL_NIGHTWATCH_IGNORE_DIRECTORIES.split(',').concat(
+          defaultIgnore,
+        )
+      : defaultIgnore,
+  })
   .forEach((file) => {
     let m = regex.exec(file);
     while (m !== null) {
@@ -57,10 +56,6 @@ module.exports = {
   },
   test_settings: {
     default: {
-      globals: {
-        defaultTheme: 'olivero',
-        adminTheme: 'claro',
-      },
       selenium_port: process.env.DRUPAL_TEST_WEBDRIVER_PORT,
       selenium_host: process.env.DRUPAL_TEST_WEBDRIVER_HOSTNAME,
       default_path_prefix: process.env.DRUPAL_TEST_WEBDRIVER_PATH_PREFIX || '',

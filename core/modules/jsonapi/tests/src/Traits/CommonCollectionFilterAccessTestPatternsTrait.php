@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\jsonapi\Traits;
 
 use Drupal\Component\Serialization\Json;
@@ -9,7 +7,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Url;
 use Drupal\entity_test\Entity\EntityTest;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 use Drupal\Tests\jsonapi\Functional\ResourceTestBase;
 use GuzzleHttp\RequestOptions;
 
@@ -18,7 +16,7 @@ use GuzzleHttp\RequestOptions;
  */
 trait CommonCollectionFilterAccessTestPatternsTrait {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
 
   /**
    * Implements ::testCollectionFilterAccess() for pure permission-based access.

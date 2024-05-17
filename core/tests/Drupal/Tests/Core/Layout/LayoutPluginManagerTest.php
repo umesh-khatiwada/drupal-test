@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Layout;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
@@ -152,11 +150,11 @@ class LayoutPluginManagerTest extends UnitTestCase {
     $this->assertInstanceOf(TranslatableMarkup::class, $layout_definition->getLabel());
     $this->assertInstanceOf(TranslatableMarkup::class, $layout_definition->getCategory());
     $this->assertInstanceOf(TranslatableMarkup::class, $layout_definition->getDescription());
-    $this->assertNull($layout_definition->getTemplate());
+    $this->assertSame(NULL, $layout_definition->getTemplate());
     $this->assertSame('modules/module_a/layouts', $layout_definition->getPath());
     $this->assertSame('module_a/onecol', $layout_definition->getLibrary());
     $this->assertSame('onecol', $layout_definition->getThemeHook());
-    $this->assertNull($layout_definition->getTemplatePath());
+    $this->assertSame(NULL, $layout_definition->getTemplatePath());
     $this->assertSame('module_a', $layout_definition->getProvider());
     $this->assertSame('top', $layout_definition->getDefaultRegion());
     $this->assertSame(LayoutDefault::class, $layout_definition->getClass());
@@ -184,7 +182,7 @@ class LayoutPluginManagerTest extends UnitTestCase {
     $this->assertInstanceOf(TranslatableMarkup::class, $layout_definition->getDescription());
     $this->assertSame('plugin-provided-layout', $layout_definition->getTemplate());
     $this->assertSame($core_path, $layout_definition->getPath());
-    $this->assertNull($layout_definition->getLibrary());
+    $this->assertSame(NULL, $layout_definition->getLibrary());
     $this->assertSame('plugin_provided_layout', $layout_definition->getThemeHook());
     $this->assertSame("$core_path/templates", $layout_definition->getTemplatePath());
     $this->assertSame('core', $layout_definition->getProvider());

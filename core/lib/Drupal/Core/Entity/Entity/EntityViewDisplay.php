@@ -34,9 +34,6 @@ use Drupal\Core\TypedData\TranslatableInterface as TranslatableDataInterface;
  *     "mode",
  *     "content",
  *     "hidden",
- *   },
- *   constraints = {
- *     "ImmutableProperties" = {"id", "targetEntityType", "bundle", "mode"},
  *   }
  * )
  */

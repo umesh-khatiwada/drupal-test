@@ -38,7 +38,7 @@ class ContainerConfigurator extends AbstractConfigurator
     private int $anonymousCount = 0;
     private ?string $env;
 
-    public function __construct(ContainerBuilder $container, PhpFileLoader $loader, array &$instanceof, string $path, string $file, ?string $env = null)
+    public function __construct(ContainerBuilder $container, PhpFileLoader $loader, array &$instanceof, string $path, string $file, string $env = null)
     {
         $this->container = $container;
         $this->loader = $loader;
@@ -48,17 +48,17 @@ class ContainerConfigurator extends AbstractConfigurator
         $this->env = $env;
     }
 
-    final public function extension(string $namespace, array $config): void
+    final public function extension(string $namespace, array $config)
     {
         if (!$this->container->hasExtension($namespace)) {
-            $extensions = array_filter(array_map(fn (ExtensionInterface $ext) => $ext->getAlias(), $this->container->getExtensions()));
+            $extensions = array_filter(array_map(function (ExtensionInterface $ext) { return $ext->getAlias(); }, $this->container->getExtensions()));
             throw new InvalidArgumentException(sprintf('There is no extension able to load the configuration for "%s" (in "%s"). Looked for namespace "%s", found "%s".', $namespace, $this->file, $namespace, $extensions ? implode('", "', $extensions) : 'none'));
         }
 
         $this->container->loadFromExtension($namespace, static::processValue($config));
     }
 
-    final public function import(string $resource, ?string $type = null, bool|string $ignoreErrors = false): void
+    final public function import(string $resource, string $type = null, bool|string $ignoreErrors = false)
     {
         $this->loader->setCurrentDir(\dirname($this->path));
         $this->loader->import($resource, $type, $ignoreErrors, $this->file);
@@ -111,7 +111,7 @@ function service(string $serviceId): ReferenceConfigurator
 /**
  * Creates an inline service.
  */
-function inline_service(?string $class = null): InlineServiceConfigurator
+function inline_service(string $class = null): InlineServiceConfigurator
 {
     return new InlineServiceConfigurator(new Definition($class));
 }
@@ -119,17 +119,11 @@ function inline_service(?string $class = null): InlineServiceConfigurator
 /**
  * Creates a service locator.
  *
- * @param array<ReferenceConfigurator|InlineServiceConfigurator> $values
+ * @param ReferenceConfigurator[] $values
  */
 function service_locator(array $values): ServiceLocatorArgument
 {
-    $values = AbstractConfigurator::processValue($values, true);
-
-    if (isset($values[0])) {
-        trigger_deprecation('symfony/dependency-injection', '6.3', 'Using integers as keys in a "service_locator()" argument is deprecated. The keys will default to the IDs of the original services in 7.0.');
-    }
-
-    return new ServiceLocatorArgument($values);
+    return new ServiceLocatorArgument(AbstractConfigurator::processValue($values, true));
 }
 
 /**
@@ -145,17 +139,17 @@ function iterator(array $values): IteratorArgument
 /**
  * Creates a lazy iterator by tag name.
  */
-function tagged_iterator(string $tag, ?string $indexAttribute = null, ?string $defaultIndexMethod = null, ?string $defaultPriorityMethod = null, string|array $exclude = [], bool $excludeSelf = true): TaggedIteratorArgument
+function tagged_iterator(string $tag, string $indexAttribute = null, string $defaultIndexMethod = null, string $defaultPriorityMethod = null, string|array $exclude = []): TaggedIteratorArgument
 {
-    return new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod, false, $defaultPriorityMethod, (array) $exclude, $excludeSelf);
+    return new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod, false, $defaultPriorityMethod, (array) $exclude);
 }
 
 /**
  * Creates a service locator by tag name.
  */
-function tagged_locator(string $tag, ?string $indexAttribute = null, ?string $defaultIndexMethod = null, ?string $defaultPriorityMethod = null, string|array $exclude = [], bool $excludeSelf = true): ServiceLocatorArgument
+function tagged_locator(string $tag, string $indexAttribute = null, string $defaultIndexMethod = null, string $defaultPriorityMethod = null, string|array $exclude = []): ServiceLocatorArgument
 {
-    return new ServiceLocatorArgument(new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod, true, $defaultPriorityMethod, (array) $exclude, $excludeSelf));
+    return new ServiceLocatorArgument(new TaggedIteratorArgument($tag, $indexAttribute, $defaultIndexMethod, true, $defaultPriorityMethod, (array) $exclude));
 }
 
 /**

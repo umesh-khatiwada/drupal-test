@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\DrupalKernel;
 
 use Drupal\Core\DrupalKernel;
@@ -40,6 +38,7 @@ class DrupalKernelTest extends UnitTestCase {
     $request->server->set('SERVER_NAME', $server_name);
 
     $method = new \ReflectionMethod('Drupal\Core\DrupalKernel', 'setupTrustedHosts');
+    $method->setAccessible(TRUE);
     $valid_host = $method->invoke(NULL, $request, $trusted_host_patterns);
 
     $this->assertSame($expected, $valid_host, $message);
@@ -135,8 +134,8 @@ EOD;
     $request->server->set('SERVER_NAME', 'www.example.org');
     $request->server->set('SERVER_PORT', '8888');
     $request->server->set('SCRIPT_NAME', '/index.php');
-    $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, TRUE, $vfs_root->url()));
-    $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, FALSE, $vfs_root->url()));
+    $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, TRUE, $vfs_root->url('drupal_root')));
+    $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, FALSE, $vfs_root->url('drupal_root')));
   }
 
   /**
@@ -170,7 +169,7 @@ class FakeAutoloader {
   }
 
   /**
-   * Deregisters this instance as an autoloader.
+   * Unregisters this instance as an autoloader.
    */
   public function unregister() {
     spl_autoload_unregister([$this, 'loadClass']);
@@ -179,7 +178,8 @@ class FakeAutoloader {
   /**
    * Loads the given class or interface.
    *
-   * This class never loads.
+   * @return null
+   *   This class never loads.
    */
   public function loadClass() {
     return NULL;
@@ -188,7 +188,8 @@ class FakeAutoloader {
   /**
    * Finds a file by class name while caching lookups to APC.
    *
-   * This class never finds.
+   * @return null
+   *   This class never finds.
    */
   public function findFile() {
     return NULL;

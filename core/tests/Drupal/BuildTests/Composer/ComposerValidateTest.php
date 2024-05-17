@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\BuildTests\Composer;
 
 use Drupal\BuildTests\Framework\BuildTestBase;
@@ -9,6 +7,7 @@ use Drupal\Tests\Composer\ComposerIntegrationTrait;
 
 /**
  * @group Composer
+ * @requires externalCommand composer
  */
 class ComposerValidateTest extends BuildTestBase {
 

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\filter\Kernel;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\Core\TypedData\OptionsProviderInterface;
@@ -70,15 +71,15 @@ class FilterAPITest extends EntityKernelTestBase {
     $expected_filter_text_without_html_generators = "Text with evil content and a URL: https://www.drupal.org!";
 
     $actual_filtered_text = check_markup($text, 'filtered_html', '', []);
-    $this->assertSame($expected_filtered_text, (string) $actual_filtered_text, 'Expected filter result.');
+    $this->assertEquals($expected_filtered_text, $actual_filtered_text, 'Expected filter result.');
     $actual_filtered_text_without_html_generators = check_markup($text, 'filtered_html', '', [FilterInterface::TYPE_MARKUP_LANGUAGE]);
-    $this->assertSame($expected_filter_text_without_html_generators, (string) $actual_filtered_text_without_html_generators, 'Expected filter result when skipping FilterInterface::TYPE_MARKUP_LANGUAGE filters.');
+    $this->assertEquals($expected_filter_text_without_html_generators, $actual_filtered_text_without_html_generators, 'Expected filter result when skipping FilterInterface::TYPE_MARKUP_LANGUAGE filters.');
     // Related to @see FilterSecurityTest.php/testSkipSecurityFilters(), but
     // this check focuses on the ability to filter multiple filter types at once.
     // Drupal core only ships with these two types of filters, so this is the
     // most extensive test possible.
     $actual_filtered_text_without_html_generators = check_markup($text, 'filtered_html', '', [FilterInterface::TYPE_HTML_RESTRICTOR, FilterInterface::TYPE_MARKUP_LANGUAGE]);
-    $this->assertSame($expected_filter_text_without_html_generators, (string) $actual_filtered_text_without_html_generators, 'Expected filter result when skipping FilterInterface::TYPE_MARKUP_LANGUAGE filters, even when trying to disable filters of the FilterInterface::TYPE_HTML_RESTRICTOR type.');
+    $this->assertEquals($expected_filter_text_without_html_generators, $actual_filtered_text_without_html_generators, 'Expected filter result when skipping FilterInterface::TYPE_MARKUP_LANGUAGE filters, even when trying to disable filters of the FilterInterface::TYPE_HTML_RESTRICTOR type.');
   }
 
   /**
@@ -317,7 +318,7 @@ class FilterAPITest extends EntityKernelTestBase {
     ];
     $this->assertEqualsCanonicalizing($expected_cache_contexts, $build['#cache']['contexts'], 'Expected cache contexts present.');
     $expected_markup = '<p>Hello, world!</p><p>This is a dynamic llama.</p>';
-    $this->assertSame($expected_markup, (string) $build['#markup'], 'Expected #lazy_builder callback has been applied.');
+    $this->assertEquals($expected_markup, $build['#markup'], 'Expected #lazy_builder callback has been applied.');
   }
 
   /**
@@ -329,12 +330,9 @@ class FilterAPITest extends EntityKernelTestBase {
 
     $this->assertInstanceOf(OptionsProviderInterface::class, $data);
 
-    $filtered_html_user = $this->createUser(
-      [FilterFormat::load('filtered_html')->getPermissionName()],
-      NULL,
-      FALSE,
-      ['uid' => 2]
-    );
+    $filtered_html_user = $this->createUser(['uid' => 2], [
+      FilterFormat::load('filtered_html')->getPermissionName(),
+    ]);
 
     // Test with anonymous user.
     $user = new AnonymousUserSession();
@@ -418,14 +416,14 @@ class FilterAPITest extends EntityKernelTestBase {
     // Use config to directly load the configuration and check that only enabled
     // or customized plugins are saved to configuration.
     $filters = $this->config('filter.format.crazy')->get('filters');
-    $this->assertEquals(['filter_html', 'filter_html_escape'], array_keys($filters));
+    $this->assertEquals(['filter_html_escape', 'filter_html'], array_keys($filters));
 
     // Disable a plugin to ensure that disabled plugins with custom settings are
     // stored in configuration.
     $crazy_format->setFilterConfig('filter_html_escape', ['status' => FALSE]);
     $crazy_format->save();
     $filters = $this->config('filter.format.crazy')->get('filters');
-    $this->assertEquals(['filter_html', 'filter_html_escape'], array_keys($filters));
+    $this->assertEquals(['filter_html_escape', 'filter_html'], array_keys($filters));
 
     // Set the settings as per default to ensure that disable plugins in this
     // state are not stored in configuration.
@@ -453,7 +451,7 @@ class FilterAPITest extends EntityKernelTestBase {
         break;
       }
     }
-    $this->assertTrue($filter_format_violation_found, 'Validation violation for invalid value "' . $invalid_value . '" found');
+    $this->assertTrue($filter_format_violation_found, new FormattableMarkup('Validation violation for invalid value "%invalid_value" found', ['%invalid_value' => $invalid_value]));
   }
 
   /**

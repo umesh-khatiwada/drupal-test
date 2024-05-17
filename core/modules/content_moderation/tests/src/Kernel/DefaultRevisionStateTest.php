@@ -65,7 +65,6 @@ class DefaultRevisionStateTest extends KernelTestBase {
     ConfigurableLanguage::createFromLangcode('fr')->save();
     $node_type = NodeType::create([
       'type' => 'example',
-      'name' => 'Example',
     ]);
     $node_type->save();
 
@@ -116,7 +115,7 @@ class DefaultRevisionStateTest extends KernelTestBase {
   /**
    * Verifies the expected moderation state revision exists.
    *
-   * @param string $revision_id
+   * @param int $revision_id
    *   The revision ID of the host entity.
    * @param string $langcode
    *   The language code of the host entity to check.
@@ -127,7 +126,7 @@ class DefaultRevisionStateTest extends KernelTestBase {
    *
    * @internal
    */
-  protected function assertModerationState(string $revision_id, string $langcode, string $expected_state, string $expected_workflow = 'editorial'): void {
+  protected function assertModerationState(int $revision_id, string $langcode, string $expected_state, string $expected_workflow = 'editorial'): void {
     $moderation_state_storage = $this->entityTypeManager->getStorage('content_moderation_state');
 
     $query = $moderation_state_storage->getQuery()->accessCheck(FALSE);

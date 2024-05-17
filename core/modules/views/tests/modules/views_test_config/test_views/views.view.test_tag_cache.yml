@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_tag_cache
-label: test_tag_cache
+label: ''
 module: views
 description: ''
 tag: ''

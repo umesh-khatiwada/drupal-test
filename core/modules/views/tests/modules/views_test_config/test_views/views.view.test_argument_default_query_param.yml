@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_argument_default_query_param
-label: test_argument_default_query_param
+label: ''
 module: views
 description: ''
 tag: ''

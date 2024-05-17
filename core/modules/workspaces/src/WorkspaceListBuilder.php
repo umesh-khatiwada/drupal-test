@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Url;
-use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -122,9 +121,7 @@ class WorkspaceListBuilder extends EntityListBuilder {
           '#url' => $entity->toUrl(),
         ],
       ],
-      'owner' => (($owner = $entity->getOwner()) && $owner instanceof UserInterface)
-        ? $owner->getDisplayName()
-        : $this->t('N/A'),
+      'owner' => $entity->getOwner()->getDisplayName(),
     ];
     $row['data'] = $row['data'] + parent::buildRow($entity);
 

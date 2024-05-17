@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Condition\ConditionAccessResolverTraitTest.
+ */
 
 namespace Drupal\Tests\Core\Condition;
 

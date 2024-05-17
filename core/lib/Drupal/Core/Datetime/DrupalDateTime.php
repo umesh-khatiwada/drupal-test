@@ -3,7 +3,6 @@
 namespace Drupal\Core\Datetime;
 
 use Drupal\Component\Datetime\DateTimePlus;
-use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
@@ -22,9 +21,6 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 class DrupalDateTime extends DateTimePlus {
 
   use StringTranslationTrait;
-  use DependencySerializationTrait {
-    __sleep as defaultSleep;
-  }
 
   /**
    * Formatted strings translation cache.
@@ -56,7 +52,7 @@ class DrupalDateTime extends DateTimePlus {
    *
    * @var array
    */
-  protected $formatTranslationCache = [];
+  protected $formatTranslationCache;
 
   /**
    * Constructs a date object.
@@ -168,13 +164,6 @@ class DrupalDateTime extends DateTimePlus {
       $this->errors[] = $e->getMessage();
     }
     return $value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __sleep(): array {
-    return array_diff($this->defaultSleep(), ['formatTranslationCache']);
   }
 
 }

@@ -458,7 +458,7 @@ class LocaleConfigSubscriberTest extends KernelTestBase {
   }
 
   /**
-   * Asserts if a specific translation exists and its customization status.
+   * Ensures a translation exists and is marked as customized.
    *
    * @param string $config_name
    *   The configuration name.
@@ -467,7 +467,8 @@ class LocaleConfigSubscriberTest extends KernelTestBase {
    * @param string $langcode
    *   The language code.
    * @param bool $customized
-   *   (optional) Asserts if the translation is customized or not.
+   *   Whether or not the string should be asserted to be customized or not
+   *   customized.
    *
    * @internal
    */

@@ -12,10 +12,6 @@
   border-radius: var(--jui-dialog-border-radius);
   background: transparent;
   box-shadow: var(--jui-dialog-box-shadow);
-
-  @media (forced-colors: active) {
-    border: 1px solid transparent;
-  }
 }
 
 .ui-dialog:focus {
@@ -89,12 +85,6 @@
   background: url(../../images/icons/d3d4d9/ex.svg) no-repeat 50%;
 }
 
-@media (forced-colors: active) {
-  .ui-dialog .ui-icon.ui-icon-closethick {
-    background: url(../../images/icons/buttonText/ex.svg) no-repeat 50%;
-  }
-}
-
 .ui-dialog > .ui-dialog-content {
   overflow: auto;
   padding: var(--space-m) var(--space-l);
@@ -110,14 +100,8 @@
 }
 
 .ui-dialog-buttonpane .ui-dialog-buttonset {
-  display: flex;
-  gap:  var(--space-s);
   justify-content: flex-end;
-  margin-block: var(--space-m);
-  margin-inline-end: var(--space-l);
-  & > * {
-    margin: 0;
-  }
+  margin: 0 var(--space-s);
 }
 
 .ui-dialog .ui-dialog-buttonpane .ui-button-text-only .ui-button-text {
@@ -129,8 +113,7 @@
 }
 
 /* Form action buttons are moved in dialogs. Remove empty space. */
-.ui-dialog .ui-dialog-content .form-actions,
-.ui-dialog .ui-dialog-content .field-actions {
+.ui-dialog .ui-dialog-content .form-actions {
   margin: 0;
   padding: 0;
 }

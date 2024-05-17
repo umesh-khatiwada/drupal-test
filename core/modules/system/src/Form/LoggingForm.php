@@ -4,7 +4,6 @@ namespace Drupal\system\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Form\RedundantEditableConfigNamesTrait;
 
 /**
  * Configure logging settings for this site.
@@ -12,7 +11,6 @@ use Drupal\Core\Form\RedundantEditableConfigNamesTrait;
  * @internal
  */
 class LoggingForm extends ConfigFormBase {
-  use RedundantEditableConfigNamesTrait;
 
   /**
    * {@inheritdoc}
@@ -24,11 +22,19 @@ class LoggingForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
+  protected function getEditableConfigNames() {
+    return ['system.logging'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $config = $this->config('system.logging');
     $form['error_level'] = [
       '#type' => 'radios',
       '#title' => $this->t('Error messages to display'),
-      '#config_target' => 'system.logging:error_level',
+      '#default_value' => $config->get('error_level'),
       '#options' => [
         ERROR_REPORTING_HIDE => $this->t('None'),
         ERROR_REPORTING_DISPLAY_SOME => $this->t('Errors and warnings'),
@@ -39,6 +45,17 @@ class LoggingForm extends ConfigFormBase {
     ];
 
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $this->config('system.logging')
+      ->set('error_level', $form_state->getValue('error_level'))
+      ->save();
+
+    parent::submitForm($form, $form_state);
   }
 
 }

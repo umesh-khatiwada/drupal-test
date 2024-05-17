@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Form;
 
 use Drupal\Core\Form\FormState;
@@ -9,7 +7,6 @@ use Drupal\Core\Form\FormValidator;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\TestTools\Random;
 
 /**
  * @coversDefaultClass \Drupal\Core\Form\FormValidator
@@ -266,8 +263,8 @@ class FormValidatorTest extends UnitTestCase {
   public function testExecuteValidateHandlers() {
     $form_validator = new FormValidator(new RequestStack(), $this->getStringTranslationStub(), $this->csrfToken, $this->logger, $this->formErrorHandler);
 
-    $mock = $this->getMockBuilder(FormValidatorTestMockInterface::class)
-      ->onlyMethods(['validate_handler', 'hash_validate', 'element_validate'])
+    $mock = $this->getMockBuilder('stdClass')
+      ->addMethods(['validate_handler', 'hash_validate'])
       ->getMock();
     $mock->expects($this->once())
       ->method('validate_handler')
@@ -349,8 +346,8 @@ class FormValidatorTest extends UnitTestCase {
       ->getMock();
     $form_validator->expects($this->once())
       ->method('executeValidateHandlers');
-    $mock = $this->getMockBuilder(FormValidatorTestMockInterface::class)
-      ->onlyMethods(['validate_handler', 'hash_validate', 'element_validate'])
+    $mock = $this->getMockBuilder('stdClass')
+      ->addMethods(['element_validate'])
       ->getMock();
     $mock->expects($this->once())
       ->method('element_validate')
@@ -373,7 +370,10 @@ class FormValidatorTest extends UnitTestCase {
    * @dataProvider providerTestPerformRequiredValidation
    */
   public function testPerformRequiredValidation($element, $expected_message, $call_watchdog) {
-    $form_validator = new FormValidator(new RequestStack(), $this->getStringTranslationStub(), $this->csrfToken, $this->logger, $this->formErrorHandler);
+    $form_validator = $this->getMockBuilder('Drupal\Core\Form\FormValidator')
+      ->setConstructorArgs([new RequestStack(), $this->getStringTranslationStub(), $this->csrfToken, $this->logger, $this->formErrorHandler])
+      ->addMethods(['setError'])
+      ->getMock();
 
     if ($call_watchdog) {
       $this->logger->expects($this->once())
@@ -397,7 +397,7 @@ class FormValidatorTest extends UnitTestCase {
     $form_validator->validateForm('test_form_id', $form, $form_state);
   }
 
-  public static function providerTestPerformRequiredValidation() {
+  public function providerTestPerformRequiredValidation() {
     return [
       [
         [
@@ -424,7 +424,7 @@ class FormValidatorTest extends UnitTestCase {
           '#value' => 'baz',
           '#multiple' => FALSE,
         ],
-        'The submitted value <em class="placeholder">baz</em> in the <em class="placeholder">Test</em> element is not allowed.',
+        'An illegal choice has been detected. Please contact the site administrator.',
         TRUE,
       ],
       [
@@ -437,7 +437,7 @@ class FormValidatorTest extends UnitTestCase {
           '#value' => ['baz'],
           '#multiple' => TRUE,
         ],
-        'The submitted value <em class="placeholder">0</em> in the <em class="placeholder">Test</em> element is not allowed.',
+        'An illegal choice has been detected. Please contact the site administrator.',
         TRUE,
       ],
       [
@@ -450,41 +450,19 @@ class FormValidatorTest extends UnitTestCase {
           '#value' => ['baz'],
           '#multiple' => TRUE,
         ],
-        'The submitted value <em class="placeholder">baz</em> in the <em class="placeholder">Test</em> element is not allowed.',
+        'An illegal choice has been detected. Please contact the site administrator.',
         TRUE,
       ],
       [
         [
           '#type' => 'textfield',
           '#maxlength' => 7,
-          '#value' => Random::machineName(8),
+          '#value' => $this->randomMachineName(8),
         ],
         'Test cannot be longer than <em class="placeholder">7</em> characters but is currently <em class="placeholder">8</em> characters long.',
         FALSE,
       ],
     ];
   }
-
-}
-
-/**
- * Interface used in the mocking process of this test.
- */
-interface FormValidatorTestMockInterface {
-
-  /**
-   * Function used in the mocking process of this test.
-   */
-  public function validate_handler();
-
-  /**
-   * Function used in the mocking process of this test.
-   */
-  public function hash_validate();
-
-  /**
-   * Function used in the mocking process of this test.
-   */
-  public function element_validate();
 
 }

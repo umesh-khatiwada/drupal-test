@@ -4,7 +4,7 @@ dependencies:
   module:
     - user
 id: test_cacheable_metadata_calculation
-label: test_cacheable_metadata_calculation
+label: ''
 module: views
 description: ''
 tag: ''

@@ -109,9 +109,6 @@ class SystemController extends ControllerBase {
   /**
    * Provide the administration overview page.
    *
-   * This will render child links two levels below the specified link ID,
-   * grouped by the child links one level below.
-   *
    * @param string $link_id
    *   The ID of the administrative path link for which to display child links.
    *

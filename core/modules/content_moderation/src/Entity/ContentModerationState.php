@@ -161,10 +161,8 @@ class ContentModerationState extends ContentEntityBase implements ContentModerat
    * {@inheritdoc}
    */
   public function save() {
-    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
-    $storage = \Drupal::entityTypeManager()
-      ->getStorage($this->content_entity_type_id->value);
-    $related_entity = $storage
+    $related_entity = \Drupal::entityTypeManager()
+      ->getStorage($this->content_entity_type_id->value)
       ->loadRevision($this->content_entity_revision_id->value);
     if ($related_entity instanceof TranslatableInterface) {
       $related_entity = $related_entity->getTranslation($this->activeLangcode);

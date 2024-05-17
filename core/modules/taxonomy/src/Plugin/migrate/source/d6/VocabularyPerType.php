@@ -4,8 +4,6 @@ namespace Drupal\taxonomy\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
 
-// cspell:ignore localizable
-
 /**
  * Drupal 6 vocabularies with associated node types source from database.
  *

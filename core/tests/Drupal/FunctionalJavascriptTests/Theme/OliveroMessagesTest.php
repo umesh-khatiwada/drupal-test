@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\FunctionalJavascriptTests\Theme;
 
 use Drupal\FunctionalJavascriptTests\Core\JsMessageTest;

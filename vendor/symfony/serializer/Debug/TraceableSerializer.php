@@ -14,7 +14,6 @@ namespace Symfony\Component\Serializer\Debug;
 use Symfony\Component\Serializer\DataCollector\SerializerDataCollector;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -30,13 +29,13 @@ class TraceableSerializer implements SerializerInterface, NormalizerInterface, D
 {
     public const DEBUG_TRACE_ID = 'debug_trace_id';
 
+    /**
+     * @param SerializerInterface&NormalizerInterface&DenormalizerInterface&EncoderInterface&DecoderInterface $serializer
+     */
     public function __construct(
-        private SerializerInterface&NormalizerInterface&DenormalizerInterface&EncoderInterface&DecoderInterface $serializer,
+        private SerializerInterface $serializer,
         private SerializerDataCollector $dataCollector,
     ) {
-        if (!method_exists($serializer, 'getSupportedTypes')) {
-            trigger_deprecation('symfony/serializer', '6.3', 'Not implementing the "NormalizerInterface::getSupportedTypes()" in "%s" is deprecated.', get_debug_type($serializer));
-        }
     }
 
     public function serialize(mixed $data, string $format, array $context = []): string
@@ -69,7 +68,7 @@ class TraceableSerializer implements SerializerInterface, NormalizerInterface, D
         return $result;
     }
 
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize(mixed $object, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $context[self::DEBUG_TRACE_ID] = $traceId = uniqid();
 
@@ -84,7 +83,7 @@ class TraceableSerializer implements SerializerInterface, NormalizerInterface, D
         return $result;
     }
 
-    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         $context[self::DEBUG_TRACE_ID] = $traceId = uniqid();
 
@@ -129,22 +128,12 @@ class TraceableSerializer implements SerializerInterface, NormalizerInterface, D
         return $result;
     }
 
-    public function getSupportedTypes(?string $format): array
-    {
-        // @deprecated remove condition in 7.0
-        if (!method_exists($this->serializer, 'getSupportedTypes')) {
-            return ['*' => $this->serializer instanceof CacheableSupportsMethodInterface && $this->serializer->hasCacheableSupportsMethod()];
-        }
-
-        return $this->serializer->getSupportedTypes($format);
-    }
-
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $this->serializer->supportsNormalization($data, $format, $context);
     }
 
-    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $this->serializer->supportsDenormalization($data, $type, $format, $context);
     }

@@ -25,8 +25,6 @@ interface ExtensionInterface
      *
      * @param array<array<mixed>> $configs
      *
-     * @return void
-     *
      * @throws \InvalidArgumentException When provided tag is not defined in this extension
      */
     public function load(array $configs, ContainerBuilder $container);

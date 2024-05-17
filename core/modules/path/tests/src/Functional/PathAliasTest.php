@@ -5,7 +5,6 @@ namespace Drupal\Tests\path\Functional;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Url;
-use Drupal\Tests\WaitTerminateTestTrait;
 
 /**
  * Tests modifying path aliases from the UI.
@@ -13,8 +12,6 @@ use Drupal\Tests\WaitTerminateTestTrait;
  * @group path
  */
 class PathAliasTest extends PathTestBase {
-
-  use WaitTerminateTestTrait;
 
   /**
    * Modules to enable.
@@ -43,11 +40,6 @@ class PathAliasTest extends PathTestBase {
       'access content overview',
     ]);
     $this->drupalLogin($web_user);
-
-    // The \Drupal\path_alias\AliasWhitelist service performs cache clears after
-    // Drupal has flushed the response to the client. We use
-    // WaitTerminateTestTrait to wait for Drupal to do this before continuing.
-    $this->setWaitForTerminate();
   }
 
   /**
@@ -182,10 +174,14 @@ class PathAliasTest extends PathTestBase {
     $edit['path[0][value]'] = '/node/' . $node1->id();
     $alias = '/' . $this->randomMachineName(128);
     $edit['alias[0][value]'] = $alias;
+    // The alias is shortened to 50 characters counting the ellipsis.
+    $truncated_alias = substr($alias, 0, 47);
     $this->drupalGet('admin/config/search/path/add');
     $this->submitForm($edit, 'Save');
-    // The alias will always be found.
-    $this->assertSession()->pageTextContains($alias);
+    // The untruncated alias should not be found.
+    $this->assertSession()->pageTextNotContains($alias);
+    // The 'truncated' alias will always be found.
+    $this->assertSession()->pageTextContains($truncated_alias);
 
     // Create third test node.
     $node3 = $this->drupalCreateNode();

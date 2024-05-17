@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Lock;
 
 use Drupal\Tests\UnitTestCase;
@@ -23,8 +21,6 @@ class LockBackendAbstractTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->lock = $this->getMockForAbstractClass('Drupal\Core\Lock\LockBackendAbstract');
   }
 

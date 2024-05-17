@@ -24,9 +24,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ResolveDecoratorStackPass implements CompilerPassInterface
 {
-    /**
-     * @return void
-     */
     public function process(ContainerBuilder $container)
     {
         $stacks = [];

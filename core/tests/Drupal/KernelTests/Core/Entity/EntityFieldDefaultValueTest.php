@@ -3,6 +3,7 @@
 namespace Drupal\KernelTests\Core\Entity;
 
 use Drupal\Component\Uuid\Uuid;
+use Drupal\Component\Render\FormattableMarkup;
 
 /**
  * Tests default values for entity fields.
@@ -51,8 +52,8 @@ class EntityFieldDefaultValueTest extends EntityKernelTestBase {
       ->create();
     $definition = $this->entityTypeManager->getDefinition($entity_type_id);
     $langcode_key = $definition->getKey('langcode');
-    $this->assertEquals('en', $entity->{$langcode_key}->value, "$entity_type_id: Default language");
-    $this->assertTrue(Uuid::isValid($entity->uuid->value), "$entity_type_id: Default UUID");
+    $this->assertEquals('en', $entity->{$langcode_key}->value, new FormattableMarkup('%entity_type: Default language', ['%entity_type' => $entity_type_id]));
+    $this->assertTrue(Uuid::isValid($entity->uuid->value), new FormattableMarkup('%entity_type: Default UUID', ['%entity_type' => $entity_type_id]));
     $this->assertEquals([], $entity->name->getValue(), 'Field has one empty value by default.');
   }
 

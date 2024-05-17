@@ -23,16 +23,8 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Cascade extends Constraint
 {
-    public array $exclude = [];
-
-    public function __construct(array|string|null $exclude = null, ?array $options = null)
+    public function __construct(array $options = null)
     {
-        if (\is_array($exclude) && !array_is_list($exclude)) {
-            $options = array_merge($exclude, $options ?? []);
-        } else {
-            $this->exclude = array_flip((array) $exclude);
-        }
-
         if (\is_array($options) && \array_key_exists('groups', $options)) {
             throw new ConstraintDefinitionException(sprintf('The option "groups" is not supported by the constraint "%s".', __CLASS__));
         }

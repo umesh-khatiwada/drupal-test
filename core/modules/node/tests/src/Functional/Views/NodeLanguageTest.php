@@ -9,8 +9,6 @@ use Drupal\views\Plugin\views\PluginBase;
 use Drupal\views\Tests\ViewTestData;
 use Drupal\views\Views;
 
-// cspell:ignore nodo nœud tercera
-
 /**
  * Tests node language fields, filters, and sorting.
  *

@@ -12,9 +12,7 @@ namespace Drupal\Core\Cache;
  * item. The fast backend will also typically be inconsistent (will only see
  * changes from one web node). The slower backend will be something like Mysql,
  * Memcached or Redis, and will be used by all web nodes, thus making it
- * consistent, but also require a network round trip for each cache get. The
- * fast backend must however also use a consistent cache tag invalidation, for
- * example by using the cache tag checksum API.
+ * consistent, but also require a network round trip for each cache get.
  *
  * In addition to being useful for sites running on multiple web nodes, this
  * backend can also be useful for sites running on a single web node where the
@@ -166,7 +164,9 @@ class ChainedFastBackend implements CacheBackendInterface, CacheTagsInvalidatorI
     if ($cids) {
       foreach ($this->consistentBackend->getMultiple($cids, $allow_invalid) as $item) {
         $cache[$item->cid] = $item;
-        $this->fastBackend->set($item->cid, $item->data, $item->expire, $item->tags);
+        // Don't write the cache tags to the fast backend as any cache tag
+        // invalidation results in an invalidation of the whole fast backend.
+        $this->fastBackend->set($item->cid, $item->data, $item->expire);
       }
     }
 
@@ -179,7 +179,9 @@ class ChainedFastBackend implements CacheBackendInterface, CacheTagsInvalidatorI
   public function set($cid, $data, $expire = Cache::PERMANENT, array $tags = []) {
     $this->consistentBackend->set($cid, $data, $expire, $tags);
     $this->markAsOutdated();
-    $this->fastBackend->set($cid, $data, $expire, $tags);
+    // Don't write the cache tags to the fast backend as any cache tag
+    // invalidation results in an invalidation of the whole fast backend.
+    $this->fastBackend->set($cid, $data, $expire);
   }
 
   /**
@@ -188,6 +190,11 @@ class ChainedFastBackend implements CacheBackendInterface, CacheTagsInvalidatorI
   public function setMultiple(array $items) {
     $this->consistentBackend->setMultiple($items);
     $this->markAsOutdated();
+    // Don't write the cache tags to the fast backend as any cache tag
+    // invalidation results in an invalidation of the whole fast backend.
+    foreach ($items as &$item) {
+      unset($item['tags']);
+    }
     $this->fastBackend->setMultiple($items);
   }
 
@@ -237,9 +244,7 @@ class ChainedFastBackend implements CacheBackendInterface, CacheTagsInvalidatorI
     if ($this->consistentBackend instanceof CacheTagsInvalidatorInterface) {
       $this->consistentBackend->invalidateTags($tags);
     }
-    if ($this->fastBackend instanceof CacheTagsInvalidatorInterface) {
-      $this->fastBackend->invalidateTags($tags);
-    }
+    $this->markAsOutdated();
   }
 
   /**

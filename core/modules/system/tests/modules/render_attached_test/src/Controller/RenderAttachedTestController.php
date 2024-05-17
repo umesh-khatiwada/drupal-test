@@ -46,7 +46,7 @@ class RenderAttachedTestController {
       [
         '#tag' => 'meta',
         '#attributes' => [
-          'test-attribute' => 'test_value',
+          'test-attribute' => 'testvalue',
         ],
       ],
       'test_head_attribute',

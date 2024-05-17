@@ -1,17 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\config_translation\Unit;
 
 use Drupal\config_translation\ConfigMapperManager;
-use Drupal\Core\Config\Schema\Mapping;
 use Drupal\Core\Language\Language;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\Core\TypedData\DataDefinition;
-use Prophecy\Prophet;
 
 /**
  * Tests the functionality provided by configuration translation mapper manager.
@@ -38,8 +34,6 @@ class ConfigMapperManagerTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $language = new Language(['id' => 'en']);
     $language_manager = $this->createMock('Drupal\Core\Language\LanguageManagerInterface');
     $language_manager->expects($this->once())
@@ -91,54 +85,54 @@ class ConfigMapperManagerTest extends UnitTestCase {
    *   to test as the first key and the expected result of
    *   ConfigMapperManager::hasTranslatable() as the second key.
    */
-  public static function providerTestHasTranslatable() {
+  public function providerTestHasTranslatable() {
     return [
-      [static::getElement([]), FALSE],
-      [static::getElement(['aaa' => 'bbb']), FALSE],
-      [static::getElement(['translatable' => FALSE]), FALSE],
-      [static::getElement(['translatable' => TRUE]), TRUE],
-      [static::getNestedElement([static::getElement([])]), FALSE],
-      [static::getNestedElement([static::getElement(['translatable' => TRUE])]), TRUE],
+      [$this->getElement([]), FALSE],
+      [$this->getElement(['aaa' => 'bbb']), FALSE],
+      [$this->getElement(['translatable' => FALSE]), FALSE],
+      [$this->getElement(['translatable' => TRUE]), TRUE],
+      [$this->getNestedElement([$this->getElement([])]), FALSE],
+      [$this->getNestedElement([$this->getElement(['translatable' => TRUE])]), TRUE],
       [
-        static::getNestedElement([
-          static::getElement(['aaa' => 'bbb']),
-          static::getElement(['ccc' => 'ddd']),
-          static::getElement(['eee' => 'fff']),
+        $this->getNestedElement([
+          $this->getElement(['aaa' => 'bbb']),
+          $this->getElement(['ccc' => 'ddd']),
+          $this->getElement(['eee' => 'fff']),
         ]),
         FALSE,
       ],
       [
-        static::getNestedElement([
-          static::getElement(['aaa' => 'bbb']),
-          static::getElement(['ccc' => 'ddd']),
-          static::getElement(['translatable' => TRUE]),
+        $this->getNestedElement([
+          $this->getElement(['aaa' => 'bbb']),
+          $this->getElement(['ccc' => 'ddd']),
+          $this->getElement(['translatable' => TRUE]),
         ]),
         TRUE,
       ],
       [
-        static::getNestedElement([
-          static::getElement(['aaa' => 'bbb']),
-          static::getNestedElement([
-            static::getElement(['ccc' => 'ddd']),
-            static::getElement(['eee' => 'fff']),
+        $this->getNestedElement([
+          $this->getElement(['aaa' => 'bbb']),
+          $this->getNestedElement([
+            $this->getElement(['ccc' => 'ddd']),
+            $this->getElement(['eee' => 'fff']),
           ]),
-          static::getNestedElement([
-            static::getElement(['ggg' => 'hhh']),
-            static::getElement(['iii' => 'jjj']),
+          $this->getNestedElement([
+            $this->getElement(['ggg' => 'hhh']),
+            $this->getElement(['iii' => 'jjj']),
           ]),
         ]),
         FALSE,
       ],
       [
-        static::getNestedElement([
-          static::getElement(['aaa' => 'bbb']),
-          static::getNestedElement([
-            static::getElement(['ccc' => 'ddd']),
-            static::getElement(['eee' => 'fff']),
+        $this->getNestedElement([
+          $this->getElement(['aaa' => 'bbb']),
+          $this->getNestedElement([
+            $this->getElement(['ccc' => 'ddd']),
+            $this->getElement(['eee' => 'fff']),
           ]),
-          static::getNestedElement([
-            static::getElement(['ggg' => 'hhh']),
-            static::getElement(['translatable' => TRUE]),
+          $this->getNestedElement([
+            $this->getElement(['ggg' => 'hhh']),
+            $this->getElement(['translatable' => TRUE]),
           ]),
         ]),
         TRUE,
@@ -155,11 +149,13 @@ class ConfigMapperManagerTest extends UnitTestCase {
    * @return \Drupal\Core\Config\Schema\Element
    *   The mocked schema element.
    */
-  protected static function getElement(array $definition) {
+  protected function getElement(array $definition) {
     $data_definition = new DataDefinition($definition);
-    $element = (new Prophet())->prophesize(TypedDataInterface::class);
-    $element->getDataDefinition()->willReturn($data_definition);
-    return $element->reveal();
+    $element = $this->createMock('Drupal\Core\TypedData\TypedDataInterface');
+    $element->expects($this->any())
+      ->method('getDataDefinition')
+      ->willReturn($data_definition);
+    return $element;
   }
 
   /**
@@ -171,16 +167,20 @@ class ConfigMapperManagerTest extends UnitTestCase {
    * @return \Drupal\Core\Config\Schema\Mapping
    *   A nested schema element, containing the passed-in elements.
    */
-  protected static function getNestedElement(array $elements) {
+  protected function getNestedElement(array $elements) {
     // ConfigMapperManager::findTranslatable() checks for
     // \Drupal\Core\TypedData\TraversableTypedDataInterface, but mocking that
     // directly does not work, because we need to implement \IteratorAggregate
     // in order for getIterator() to be called. Therefore we need to mock
     // \Drupal\Core\Config\Schema\ArrayElement, but that is abstract, so we
     // need to mock one of the subclasses of it.
-    $nested_element = (new Prophet())->prophesize(Mapping::class);
-    $nested_element->getIterator()->shouldBeCalledTimes(1)->willReturn(new \ArrayIterator($elements));
-    return $nested_element->reveal();
+    $nested_element = $this->getMockBuilder('Drupal\Core\Config\Schema\Mapping')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $nested_element->expects($this->once())
+      ->method('getIterator')
+      ->willReturn(new \ArrayIterator($elements));
+    return $nested_element;
   }
 
 }

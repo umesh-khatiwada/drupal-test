@@ -37,7 +37,7 @@ class XmlFileLoader extends FileLoader
 
     public function loadClassMetadata(ClassMetadata $metadata): bool
     {
-        if (!isset($this->classes)) {
+        if (null === $this->classes) {
             $this->loadClassesFromXml();
         }
 
@@ -59,7 +59,7 @@ class XmlFileLoader extends FileLoader
      */
     public function getMappedClasses(): array
     {
-        if (!isset($this->classes)) {
+        if (null === $this->classes) {
             $this->loadClassesFromXml();
         }
 
@@ -179,7 +179,7 @@ class XmlFileLoader extends FileLoader
         return simplexml_import_dom($dom);
     }
 
-    private function loadClassesFromXml(): void
+    private function loadClassesFromXml()
     {
         parent::__construct($this->file);
 
@@ -198,10 +198,9 @@ class XmlFileLoader extends FileLoader
         }
     }
 
-    private function loadClassMetadataFromXml(ClassMetadata $metadata, \SimpleXMLElement $classDescription): void
+    private function loadClassMetadataFromXml(ClassMetadata $metadata, \SimpleXMLElement $classDescription)
     {
         if (\count($classDescription->{'group-sequence-provider'}) > 0) {
-            $metadata->setGroupProvider($classDescription->{'group-sequence-provider'}[0]->value ?: null);
             $metadata->setGroupSequenceProvider(true);
         }
 

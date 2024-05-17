@@ -10,7 +10,6 @@ use Drupal\user\RoleInterface;
  * Create a book, add pages, and test book interface.
  *
  * @group book
- * @group #slow
  */
 class BookTest extends BrowserTestBase {
 
@@ -639,7 +638,7 @@ class BookTest extends BrowserTestBase {
 
     // Saving a book page not as the current version shouldn't effect the book.
     $old_title = $nodes[1]->getTitle();
-    $new_title = $this->getRandomGenerator()->name();
+    $new_title = $this->randomGenerator->name();
     $nodes[1]->isDefaultRevision(FALSE);
     $nodes[1]->setNewRevision(TRUE);
     $nodes[1]->setTitle($new_title);

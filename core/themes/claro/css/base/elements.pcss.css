@@ -99,23 +99,33 @@ dl {
 }
 dl dd,
 dl dl {
-  margin-block-end: 10px;
-  margin-inline-start: 20px;
+  margin-bottom: 10px;
+  margin-left: 20px; /* LTR */
+}
+[dir="rtl"] dl dd,
+[dir="rtl"] dl dl {
+  margin-right: 20px;
 }
 blockquote {
   position: relative;
-  margin-block: var(--space-l);
-  margin-inline: 2.5rem var(--space-l);
+  margin: var(--space-l);
+  margin-left: 2.5rem; /* LTR */
   font-size: var(--font-size-h6);
+}
+[dir="rtl"] blockquote {
+  margin-right: 2.5rem;
 }
 blockquote::before {
   position: absolute;
-  inset-inline-start: -2.5rem;
+  left: -2.5rem; /* LTR */
   content: open-quote;
   color: var(--color-absolutezero);
   font-family: var(--font-family-serif);
   font-size: var(--space-xl);
   line-height: 1em;
+}
+[dir="rtl"] blockquote::before {
+  right: -2.5rem;
 }
 blockquote::after {
   content: no-close-quote;
@@ -153,17 +163,28 @@ acronym {
   border-bottom: dotted 1px;
 }
 ul {
-  margin-block: 0.25em;
-  margin-inline: 1.5em 0;
-  padding-inline-start: 0;
+  margin: 0.25em 0 0.25em 1.5em; /* LTR */
+  padding-left: 0;
   list-style-type: disc;
   list-style-image: none;
 }
+[dir="rtl"] ul {
+  margin-right: 1.5em;
+  margin-left: 0;
+  padding-right: 0;
+}
+/* This is required to win over specificity of [dir="rtl"] ul */
+[dir="rtl"] .messages__list {
+  margin-right: 0;
+}
 ol {
-  margin-block: 0.25em;
-  margin-inline: 2em 0;
+  margin: 0.25em 0 0.25em 2em; /* LTR */
   padding: 0;
   list-style-type: decimal;
+}
+[dir="rtl"] ol {
+  margin-right: 2em;
+  margin-left: 0;
 }
 
 /**
@@ -183,14 +204,12 @@ pre {
 }
 details {
   line-height: var(--details-line-height);
-
-  & summary {
-    padding: 0.95em 1.45em;
-
-    &:focus {
-      outline: none;
-    }
-  }
+}
+details summary {
+  padding: 0.95em 1.45em;
+}
+details summary:focus {
+  outline: none;
 }
 img {
   max-width: 100%;

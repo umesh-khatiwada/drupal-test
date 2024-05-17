@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\EventSubscriber;
 
 use Drupal\Component\Serialization\Json;
@@ -21,8 +19,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
-
-// cspell:ignore svenska
 
 /**
  * @coversDefaultClass \Drupal\Core\EventSubscriber\ActiveLinkResponseFilter

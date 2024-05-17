@@ -4,7 +4,7 @@ dependencies:
   module:
     - node
 id: test_node_revision_timestamp
-label: test_node_revision_timestamp
+label: null
 module: views
 description: ''
 tag: ''

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\layout_builder\Unit;
 
 use Drupal\block_content\Access\RefinableDependentAccessInterface;
@@ -361,7 +359,7 @@ class BlockComponentRenderArrayTest extends UnitTestCase {
     $block->getPluginId()->willReturn('block_plugin_id');
     $block->getBaseId()->willReturn('block_plugin_id');
     $block->getDerivativeId()->willReturn(NULL);
-    $block->getPluginDefinition()->willReturn(['admin_label' => 'admin']);
+    $block->getPluginDefinition()->willReturn(['admin_label' => 'adminlabel']);
     $placeholder_string = 'The placeholder string';
     $block->getPreviewFallbackString()->willReturn($placeholder_string);
 

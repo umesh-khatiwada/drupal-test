@@ -202,11 +202,7 @@ class EntityRow extends RowPluginBase {
    */
   public function query() {
     parent::query();
-    $relationship_table = NULL;
-    if (isset($this->options['relationship'], $this->view->relationship[$this->options['relationship']])) {
-      $relationship_table = $this->view->relationship[$this->options['relationship']]->alias;
-    }
-    $this->getEntityTranslationRenderer()->query($this->view->getQuery(), $relationship_table);
+    $this->getEntityTranslationRenderer()->query($this->view->getQuery());
   }
 
   /**
@@ -215,7 +211,7 @@ class EntityRow extends RowPluginBase {
   public function preRender($result) {
     parent::preRender($result);
     if ($result) {
-      $this->getEntityTranslationRenderer()->preRenderByRelationship($result, isset($this->options['relationship']) ? $this->options['relationship'] : 'none');
+      $this->getEntityTranslationRenderer()->preRender($result);
     }
   }
 
@@ -223,7 +219,7 @@ class EntityRow extends RowPluginBase {
    * {@inheritdoc}
    */
   public function render($row) {
-    return $this->getEntityTranslationRenderer()->renderByRelationship($row, isset($this->options['relationship']) ? $this->options['relationship'] : 'none');
+    return $this->getEntityTranslationRenderer()->render($row);
   }
 
   /**

@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\views\Functional;
 
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\NodeInterface;
-use Drupal\Tests\language\Traits\LanguageTestTrait;
 use Drupal\Tests\Traits\Core\CronRunTrait;
 
 /**
@@ -14,7 +14,6 @@ use Drupal\Tests\Traits\Core\CronRunTrait;
 class SearchMultilingualTest extends ViewTestBase {
 
   use CronRunTrait;
-  use LanguageTestTrait;
 
   /**
    * Modules to enable.
@@ -44,12 +43,36 @@ class SearchMultilingualTest extends ViewTestBase {
    * Tests search with multilingual nodes.
    */
   public function testMultilingualSearchFilter() {
+    // Create a user with admin for languages, content, and content types, plus
+    // the ability to access content and searches.
+    $user = $this->drupalCreateUser([
+      'administer nodes',
+      'administer content types',
+      'administer languages',
+      'administer content translation',
+      'access content',
+      'search content',
+    ]);
+    $this->drupalLogin($user);
+
     // Add Spanish language programmatically.
-    static::createLanguageFromLangcode('es');
+    ConfigurableLanguage::createFromLangcode('es')->save();
 
     // Create a content type and make it translatable.
     $type = $this->drupalCreateContentType();
-    static::enableBundleTranslation('node', $type->id());
+    $edit = [
+      'language_configuration[language_alterable]' => TRUE,
+    ];
+    $this->drupalGet('admin/structure/types/manage/' . $type->id());
+    $this->submitForm($edit, 'Save content type');
+    $edit = [
+      'entity_types[node]' => TRUE,
+      'settings[node][' . $type->id() . '][translatable]' => TRUE,
+      'settings[node][' . $type->id() . '][fields][title]' => TRUE,
+      'settings[node][' . $type->id() . '][fields][body]' => TRUE,
+    ];
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
 
     // Add a node in English, with title "sandwich".
     $values = [

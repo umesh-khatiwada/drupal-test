@@ -28,17 +28,4 @@
     'formFragmentLinkClickOrHashChange.details',
     handleFragmentLinkClickOrHashChange,
   );
-
-  /**
-   * Binds a listener to handle required fields in details elements.
-   */
-  window.addEventListener(
-    'invalid',
-    (event) => {
-      if (event.target.matches('details input[required]')) {
-        handleFragmentLinkClickOrHashChange(event, $(event.target));
-      }
-    },
-    { capture: true },
-  );
 })(jQuery);

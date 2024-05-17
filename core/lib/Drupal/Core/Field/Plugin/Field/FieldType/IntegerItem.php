@@ -13,12 +13,8 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  * @FieldType(
  *   id = "integer",
  *   label = @Translation("Number (integer)"),
- *   description = {
- *     @Translation("Number without decimals"),
- *     @Translation("For example, 123"),
- *   },
- *   category = "number",
- *   weight = -50,
+ *   description = @Translation("This field stores a number in the database as an integer."),
+ *   category = @Translation("Number"),
  *   default_widget = "number",
  *   default_formatter = "number_integer"
  * )

@@ -4,8 +4,6 @@ namespace Drupal\FunctionalTests\Installer;
 
 use Drupal\Core\Language\LanguageManager;
 
-// cspell:ignore xoxo
-
 /**
  * Verifies that the installer language list combines local and remote languages.
  *

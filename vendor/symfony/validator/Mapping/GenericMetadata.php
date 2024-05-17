@@ -35,53 +35,59 @@ class GenericMetadata implements MetadataInterface
      *           class' serialized representation. Do not access it. Use
      *           {@link getConstraints()} and {@link findConstraints()} instead.
      */
-    public array $constraints = [];
+    public $constraints = [];
 
     /**
-     * @var array<string, Constraint[]>
+     * @var array
      *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link findConstraints()} instead.
      */
-    public array $constraintsByGroup = [];
+    public $constraintsByGroup = [];
 
     /**
      * The strategy for cascading objects.
      *
      * By default, objects are not cascaded.
      *
-     * @var CascadingStrategy::*
+     * @var int
+     *
+     * @see CascadingStrategy
      *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getCascadingStrategy()} instead.
      */
-    public int $cascadingStrategy = CascadingStrategy::NONE;
+    public $cascadingStrategy = CascadingStrategy::NONE;
 
     /**
      * The strategy for traversing traversable objects.
      *
      * By default, traversable objects are not traversed.
      *
-     * @var TraversalStrategy::*
+     * @var int
+     *
+     * @see TraversalStrategy
      *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getTraversalStrategy()} instead.
      */
-    public int $traversalStrategy = TraversalStrategy::NONE;
+    public $traversalStrategy = TraversalStrategy::NONE;
 
     /**
      * Is auto-mapping enabled?
      *
-     * @var AutoMappingStrategy::*
+     * @var int
+     *
+     * @see AutoMappingStrategy
      *
      * @internal This property is public in order to reduce the size of the
      *           class' serialized representation. Do not access it. Use
      *           {@link getAutoMappingStrategy()} instead.
      */
-    public int $autoMappingStrategy = AutoMappingStrategy::NONE;
+    public $autoMappingStrategy = AutoMappingStrategy::NONE;
 
     /**
      * Returns the names of the properties that should be serialized.
@@ -180,9 +186,6 @@ class GenericMetadata implements MetadataInterface
         return $this;
     }
 
-    /**
-     * @return Constraint[]
-     */
     public function getConstraints(): array
     {
         return $this->constraints;
@@ -198,8 +201,6 @@ class GenericMetadata implements MetadataInterface
 
     /**
      * Aware of the global group (* group).
-     *
-     * @return Constraint[]
      */
     public function findConstraints(string $group): array
     {

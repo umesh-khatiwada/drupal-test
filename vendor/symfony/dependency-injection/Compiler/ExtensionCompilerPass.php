@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class ExtensionCompilerPass implements CompilerPassInterface
 {
-    /**
-     * @return void
-     */
     public function process(ContainerBuilder $container)
     {
         foreach ($container->getExtensions() as $extension) {

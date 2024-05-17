@@ -11,11 +11,35 @@
 
 namespace Symfony\Component\Serializer\Annotation;
 
-class_exists(\Symfony\Component\Serializer\Attribute\SerializedPath::class);
+use Symfony\Component\PropertyAccess\Exception\InvalidPropertyPathException;
+use Symfony\Component\PropertyAccess\PropertyPath;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 
-if (false) {
-    #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
-    class SerializedPath extends \Symfony\Component\Serializer\Attribute\SerializedPath
+/**
+ * Annotation class for @SerializedPath().
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
+ * @Target({"PROPERTY", "METHOD"})
+ *
+ * @author Tobias Bönner <tobi@boenner.family>
+ */
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
+final class SerializedPath
+{
+    private PropertyPath $serializedPath;
+
+    public function __construct(string $serializedPath)
     {
+        try {
+            $this->serializedPath = new PropertyPath($serializedPath);
+        } catch (InvalidPropertyPathException $pathException) {
+            throw new InvalidArgumentException(sprintf('Parameter of annotation "%s" must be a valid property path.', self::class));
+        }
+    }
+
+    public function getSerializedPath(): PropertyPath
+    {
+        return $this->serializedPath;
     }
 }

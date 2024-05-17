@@ -67,10 +67,10 @@
       const table = once('expand-updates', '#locale-translation-status-form');
       if (table.length) {
         const $table = $(table);
-        const $tableBodies = $table.find('tbody');
+        const $tbodies = $table.find('tbody');
 
         // Open/close the description details by toggling a tr class.
-        $tableBodies.on('click keydown', '.description', function (e) {
+        $tbodies.on('click keydown', '.description', function (e) {
           if (e.keyCode && e.keyCode !== 13 && e.keyCode !== 32) {
             return;
           }

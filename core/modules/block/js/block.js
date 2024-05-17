@@ -24,7 +24,7 @@
       /**
        * Create a summary for checkboxes in the provided context.
        *
-       * @param {Document|HTMLElement} context
+       * @param {HTMLDocument|HTMLElement} context
        *   A context where one would find checkboxes to summarize.
        *
        * @return {string}
@@ -46,7 +46,7 @@
       }
 
       $(
-        '[data-drupal-selector="edit-visibility-node-type"], [data-drupal-selector="edit-visibility-entity-bundlenode"], [data-drupal-selector="edit-visibility-language"], [data-drupal-selector="edit-visibility-user-role"], [data-drupal-selector="edit-visibility-response-status"]',
+        '[data-drupal-selector="edit-visibility-node-type"], [data-drupal-selector="edit-visibility-entity-bundlenode"], [data-drupal-selector="edit-visibility-language"], [data-drupal-selector="edit-visibility-user-role"]',
       ).drupalSetSummary(checkboxesSummary);
 
       $(
@@ -90,8 +90,8 @@
        *
        * @param {jQuery} table
        *   The jQuery object representing the table to inspect.
-       * @param {Drupal.tableDrag.row} rowObject
-       *   Drupal table drag row dropped.
+       * @param {jQuery} rowObject
+       *   The jQuery object representing the table row.
        */
       function checkEmptyRegions(table, rowObject) {
         table.find('tr.region-message').each(function () {
@@ -110,13 +110,13 @@
           }
           // This region has become empty.
           if (
-            $this.next('tr').length === 0 ||
-            !$this.next('tr')[0].matches('.draggable')
+            $this.next('tr').is(':not(.draggable)') ||
+            $this.next('tr').length === 0
           ) {
             $this.removeClass('region-populated').addClass('region-empty');
           }
           // This region has become populated.
-          else if (this.matches('.region-empty')) {
+          else if ($this.is('.region-empty')) {
             $this.removeClass('region-empty').addClass('region-populated');
           }
         });
@@ -127,14 +127,15 @@
        *
        * @param {jQuery} table
        *   The jQuery object representing the table to inspect.
-       * @param {Drupal.tableDrag.row} rowObject
-       *   Drupal table drag row dropped.
+       * @param {jQuery} rowObject
+       *   The jQuery object representing the table row.
        */
       function updateLastPlaced(table, rowObject) {
         // Remove the color-success class from new block if applicable.
         table.find('.color-success').removeClass('color-success');
+
         const $rowObject = $(rowObject);
-        if (!rowObject.element.matches('.drag-previous')) {
+        if (!$rowObject.is('.drag-previous')) {
           table.find('.drag-previous').removeClass('drag-previous');
           $rowObject.addClass('drag-previous');
         }
@@ -198,7 +199,7 @@
         }
 
         // Update region and weight fields if the region has been changed.
-        if (!regionField[0].matches(`.block-region-${regionName}`)) {
+        if (!regionField.is(`.block-region-${regionName}`)) {
           const weightField = $rowElement.find('select.block-weight');
           const oldRegionName = weightField[0].className.replace(
             /([^ ]+[ ]+)*block-weight-([^ ]+)([ ]+[^ ]+)*/,
@@ -243,7 +244,7 @@
           // Modify empty regions with added or removed fields.
           checkEmptyRegions(table, tableDrag.rowObject);
           // Update last placed block indication.
-          updateLastPlaced(table, tableDrag.rowObject);
+          updateLastPlaced(table, row);
           // Show unsaved changes warning.
           if (!tableDrag.changed) {
             $(Drupal.theme('tableDragChangedWarning'))

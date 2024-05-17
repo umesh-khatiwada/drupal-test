@@ -360,7 +360,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
    * {@inheritdoc}
    */
   public function tokenizeValue($value, $row_index = NULL) {
-    if (str_contains($value, '{{')) {
+    if (strpos($value, '{{') !== FALSE) {
       $fake_item = [
         'alter_text' => TRUE,
         'text' => $value,
@@ -1336,7 +1336,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
         // well.
         $base_path = base_path();
         // Checks whether the path starts with the base_path.
-        if (str_starts_with($more_link_path, $base_path)) {
+        if (strpos($more_link_path, $base_path) === 0) {
           $more_link_path = mb_substr($more_link_path, mb_strlen($base_path));
         }
 
@@ -1455,7 +1455,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
       // Tokens might have resolved URL's, as is the case for tokens provided by
       // Link fields, so all internal paths will be prefixed by base_path(). For
       // proper further handling reset this to internal:/.
-      if (str_starts_with($path, base_path())) {
+      if (strpos($path, base_path()) === 0) {
         $path = 'internal:/' . substr($path, strlen(base_path()));
       }
 
@@ -1470,7 +1470,7 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
       // 'http://www.example.com'.
       // Only do this when flag for external has been set, $path doesn't contain
       // a scheme and $path doesn't have a leading /.
-      if ($alter['external'] && !parse_url($path, PHP_URL_SCHEME) && !str_starts_with($path, '/')) {
+      if ($alter['external'] && !parse_url($path, PHP_URL_SCHEME) && strpos($path, '/') !== 0) {
         // There is no scheme, add the default 'http://' to the $path.
         $path = "http://" . $path;
       }
@@ -1700,23 +1700,21 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
    *     'foo' => array(
    *       'a' => 'value',
    *       'b' => 'value',
-   *       'c.d' => 'invalid value',
-   *       '&invalid' => 'invalid value',
    *     ),
    *     'bar' => array(
    *       'a' => 'value',
    *       'b' => array(
-   *         'c' => 'value',
+   *         'c' => value,
    *       ),
    *     ),
    *   );
    *
    * Would yield the following array of tokens:
    *   array(
-   *     '{{ arguments.foo.a }}' => 'value',
-   *     '{{ arguments.foo.b }}' => 'value',
-   *     '{{ arguments.bar.a }}' => 'value',
-   *     '{{ arguments.bar.b.c }}' => 'value',
+   *     '%foo_a' => 'value'
+   *     '%foo_b' => 'value'
+   *     '%bar_a' => 'value'
+   *     '%bar_b_c' => 'value'
    *   );
    *
    * @param $array
@@ -1731,10 +1729,6 @@ abstract class FieldPluginBase extends HandlerBase implements FieldHandlerInterf
     $tokens = [];
 
     foreach ($array as $param => $val) {
-      if (!is_numeric($param) && preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $param) === 0) {
-        // Skip as the parameter is not a valid Twig variable name.
-        continue;
-      }
       if (is_array($val)) {
         // Copy parent_keys array, so we don't affect other elements of this
         // iteration.

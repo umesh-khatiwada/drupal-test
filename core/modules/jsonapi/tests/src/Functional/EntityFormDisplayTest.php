@@ -10,7 +10,6 @@ use Drupal\node\Entity\NodeType;
  * JSON:API integration test for the "EntityFormDisplay" config entity type.
  *
  * @group jsonapi
- * @group #slow
  */
 class EntityFormDisplayTest extends ConfigEntityResourceTestBase {
 

@@ -13,16 +13,11 @@ node.type.*:
   label: 'Content type'
   mapping:
     name:
-      type: required_label
+      type: label
       label: 'Name'
     type:
-      type: machine_name
+      type: string
       label: 'Machine-readable name'
-      constraints:
-        # Node type machine names are specifically limited to 32 characters.
-        # @see \Drupal\node\NodeTypeForm::form()
-        Length:
-          max: 32
     description:
       type: text
       label: 'Description'

@@ -24,18 +24,18 @@
  * 'sites/default' will be used.
  *
  * For example, for a fictitious site installed at
- * https://www.drupal.org:8080/my-site/test/, the 'settings.php' file is searched
+ * https://www.drupal.org:8080/mysite/test/, the 'settings.php' file is searched
  * for in the following directories:
  *
- * - sites/8080.www.drupal.org.my-site.test
- * - sites/www.drupal.org.my-site.test
- * - sites/drupal.org.my-site.test
- * - sites/org.my-site.test
+ * - sites/8080.www.drupal.org.mysite.test
+ * - sites/www.drupal.org.mysite.test
+ * - sites/drupal.org.mysite.test
+ * - sites/org.mysite.test
  *
- * - sites/8080.www.drupal.org.my-site
- * - sites/www.drupal.org.my-site
- * - sites/drupal.org.my-site
- * - sites/org.my-site
+ * - sites/8080.www.drupal.org.mysite
+ * - sites/www.drupal.org.mysite
+ * - sites/drupal.org.mysite
+ * - sites/org.mysite
  *
  * - sites/8080.www.drupal.org
  * - sites/www.drupal.org
@@ -46,8 +46,8 @@
  *
  * Note that if you are installing on a non-standard port number, prefix the
  * hostname with that number. For example,
- * https://www.drupal.org:8080/my-site/test/ could be loaded from
- * sites/8080.www.drupal.org.my-site.test/.
+ * https://www.drupal.org:8080/mysite/test/ could be loaded from
+ * sites/8080.www.drupal.org.mysite.test/.
  *
  * @see example.sites.php
  * @see \Drupal\Core\DrupalKernel::getSitePath()
@@ -78,8 +78,8 @@
  * @code
  * $databases['default']['default'] = [
  *   'database' => 'databasename',
- *   'username' => 'sql_username',
- *   'password' => 'sql_password',
+ *   'username' => 'sqlusername',
+ *   'password' => 'sqlpassword',
  *   'host' => 'localhost',
  *   'port' => '3306',
  *   'driver' => 'mysql',
@@ -194,8 +194,8 @@ $databases = [];
  *   $databases['default']['default'] = [
  *     'driver' => 'pgsql',
  *     'database' => 'databasename',
- *     'username' => 'sql_username',
- *     'password' => 'sql_password',
+ *     'username' => 'sqlusername',
+ *     'password' => 'sqlpassword',
  *     'host' => 'localhost',
  *     'prefix' => '',
  *   ];
@@ -205,7 +205,7 @@ $databases = [];
  * @code
  *   $databases['default']['default'] = [
  *     'driver' => 'sqlite',
- *     'database' => '/path/to/database_filename',
+ *     'database' => '/path/to/databasefilename',
  *   ];
  * @endcode
  *
@@ -216,31 +216,10 @@ $databases = [];
  *     'namespace' => 'Drupal\my_module\Driver\Database\my_driver',
  *     'autoload' => 'modules/my_module/src/Driver/Database/my_driver/',
  *     'database' => 'databasename',
- *     'username' => 'sql_username',
- *     'password' => 'sql_password',
+ *     'username' => 'sqlusername',
+ *     'password' => 'sqlpassword',
  *     'host' => 'localhost',
  *     'prefix' => '',
- *   ];
- * @endcode
- *
- * Sample Database configuration format for a driver that is extending another
- * database driver.
- * @code
- *   $databases['default']['default'] = [
- *     'driver' => 'my_driver',
- *     'namespace' => 'Drupal\my_module\Driver\Database\my_driver',
- *     'autoload' => 'modules/my_module/src/Driver/Database/my_driver/',
- *     'database' => 'databasename',
- *     'username' => 'sql_username',
- *     'password' => 'sql_password',
- *     'host' => 'localhost',
- *     'prefix' => '',
- *     'dependencies' => [
- *       'parent_module' => [
- *         'namespace' => 'Drupal\parent_module',
- *         'autoload' => 'core/modules/parent_module/src/',
- *       ],
- *     ],
  *   ];
  * @endcode
  */
@@ -277,8 +256,7 @@ $databases = [];
  * variable has the same value on each server.
  *
  * For enhanced security, you may set this variable to the contents of a file
- * outside your document root, and vary the value across environments (like
- * production and development); you should also ensure that this file is not
+ * outside your document root; you should also ensure that this file is not
  * stored with backups of your database.
  *
  * Example:
@@ -286,7 +264,7 @@ $databases = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = 'LniNBWq7k0ZO1CeGxBhXiJQ2wQk0n81K7VsvicXD0XYTCDRnhU6MuCffpIpoHwA_BrS0n5drsA';
+$settings['hash_salt'] = 'maxNiaPLQZ8f624LmLJPE8rUJDJl-EvmLiNFvPKhKWnrtCMYaRm_asukFbK61t5n2ZWTmZ58Hg';
 
 /**
  * Deployment identifier.
@@ -509,15 +487,6 @@ $settings['update_free_access'] = FALSE;
 # $settings['file_chmod_file'] = 0664;
 
 /**
- * Optimized assets path:
- *
- * A local file system path where optimized assets will be stored. This directory
- * must exist and be writable by Drupal. This directory must be relative to
- * the Drupal installation directory and be accessible over the web.
- */
-# $settings['file_assets_path'] = 'sites/default/files';
-
-/**
  * Public file base URL:
  *
  * An alternative base URL to be used for serving public files. This must
@@ -582,23 +551,6 @@ $settings['update_free_access'] = FALSE;
 # $settings['file_sa_core_2023_005_schemes'] = ['porcelain'];
 
 /**
- * Configuration for phpinfo() admin status report.
- *
- * Drupal's admin UI includes a report at admin/reports/status/php which shows
- * the output of phpinfo(). The full output can contain sensitive information
- * so by default Drupal removes some sections.
- *
- * This behavior can be configured by setting this variable to a different
- * value corresponding to the flags parameter of phpinfo().
- *
- * If you need to expose more information in the report - for example to debug a
- * problem - consider doing so temporarily.
- *
- * @see https://www.php.net/manual/function.phpinfo.php
- */
-# $settings['sa_core_2023_004_phpinfo_flags'] = ~ (INFO_VARIABLES | INFO_ENVIRONMENT);
-
-/**
  * Private file path:
  *
  * A local file system path where private files will be stored. This directory
@@ -647,7 +599,7 @@ $settings['update_free_access'] = FALSE;
  * any added language. (eg locale_custom_strings_de for german).
  */
 # $settings['locale_custom_strings_en'][''] = [
-#   'Home' => 'Front page',
+#   'forum'      => 'Discussion board',
 #   '@count min' => '@count minutes',
 # ];
 
@@ -772,7 +724,6 @@ $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
  *
  * @see https://www.drupal.org/docs/installing-drupal/trusted-host-settings
  */
-# $settings['trusted_host_patterns'] = [];
 
 /**
  * The default list of directories that will be ignored by Drupal's file API.
@@ -881,27 +832,15 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
-$database_name = getenv('DATABASE_NAME');
-$database_username = getenv('DATABASE_USERNAME');
-$database_password = getenv('DATABASE_PASSWORD');
-$database_prefix = getenv('DATABASE_PREFIX');
-$database_host = getenv('DATABASE_HOST');
-$database_port = getenv('DATABASE_PORT');
-
-// Check if any of the environment variables are missing
-
-
-// Create the database configuration array
-$databases['default']['default'] = array(
-    'database' => 'hamrohr_drup570',
-    'username' => 'hamrohr_drup570',
-    'password' => 'Test123123$$',
-    'prefix' => 'dryn_',
-    'host' => '69.57.172.21',
-    'port' => '3306',
-    'isolation_level' => '',
-    'driver' => 'mysql',
-    'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
-    'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
+$databases['default']['default'] = array (
+  'database' => 'hamrohr_drup903',
+  'username' => 'hamrohr_drup903',
+  'password' => '0[43(gpiSI',
+  'prefix' => 'drnv_',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
+  'driver' => 'mysql',
+  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
 );
-$settings['config_sync_directory'] = 'sites/default/files/config_ULV3PynXHuyUWr8CEZfcNGRwz-VKvG9EI-qgmE-bAOuc0QBf1CQ8uJC3AvaGLzukp_8EJjiydA/sync';
+$settings['config_sync_directory'] = 'sites/default/files/config_bL434lgAdhwKSSLG_USSUdANV5FDFmMpmXBnibaVvDMwPg0BnfRLSEdTqXC9x4AKKAO6MSUMMA/sync';

@@ -10,7 +10,6 @@ use Drupal\Tests\BrowserTestBase;
  * Tests the user interface for importing configuration.
  *
  * @group config
- * @group #slow
  */
 class ConfigImportUITest extends BrowserTestBase {
 
@@ -288,7 +287,7 @@ class ConfigImportUITest extends BrowserTestBase {
     $change_key = 'foo';
     $remove_key = '404';
     $add_key = 'biff';
-    $add_data = '<em>bangPow</em>';
+    $add_data = '<em>bangpow</em>';
     $change_data = '<p><em>foobar</em></p>';
     $original_data = [
       'foo' => '<p>foobar</p>',
@@ -321,7 +320,7 @@ class ConfigImportUITest extends BrowserTestBase {
     // The no change values are escaped.
     $this->assertSession()->pageTextContains("baz: '<strong>no change</strong>'");
     // Added value is escaped.
-    $this->assertSession()->pageTextContains("biff: '<em>bangPow</em>'");
+    $this->assertSession()->pageTextContains("biff: '<em>bangpow</em>'");
     // Deleted value is escaped.
     $this->assertSession()->pageTextContains("404: '<em>herp</em>'");
 
@@ -352,7 +351,7 @@ class ConfigImportUITest extends BrowserTestBase {
     $this->assertSession()->pageTextContains("baz: '<strong>no change</strong>'");
     $this->assertSession()->pageTextContains("404: '<em>herp</em>'");
     // Added key is escaped.
-    $this->assertSession()->pageTextContains("biff: '<em>bangPow</em>'");
+    $this->assertSession()->pageTextContains("biff: '<em>bangpow</em>'");
   }
 
   /**

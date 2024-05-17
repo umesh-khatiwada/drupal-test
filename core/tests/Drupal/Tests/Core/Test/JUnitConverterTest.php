@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Core\Test;
 
 use Drupal\Core\Test\JUnitConverter;
@@ -31,7 +29,7 @@ class JUnitConverterTest extends UnitTestCase {
     $phpunit_error_xml = __DIR__ . '/fixtures/phpunit_error.xml';
 
     $res = JUnitConverter::xmlToRows(1, $phpunit_error_xml);
-    $this->assertCount(4, $res, 'All test cases got extracted');
+    $this->assertCount(4, $res, 'All testcases got extracted');
     $this->assertNotEquals('pass', $res[0]['status']);
     $this->assertEquals('fail', $res[0]['status']);
 

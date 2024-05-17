@@ -60,10 +60,8 @@ class MenuLinkTreeTest extends KernelTestBase {
    * Tests deleting all the links in a menu.
    */
   public function testDeleteLinksInMenu() {
-    /** @var \Drupal\system\MenuStorage $storage */
-    $storage = \Drupal::entityTypeManager()->getStorage('menu');
-    $storage->create(['id' => 'menu1', 'label' => 'Menu 1'])->save();
-    $storage->create(['id' => 'menu2', 'label' => 'Menu 2'])->save();
+    \Drupal::entityTypeManager()->getStorage('menu')->create(['id' => 'menu1'])->save();
+    \Drupal::entityTypeManager()->getStorage('menu')->create(['id' => 'menu2'])->save();
 
     \Drupal::entityTypeManager()->getStorage('menu_link_content')->create(['link' => ['uri' => 'internal:/menu_name_test'], 'menu_name' => 'menu1', 'bundle' => 'menu_link_content', 'title' => 'Link test'])->save();
     \Drupal::entityTypeManager()->getStorage('menu_link_content')->create(['link' => ['uri' => 'internal:/menu_name_test'], 'menu_name' => 'menu1', 'bundle' => 'menu_link_content', 'title' => 'Link test'])->save();

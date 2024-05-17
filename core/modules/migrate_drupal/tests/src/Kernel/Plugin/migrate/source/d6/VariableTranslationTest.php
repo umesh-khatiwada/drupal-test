@@ -4,6 +4,8 @@ namespace Drupal\Tests\migrate_drupal\Kernel\Plugin\migrate\source\d6;
 
 use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
 
+// cspell:ignore whakamataku génial
+
 /**
  * Tests the variable source plugin.
  *
@@ -29,22 +31,22 @@ class VariableTranslationTest extends MigrateSqlSourceTestBase {
       [
         'name' => 'site_slogan',
         'language' => 'fr',
-        'value' => 's:23:"fr - migrate is awesome";',
+        'value' => 's:19:"Migrate est génial";',
       ],
       [
         'name' => 'site_name',
         'language' => 'fr',
-        'value' => 's:14:"fr - site name";',
+        'value' => 's:11:"nom de site";',
       ],
       [
         'name' => 'site_slogan',
         'language' => 'mi',
-        'value' => 's:23:"mi - migrate is awesome";',
+        'value' => 's:19:"Ko whakamataku heke";',
       ],
       [
         'name' => 'site_name',
         'language' => 'mi',
-        'value' => 's:14:"mi - site name";',
+        'value' => 's:9:"ingoa_pae";',
       ],
     ];
 
@@ -52,13 +54,13 @@ class VariableTranslationTest extends MigrateSqlSourceTestBase {
     $tests[0]['expected_data'] = [
       [
         'language' => 'fr',
-        'site_slogan' => 'fr - migrate is awesome',
-        'site_name' => 'fr - site name',
+        'site_slogan' => 'Migrate est génial',
+        'site_name' => 'nom de site',
       ],
       [
         'language' => 'mi',
-        'site_slogan' => 'mi - migrate is awesome',
-        'site_name' => 'mi - site name',
+        'site_slogan' => 'Ko whakamataku heke',
+        'site_name' => 'ingoa_pae',
       ],
     ];
 

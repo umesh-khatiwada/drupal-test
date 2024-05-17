@@ -35,7 +35,7 @@ interface BanIpManagerInterface {
   public function banIp($ip);
 
   /**
-   * Removes the ban of an IP address.
+   * Unbans an IP address.
    *
    * @param string $id
    *   The IP address to unban.

@@ -42,6 +42,7 @@ class TextFormatElementFormTest extends KernelTestBase implements FormInterface 
   protected function setUp(): void {
     parent::setUp();
     $this->installEntitySchema('user');
+    $this->installSchema('system', ['sequences']);
     $this->installConfig(['filter', 'filter_test']);
 
     // Create user 1 so that the user created later in the test has a different

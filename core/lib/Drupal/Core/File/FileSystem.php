@@ -114,7 +114,7 @@ class FileSystem implements FileSystemInterface {
    * {@inheritdoc}
    */
   public function unlink($uri, $context = NULL) {
-    if (!$this->streamWrapperManager->isValidUri($uri) && str_starts_with(PHP_OS, 'WIN')) {
+    if (!$this->streamWrapperManager->isValidUri($uri) && (substr(PHP_OS, 0, 3) == 'WIN')) {
       chmod($uri, 0600);
     }
     if ($context) {
@@ -257,7 +257,7 @@ class FileSystem implements FileSystemInterface {
    * {@inheritdoc}
    */
   public function rmdir($uri, $context = NULL) {
-    if (!$this->streamWrapperManager->isValidUri($uri) && str_starts_with(PHP_OS, 'WIN')) {
+    if (!$this->streamWrapperManager->isValidUri($uri) && (substr(PHP_OS, 0, 3) == 'WIN')) {
       chmod($uri, 0700);
     }
     if ($context) {
@@ -354,10 +354,6 @@ class FileSystem implements FileSystemInterface {
       call_user_func($callback, $path);
     }
 
-    if (!file_exists($path)) {
-      return TRUE;
-    }
-
     if (is_dir($path)) {
       $dir = dir($path);
       while (($entry = $dir->read()) !== FALSE) {
@@ -383,7 +379,7 @@ class FileSystem implements FileSystemInterface {
 
     // Ensure compatibility with Windows.
     // @see \Drupal\Core\File\FileSystemInterface::unlink().
-    if (!$this->streamWrapperManager->isValidUri($source) && str_starts_with(PHP_OS, 'WIN')) {
+    if (!$this->streamWrapperManager->isValidUri($source) && (substr(PHP_OS, 0, 3) == 'WIN')) {
       chmod($source, 0600);
     }
     // Attempt to resolve the URIs. This is necessary in certain
@@ -590,7 +586,7 @@ class FileSystem implements FileSystemInterface {
     if (preg_last_error() !== PREG_NO_ERROR) {
       throw new FileException(sprintf("Invalid filename '%s'", $original));
     }
-    if (str_starts_with(PHP_OS, 'WIN')) {
+    if (substr(PHP_OS, 0, 3) == 'WIN') {
       // These characters are not allowed in Windows filenames.
       $basename = str_replace([':', '*', '?', '"', '<', '>', '|'], '_', $basename);
     }
@@ -703,8 +699,7 @@ class FileSystem implements FileSystemInterface {
    * @see \Drupal\Core\File\FileSystemInterface::scanDirectory()
    */
   protected function doScanDirectory($dir, $mask, array $options = [], $depth = 0) {
-    $files_in_sub_dirs = [];
-    $files_in_this_directory = [];
+    $files = [];
     // Avoid warnings when opendir does not have the permissions to open a
     // directory.
     if ($handle = @opendir($dir)) {
@@ -718,17 +713,19 @@ class FileSystem implements FileSystemInterface {
             $uri = "$dir/$filename";
           }
           if ($options['recurse'] && is_dir($uri)) {
-            $files_in_sub_dirs[] = $this->doScanDirectory($uri, $mask, $options, $depth + 1);
+            // Give priority to files in this folder by merging them in after
+            // any subdirectory files.
+            $files = array_merge($this->doScanDirectory($uri, $mask, $options, $depth + 1), $files);
           }
           elseif ($depth >= $options['min_depth'] && preg_match($mask, $filename)) {
-            // Always use this match over anything already set with the same
-            // $options['key'].
+            // Always use this match over anything already set in $files with
+            // the same $options['key'].
             $file = new \stdClass();
             $file->uri = $uri;
             $file->filename = $filename;
             $file->name = pathinfo($filename, PATHINFO_FILENAME);
             $key = $options['key'];
-            $files_in_this_directory[$file->$key] = $file;
+            $files[$file->$key] = $file;
             if ($options['callback']) {
               $options['callback']($uri);
             }
@@ -741,9 +738,7 @@ class FileSystem implements FileSystemInterface {
       $this->logger->error('@dir can not be opened', ['@dir' => $dir]);
     }
 
-    // Give priority to files in this folder by merging them after
-    // any subdirectory files.
-    return array_merge(array_merge(...$files_in_sub_dirs), $files_in_this_directory);
+    return $files;
   }
 
 }

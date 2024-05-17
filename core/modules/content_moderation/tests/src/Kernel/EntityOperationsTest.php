@@ -47,7 +47,7 @@ class EntityOperationsTest extends KernelTestBase {
   protected function createNodeType() {
     $node_type = NodeType::create([
       'type' => 'page',
-      'name' => 'Page',
+      'label' => 'Page',
     ]);
     $node_type->save();
     $workflow = $this->createEditorialWorkflow();

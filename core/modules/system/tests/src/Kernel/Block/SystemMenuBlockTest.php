@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\system\Kernel\Block;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\system\Entity\Menu;
 use Drupal\block\Entity\Block;
@@ -81,6 +82,7 @@ class SystemMenuBlockTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+    $this->installSchema('system', 'sequences');
     $this->installEntitySchema('user');
     $this->installEntitySchema('menu_link_content');
 
@@ -154,7 +156,7 @@ class SystemMenuBlockTest extends KernelTestBase {
     $block = Block::create([
       'plugin' => 'system_menu_block:' . $this->menu->id(),
       'region' => 'footer',
-      'id' => 'machine_name',
+      'id' => 'machinename',
       'theme' => 'stark',
     ]);
 
@@ -181,7 +183,7 @@ class SystemMenuBlockTest extends KernelTestBase {
     $place_block = function ($level, $depth) {
       return $this->blockManager->createInstance('system_menu_block:' . $this->menu->id(), [
         'region' => 'footer',
-        'id' => 'machine_name',
+        'id' => 'machinename',
         'theme' => 'stark',
         'level' => $level,
         'depth' => $depth,
@@ -225,7 +227,7 @@ class SystemMenuBlockTest extends KernelTestBase {
     foreach ($blocks as $id => $block) {
       $block_build = $block->build();
       $items = $block_build['#items'] ?? [];
-      $this->assertSame($no_active_trail_expectations[$id], $this->convertBuiltMenuToIdTree($items), "Menu block $id with no active trail renders the expected tree.");
+      $this->assertSame($no_active_trail_expectations[$id], $this->convertBuiltMenuToIdTree($items), new FormattableMarkup('Menu block %id with no active trail renders the expected tree.', ['%id' => $id]));
     }
 
     // Scenario 2: test all block instances when there's an active trail.
@@ -277,7 +279,7 @@ class SystemMenuBlockTest extends KernelTestBase {
     foreach ($blocks as $id => $block) {
       $block_build = $block->build();
       $items = $block_build['#items'] ?? [];
-      $this->assertSame($active_trail_expectations[$id], $this->convertBuiltMenuToIdTree($items), "Menu block $id with an active trail renders the expected tree.");
+      $this->assertSame($active_trail_expectations[$id], $this->convertBuiltMenuToIdTree($items), new FormattableMarkup('Menu block %id with an active trail renders the expected tree.', ['%id' => $id]));
     }
   }
 
@@ -289,7 +291,7 @@ class SystemMenuBlockTest extends KernelTestBase {
   public function testConfigExpanded($active_route, $menu_block_level, $expected_items) {
     $block = $this->blockManager->createInstance('system_menu_block:' . $this->menu->id(), [
       'region' => 'footer',
-      'id' => 'machine_name',
+      'id' => 'machinename',
       'theme' => 'stark',
       'level' => $menu_block_level,
       'depth' => 0,

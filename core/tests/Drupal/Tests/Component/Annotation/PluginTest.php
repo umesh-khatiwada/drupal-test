@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -34,7 +32,7 @@ class PluginTest extends TestCase {
     $this->assertEquals([
       // This property wasn't in our definition but is defined as a property on
       // our plugin class.
-      'defaultProperty' => 'test_value',
+      'defaultProperty' => 'testvalue',
       1 => 'oak',
       'foo' => 'bar',
       'biz' => [
@@ -97,6 +95,6 @@ class PluginTest extends TestCase {
  * {@inheritdoc}
  */
 class PluginStub extends Plugin {
-  protected $defaultProperty = 'test_value';
+  protected $defaultProperty = 'testvalue';
 
 }

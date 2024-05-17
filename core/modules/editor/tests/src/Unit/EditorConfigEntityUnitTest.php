@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\editor\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -61,8 +59,6 @@ class EditorConfigEntityUnitTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    parent::setUp();
-
     $this->editorId = $this->randomMachineName();
     $this->entityTypeId = $this->randomMachineName();
 

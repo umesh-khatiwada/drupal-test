@@ -6,10 +6,9 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Tests\TestFileCreationTrait;
 
 /**
- * Tests validation functions such as min/max dimensions.
+ * Tests validation functions such as min/max resolution.
  *
  * @group image
- * @group #slow
  */
 class ImageFieldValidateTest extends ImageFieldTestBase {
 
@@ -30,7 +29,7 @@ class ImageFieldValidateTest extends ImageFieldTestBase {
     $file_system = $this->container->get('file_system');
     $image_files = $this->drupalGetTestFiles('image');
 
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $this->createImageField($field_name, 'article', [], ['file_directory' => 'test-upload']);
     $expected_path = 'public://test-upload';
 
@@ -86,13 +85,13 @@ class ImageFieldValidateTest extends ImageFieldTestBase {
   }
 
   /**
-   * Tests min/max dimensions settings.
+   * Tests min/max resolution settings.
    */
   public function testResolution() {
     $field_names = [
-      0 => $this->randomMachineName(),
-      1 => $this->randomMachineName(),
-      2 => $this->randomMachineName(),
+      0 => strtolower($this->randomMachineName()),
+      1 => strtolower($this->randomMachineName()),
+      2 => strtolower($this->randomMachineName()),
     ];
     $min_resolution = [
       'width' => 50,
@@ -164,7 +163,7 @@ class ImageFieldValidateTest extends ImageFieldTestBase {
    * Tests that required alt/title fields gets validated right.
    */
   public function testRequiredAttributes() {
-    $field_name = $this->randomMachineName();
+    $field_name = strtolower($this->randomMachineName());
     $field_settings = [
       'alt_field' => 1,
       'alt_field_required' => 1,
@@ -266,9 +265,9 @@ class ImageFieldValidateTest extends ImageFieldTestBase {
    * Returns field settings.
    *
    * @param int[] $min_resolution
-   *   The minimum width and height setting.
+   *   The minimum width and height resolution setting.
    * @param int[] $max_resolution
-   *   The maximum width and height setting.
+   *   The maximum width and height resolution setting.
    *
    * @return array
    */

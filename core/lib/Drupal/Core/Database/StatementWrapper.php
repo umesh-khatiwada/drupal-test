@@ -2,20 +2,10 @@
 
 namespace Drupal\Core\Database;
 
-use Drupal\Core\Database\Event\StatementExecutionEndEvent;
-use Drupal\Core\Database\Event\StatementExecutionStartEvent;
-
 // cSpell:ignore maxlen driverdata INOUT
-
-@trigger_error('\Drupal\Core\Database\StatementWrapper is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use \Drupal\Core\Database\StatementWrapperIterator instead. See https://www.drupal.org/node/3265938', E_USER_DEPRECATED);
 
 /**
  * Implementation of StatementInterface encapsulating PDOStatement.
- *
- * @deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. Use
- *   \Drupal\Core\Database\StatementWrapperIterator instead.
- *
- * @see https://www.drupal.org/node/3265938
  */
 class StatementWrapper implements \IteratorAggregate, StatementInterface {
 
@@ -97,30 +87,16 @@ class StatementWrapper implements \IteratorAggregate, StatementInterface {
       }
     }
 
-    if ($this->connection->isEventEnabled(StatementExecutionStartEvent::class)) {
-      $startEvent = new StatementExecutionStartEvent(
-        spl_object_id($this),
-        $this->connection->getKey(),
-        $this->connection->getTarget(),
-        $this->getQueryString(),
-        $args ?? [],
-        $this->connection->findCallerFromDebugBacktrace()
-      );
-      $this->connection->dispatchEvent($startEvent);
+    $logger = $this->connection->getLogger();
+    if (!empty($logger)) {
+      $query_start = microtime(TRUE);
     }
 
     $return = $this->clientStatement->execute($args);
 
-    if (isset($startEvent) && $this->connection->isEventEnabled(StatementExecutionEndEvent::class)) {
-      $this->connection->dispatchEvent(new StatementExecutionEndEvent(
-        $startEvent->statementObjectId,
-        $startEvent->key,
-        $startEvent->target,
-        $startEvent->queryString,
-        $startEvent->args,
-        $startEvent->caller,
-        $startEvent->time
-      ));
+    if (!empty($logger)) {
+      $query_end = microtime(TRUE);
+      $logger->log($this, $args, $query_end - $query_start, $query_start);
     }
 
     return $return;
@@ -193,7 +169,7 @@ class StatementWrapper implements \IteratorAggregate, StatementInterface {
   /**
    * {@inheritdoc}
    */
-  public function fetchObject(string $class_name = NULL, array $constructor_arguments = []) {
+  public function fetchObject(string $class_name = NULL, array $constructor_arguments = NULL) {
     if ($class_name) {
       return $this->clientStatement->fetchObject($class_name, $constructor_arguments);
     }

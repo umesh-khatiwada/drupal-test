@@ -1,6 +1,9 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Access\AccessResultTest.
+ */
 
 namespace Drupal\Tests\Core\Access;
 
@@ -232,7 +235,7 @@ class AccessResultTest extends UnitTestCase {
     $this->assertDefaultCacheability($access);
 
     // FORBIDDEN && ALLOWED = FORBIDDEN
-    $access = $forbidden->andIf($allowed);
+    $access = $forbidden->andif($allowed);
     $this->assertFalse($access->isAllowed());
     $this->assertTrue($access->isForbidden());
     $this->assertFalse($access->isNeutral());
@@ -240,7 +243,7 @@ class AccessResultTest extends UnitTestCase {
     $this->assertDefaultCacheability($access);
 
     // FORBIDDEN && NEUTRAL = FORBIDDEN
-    $access = $forbidden->andIf($neutral);
+    $access = $forbidden->andif($neutral);
     $this->assertFalse($access->isAllowed());
     $this->assertTrue($access->isForbidden());
     $this->assertFalse($access->isNeutral());
@@ -248,7 +251,7 @@ class AccessResultTest extends UnitTestCase {
     $this->assertDefaultCacheability($access);
 
     // FORBIDDEN && FORBIDDEN = FORBIDDEN
-    $access = $forbidden->andIf($forbidden);
+    $access = $forbidden->andif($forbidden);
     $this->assertFalse($access->isAllowed());
     $this->assertTrue($access->isForbidden());
     $this->assertFalse($access->isNeutral());

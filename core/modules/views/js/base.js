@@ -20,21 +20,18 @@
    */
   Drupal.Views.parseQueryString = function (query) {
     const args = {};
-    if (query.includes('?')) {
-      query = query.substring(query.indexOf('?') + 1);
+    const pos = query.indexOf('?');
+    if (pos !== -1) {
+      query = query.substring(pos + 1);
     }
     let pair;
     const pairs = query.split('&');
     for (let i = 0; i < pairs.length; i++) {
       pair = pairs[i].split('=');
       // Ignore the 'q' path argument, if present.
-      if (pair[0] !== 'q') {
-        if (pair[1]) {
-          args[decodeURIComponent(pair[0].replace(/\+/g, ' '))] =
-            decodeURIComponent(pair[1].replace(/\+/g, ' '));
-        } else {
-          args[decodeURIComponent(pair[0].replace(/\+/g, ' '))] = '';
-        }
+      if (pair[0] !== 'q' && pair[1]) {
+        args[decodeURIComponent(pair[0].replace(/\+/g, ' '))] =
+          decodeURIComponent(pair[1].replace(/\+/g, ' '));
       }
     }
     return args;
@@ -54,7 +51,7 @@
   Drupal.Views.parseViewArgs = function (href, viewPath) {
     const returnObj = {};
     const path = Drupal.Views.getPath(href);
-    // Get viewPath URL without baseUrl portion.
+    // Get viewPath url without baseUrl portion.
     const viewHref = Drupal.url(viewPath).substring(
       drupalSettings.path.baseUrl.length,
     );
@@ -99,14 +96,14 @@
   Drupal.Views.getPath = function (href) {
     href = Drupal.Views.pathPortion(href);
     href = href.substring(drupalSettings.path.baseUrl.length, href.length);
-    // 3 is the length of the '?q=' added to the URL without clean URLs.
+    // 3 is the length of the '?q=' added to the url without clean urls.
     if (href.substring(0, 3) === '?q=') {
       href = href.substring(3, href.length);
     }
     const chars = ['#', '?', '&'];
     for (let i = 0; i < chars.length; i++) {
-      if (href.includes(chars[i])) {
-        href = href.substring(0, href.indexOf(chars[i]));
+      if (href.indexOf(chars[i]) > -1) {
+        href = href.substr(0, href.indexOf(chars[i]));
       }
     }
     return href;

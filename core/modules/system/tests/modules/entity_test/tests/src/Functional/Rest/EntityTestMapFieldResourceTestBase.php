@@ -120,7 +120,7 @@ abstract class EntityTestMapFieldResourceTestBase extends ConfigEntityResourceTe
     return [
       'name' => [
         [
-          'value' => 'Drama llama',
+          'value' => 'Dramallama',
         ],
       ],
       'data' => [

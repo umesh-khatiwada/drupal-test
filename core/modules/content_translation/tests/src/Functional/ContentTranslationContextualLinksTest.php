@@ -3,9 +3,9 @@
 namespace Drupal\Tests\content_translation\Functional;
 
 use Drupal\field\Entity\FieldConfig;
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
 
 /**
  * Tests that contextual links are available for content translation.
@@ -13,8 +13,6 @@ use Drupal\Tests\content_translation\Traits\ContentTranslationTestTrait;
  * @group content_translation
  */
 class ContentTranslationContextualLinksTest extends BrowserTestBase {
-
-  use ContentTranslationTestTrait;
 
   /**
    * The bundle being tested.
@@ -70,7 +68,7 @@ class ContentTranslationContextualLinksTest extends BrowserTestBase {
     parent::setUp();
     // Set up an additional language.
     $this->langcodes = [\Drupal::languageManager()->getDefaultLanguage()->getId(), 'es'];
-    static::createLanguageFromLangcode('es');
+    ConfigurableLanguage::createFromLangcode('es')->save();
 
     // Create a content type.
     $this->bundle = $this->randomMachineName();
@@ -116,7 +114,18 @@ class ContentTranslationContextualLinksTest extends BrowserTestBase {
     $this->drupalCreateNode(['type' => $this->bundle, 'title' => $title, 'langcode' => 'en']);
     $node = $this->drupalGetNodeByTitle($title);
 
-    static::enableContentTranslation('node', $this->bundle);
+    // Use a UI form submission to make the node type and field translatable.
+    // This tests that caches are properly invalidated.
+    $this->drupalLogin($this->rootUser);
+    $edit = [
+      'entity_types[node]' => TRUE,
+      'settings[node][' . $this->bundle . '][settings][language][language_alterable]' => TRUE,
+      'settings[node][' . $this->bundle . '][translatable]' => TRUE,
+      'settings[node][' . $this->bundle . '][fields][field_test_text]' => TRUE,
+    ];
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
+    $this->drupalLogout();
 
     // Check that the link leads to the translate page.
     $this->drupalLogin($this->translator);

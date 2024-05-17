@@ -5,8 +5,6 @@
  * Functions in the global namespace for \Drupal\Tests\Core\Form\FormTestBase.
  */
 
-declare(strict_types=1);
-
 /**
  * Creates a test form.
  *

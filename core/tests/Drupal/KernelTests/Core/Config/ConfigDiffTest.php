@@ -28,7 +28,7 @@ class ConfigDiffTest extends KernelTestBase {
     $change_key = 'foo';
     $remove_key = '404';
     $add_key = 'biff';
-    $add_data = 'bangPow';
+    $add_data = 'bangpow';
     $change_data = 'foobar';
 
     // Install the default config.
@@ -162,7 +162,7 @@ class ConfigDiffTest extends KernelTestBase {
       // Look through each line and try and find the key.
       if (is_array($haystack)) {
         foreach ($haystack as $item) {
-          if (str_starts_with($item, $field . ':')) {
+          if (strpos($item, $field . ':') === 0) {
             $match = TRUE;
             // Assert that the edit is of the type specified.
             $this->assertEquals($type, $edit->type, "The {$field} item in the diff is a {$type}");

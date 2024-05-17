@@ -31,7 +31,7 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 include_once __DIR__ . '/../includes/utility.inc';
 
 // Output the PHP header.
-$output = <<<END_OF_HEADER
+$output = <<<ENDOFHEADER
 <?php
 
 /**
@@ -42,7 +42,7 @@ $output = <<<END_OF_HEADER
  * installation of Drupal 6, filled with data using the generate-d6-content.sh
  * tool. It has the following modules installed:
 
-END_OF_HEADER;
+ENDOFHEADER;
 
 foreach (\Drupal::moduleHandler()->getModuleList() as $module => $filename) {
   $output .= " *  - $module\n";

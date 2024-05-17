@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\Component\Utility;
 
 use Drupal\Component\Utility\Color;
@@ -22,7 +20,7 @@ class ColorTest extends TestCase {
    * @param string $value
    *   The hex color value.
    *
-   * @dataProvider providerTestValidateHex
+   * @dataProvider providerTestValidateHex()
    */
   public function testValidateHex($expected, $value) {
     $this->assertSame($expected, Color::validateHex($value));

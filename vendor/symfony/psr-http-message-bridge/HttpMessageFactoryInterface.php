@@ -25,11 +25,15 @@ interface HttpMessageFactoryInterface
 {
     /**
      * Creates a PSR-7 Request instance from a Symfony one.
+     *
+     * @return ServerRequestInterface
      */
-    public function createRequest(Request $symfonyRequest): ServerRequestInterface;
+    public function createRequest(Request $symfonyRequest);
 
     /**
      * Creates a PSR-7 Response instance from a Symfony one.
+     *
+     * @return ResponseInterface
      */
-    public function createResponse(Response $symfonyResponse): ResponseInterface;
+    public function createResponse(Response $symfonyResponse);
 }

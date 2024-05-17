@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Drupal\Tests\layout_builder\Unit;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -136,6 +134,7 @@ class DefaultsSectionStorageTest extends UnitTestCase {
     }
 
     $method = new \ReflectionMethod($this->plugin, 'extractEntityFromRoute');
+    $method->setAccessible(TRUE);
     $result = $method->invoke($this->plugin, $value, $defaults);
     if ($success) {
       $this->assertEquals('the_return_value', $result);
@@ -211,6 +210,7 @@ class DefaultsSectionStorageTest extends UnitTestCase {
     $this->entityTypeManager->getStorage('entity_view_display')->willReturn($entity_storage->reveal());
 
     $method = new \ReflectionMethod($this->plugin, 'extractEntityFromRoute');
+    $method->setAccessible(TRUE);
     $result = $method->invoke($this->plugin, $value, []);
     $this->assertSame($expected, $result);
   }
