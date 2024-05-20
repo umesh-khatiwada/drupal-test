@@ -882,6 +882,7 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
 
+
 $database_name = $_ENV['DATABASE_NAME'] ?? getenv('DATABASE_NAME');
 $database_username = $_ENV['DATABASE_USERNAME'] ?? getenv('DATABASE_USERNAME');
 $database_password = $_ENV['DATABASE_PASSWORD'] ?? getenv('DATABASE_PASSWORD');
