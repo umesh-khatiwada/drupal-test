@@ -907,5 +907,12 @@ $databases['default']['default'] = array(
     'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
 );
 
+$conf['redis_client_interface'] = 'default';
+$conf['redis_client_host'] = 'redis-13802.c294.ap-northeast-1-2.ec2.redns.redis-cloud.com';
+$conf['redis_client_port'] = 13802;
+$conf['redis_client_password'] = 'ZNEYe5NXXJqoPzIcSBbv5NLgKEXxJKcx';
+$conf['lock_inc'] = 'sites/all/modules/contrib/redis/redis.lock.inc';
+$conf['cache_backends'][] = 'sites/all/modules/contrib/redis/redis.autoload.inc';
+$conf['cache_default_class'] = 'Redis_Cache';
 
 $settings['config_sync_directory'] = 'sites/default/files/config_ULV3PynXHuyUWr8CEZfcNGRwz-VKvG9EI-qgmE-bAOuc0QBf1CQ8uJC3AvaGLzukp_8EJjiydA/sync';

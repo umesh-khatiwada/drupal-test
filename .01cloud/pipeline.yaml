@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: ci-pipeline
+spec:
+  workspaces:
+  - name: workspace
+  tasks:
+    - name: git-clone
+      params:
+       - name: url
+         value: "https://github.com/hem-shrestha/node-chat.git"
+       - name: revision
+         value: "tekton"
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      taskRef:
+        name: git-clone
+    - name: list
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      taskRef:
+        name: list
+      runAfter: 
+        - git-clone
+    - name: lint
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      runAfter: 
+        - test
+        - list
+      taskRef:
+        name: lint
+    - name: test
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      runAfter: 
+        - git-clone
+      taskRef:
+        name: test
+    - name: docker
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      runAfter: 
+        - lint
+      taskRef:
+        name: docker-run
