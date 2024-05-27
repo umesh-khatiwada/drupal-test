@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: git-clone
+spec:
+  params:
+  - name: url
+    type: string
+    description: The URL of the Git repository to clone.
+    default: "https://github.com/babulalt/one-time-secret.git"
+  - name: revision
+    description: git revision to checkout (branch, tag, sha, ref…)
+    type: string
+    default: zerone-ci
+  - name: sub_directory
+    description: subdirectory change
+    default: "/"
+  workspaces:
+  - name: workspace
+  steps:
+  - name: git-clone
+    image: alpine/git
+    script: |
+      echo revision :: "$(params.revision)", url :: "$(params.url)"
+      git clone -b "$(params.revision)" "$(params.url)" "$(workspaces.workspace.path)/app"
+  - name: list-contents
+    image: alpine
+    script: |
+      echo "Contents of the workspace directory:"
+      ls -al $(workspaces.workspace.path)/app
