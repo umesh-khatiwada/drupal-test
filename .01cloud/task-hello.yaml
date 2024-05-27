@@ -28,3 +28,55 @@ spec:
     script: |
       echo "Contents of the workspace directory:"
       ls -al $(workspaces.workspace.path)/app
+
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: list
+spec:
+  workspaces:
+  - name: workspace
+  steps:
+    - name: list
+      image: alpine
+      script: |
+        echo "project from path $(workspaces.workspace.path)/app"
+        ls -al $(workspaces.workspace.path)/app
+        sleep 1
+
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: lint
+spec:
+  workspaces:
+  - name: workspace
+  steps:
+    - name: lint
+      image: alpine
+      script: |
+        cd $(workspaces.workspace.path)/app
+        echo "Lint task start..."
+        sleep 5
+        echo "Lint completed"
+        sleep 1
+
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test
+spec:
+  workspaces:
+  - name: workspace
+  steps:
+    - name: test
+      image: alpine
+      script: |
+        cd $(workspaces.workspace.path)/app
+        echo "Test task init..."
+        sleep 7
+        echo "Test completed"
+        sleep 1
