@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: ci-pipeline-run
+spec:
+  pipelineRef:
+    name: ci-pipeline
+  workspaces:
+    - name: workspace
+      persistentVolumeClaim:
+        claimName: workspace
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: workspace
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
