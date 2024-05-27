@@ -49,24 +49,6 @@ spec:
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: lint
-spec:
-  workspaces:
-  - name: workspace
-  steps:
-    - name: lint
-      image: alpine
-      script: |
-        cd $(workspaces.workspace.path)/app
-        echo "Lint task start..."
-        sleep 5
-        echo "Lint completed"
-        sleep 1
-
----
-apiVersion: tekton.dev/v1
-kind: Task
-metadata:
   name: test
 spec:
   workspaces:
