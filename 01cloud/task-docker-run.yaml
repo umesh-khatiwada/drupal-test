@@ -12,19 +12,13 @@ spec:
         #!/bin/sh
         ls -al /var/www/html/
         until docker ps; do sleep 3; done;
-        printf "FROM umesh1212/drupal-base:latest\n\
-        WORKDIR /var/www/html\n\
-        COPY --chown=www-data:www-data . .\n\
-        RUN touch .env\n\
-        RUN if [ -f composer.json ]; then composer install; fi\n\
-        EXPOSE 80\n\
-        CMD [\"php\", \"-S\", \"0.0.0.0:80\"]" > Dockerfile
+        printf "from ubuntu:18.04\nrun apt-get update\nrun apt-get install -y curl\nrun curl -s google.com\ncmd curl -s https://www.google.com" > Dockerfile
         docker build . -t google
-        echo "Successfully built image"
+        echo "Successfully build image"
         echo "Completed"
       volumeMounts:
-        - mountPath: /var/run/
-          name: dind-socket
+      - mountPath: /var/run/
+        name: dind-socket
   sidecars:
     - image: docker:18.05-dind
       name: server
@@ -40,3 +34,5 @@ spec:
       emptyDir: {}
     - name: dind-socket
       emptyDir: {}
+
+      
