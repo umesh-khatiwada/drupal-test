@@ -64,7 +64,7 @@ spec:
         #echo "$(params.dockerfile)" > Dockerfile;
         echo "$DOCKER_FILE" | base64 -d > Dockerfile;
         if [[ ! -z "$DOCKER_IGNORE" ]] && [[ ! -f ".dockerignore" ]]; then echo "${DOCKER_IGNORE}" > .dockerignore; fi
-        docker login -u "umesh1212" -p "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo" 2>/dev/null || exit 1
+        docker login -u "umesh1212" -p "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker build . -t "umesh1212/drupal-test123" || exit 1
         echo "Successfully built"
       volumeMounts:
