@@ -52,7 +52,7 @@ spec:
         - name: DOCKER_IGNORE
           value: "$(params.dockerignore)"
         - name: DOCKER_URL
-          value: "umesh1212/drupal-test123:latest
+          value: "umesh1212/drupal-test123:latest"
         - name: BASE_IMAGE
           value: "$(params.base_image)"
         - name: BASE_TAG
@@ -64,6 +64,7 @@ spec:
         #echo "$(params.dockerfile)" > Dockerfile;
         echo "$DOCKER_FILE" | base64 -d > Dockerfile;
         if [[ ! -z "$DOCKER_IGNORE" ]] && [[ ! -f ".dockerignore" ]]; then echo "${DOCKER_IGNORE}" > .dockerignore; fi
+        docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker build . -t "${DOCKER_URL}" || exit 1
         echo "Successfully built"
       volumeMounts:
