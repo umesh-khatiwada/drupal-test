@@ -52,7 +52,7 @@ spec:
         - name: DOCKER_IGNORE
           value: "$(params.dockerignore)"
         - name: DOCKER_URL
-          value: "umesh1212/drupal-test123
+          value: "umesh1212/drupal-test123:latest
         - name: BASE_IMAGE
           value: "$(params.base_image)"
         - name: BASE_TAG
