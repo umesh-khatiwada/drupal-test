@@ -10,12 +10,7 @@ spec:
       image: docker
       script: |
         #!/bin/sh
-        ls -al /workspace/workspace/
-        mkdir -p /app
-        cd /app
-        until docker ps; do sleep 3; done;
-        printf "from ubuntu:18.04\nrun apt-get update\nrun apt-get install -y curl\nrun curl -s google.com\ncmd curl -s https://www.google.com" > Dockerfile
-        docker build . -t google
+        ls -al /var/www/html/
         echo "Successfully build image"
         docker run google
         echo "Completed"
