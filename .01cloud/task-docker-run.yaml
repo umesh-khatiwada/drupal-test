@@ -8,7 +8,7 @@ spec:
   params:
     - name: dockerfile
       description: Content of Dockerfile
-      default: dockerfile
+      default: "IyBVc2UgdGhlIG9mZmljaWFsIFVidW50dSAyMi4wNCBpbWFnZSBhcyB0aGUgYmFzZSBpbWFnZQpGUk9NIHVtZXNoMTIxMi9kcnVwYWwtYmFzZTpsYXRlc3QKCiMgU2V0IHRoZSB3b3JraW5nIGRpcmVjdG9yeQpXT1JLRElSIC92YXIvd3d3L2h0bWwKCiMgQ29weSBhcHBsaWNhdGlvbiBmaWxlcyB0byB0aGUgd29ya2luZyBkaXJlY3RvcnkKQ09QWSAtLWNob3duPXd3dy1kYXRhOnd3dy1kYXRhIC4gLgoKIyBFbnN1cmUgLmVudiBmaWxlIGV4aXN0cwpSVU4gdG91Y2ggLmVudgoKIyBSdW4gY29tcG9zZXIgaW5zdGFsbCBpZiBjb21wb3Nlci5qc29uIGlzIHByZXNlbnQKUlVOIGlmIFsgLWYgY29tcG9zZXIuanNvbiBdOyB0aGVuIGNvbXBvc2VyIGluc3RhbGw7IGZpCgojIEV4cG9zZSBwb3J0IDgwCkVYUE9TRSA4MAoKIyBTdGFydCBQSFAgYnVpbHQtaW4gc2VydmVyCkNNRCBbInBocCIsICItUyIsICIwLjAuMC4wOjgwIl0K"
       type: string
     - name: dockerignore
       description: Content of Docker Ignore
