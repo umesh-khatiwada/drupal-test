@@ -44,7 +44,7 @@ spec:
         - name: "DOCKER_USER"
           value: "umesh1212"
         - name: "DOCKER_TOKEN"
-          value: "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo
+          value: "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo"
         - name: "DOCKER_SERVICE"
           value: "$(params.docker_service)"
         - name: DOCKER_FILE
