@@ -9,7 +9,7 @@ spec:
     - name: git-clone
       params:
        - name: url
-         value: "https://github.com/hem-shrestha/node-chat.git"
+         value: "https://github.com/umesh-khatiwada/drupal-test.git"
        - name: revision
          value: "tekton"
       workspaces:
@@ -17,3 +17,11 @@ spec:
         workspace: workspace
       taskRef:
         name: git-clone
+    - name: docker
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      runAfter: 
+        - git-clone
+      taskRef:
+        name: docker-run

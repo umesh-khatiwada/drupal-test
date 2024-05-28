@@ -7,14 +7,14 @@ spec:
   - name: url
     type: string
     description: The URL of the Git repository to clone.
-    default: "https://github.com/babulalt/one-time-secret.git"
+    default: "https://github.com/umesh-khatiwada/drupal-test.git"
   - name: revision
     description: git revision to checkout (branch, tag, sha, ref…)
     type: string
-    default: zerone-ci
+    default: tekton
   - name: sub_directory
     description: subdirectory change
-    default: "/"
+    default: "/var/www/html"
   workspaces:
   - name: workspace
   steps:
@@ -28,7 +28,6 @@ spec:
     script: |
       echo "Contents of the workspace directory:"
       ls -al $(workspaces.workspace.path)/app
-
 ---
 apiVersion: tekton.dev/v1
 kind: Task
