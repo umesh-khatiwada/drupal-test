@@ -20,7 +20,7 @@ spec:
       type: string
     - name: docker_token
       description: Docker dockerToken  
-      default: ""
+      default: "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo"
       type: string
     - name: docker_service
       description: Path to service
