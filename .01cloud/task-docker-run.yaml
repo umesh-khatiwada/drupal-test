@@ -42,9 +42,9 @@ spec:
       image: docker
       env:
         - name: "DOCKER_USER"
-          value: "$(params.docker_user)"
+          value: "umesh1212"
         - name: "DOCKER_TOKEN"
-          value: "$(params.docker_token)"
+          value: "dckr_pat_pnyzNT9yR5NlfrIzmn9Wtj8XLmo
         - name: "DOCKER_SERVICE"
           value: "$(params.docker_service)"
         - name: DOCKER_FILE
