@@ -17,8 +17,8 @@ spec:
         echo "Successfully build image"
         echo "Completed"
       volumeMounts:
-      - mountPath: /var/run/
-        name: dind-socket
+        - mountPath: /var/run/
+          name: dind-socket
   sidecars:
     - image: docker:18.05-dind
       name: server
