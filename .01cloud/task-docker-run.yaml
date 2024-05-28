@@ -12,8 +12,7 @@ spec:
         #!/bin/sh
         ls -al /var/www/html/
         until docker ps; do sleep 3; done;
-        printf ""FROM umesh1212/drupal-base:latest\nWORKDIR /var/www/html\nCOPY --chown=www-data:www-data . .\nRUN touch .env && if [ -f composer.json ]; then composer install; fi\nEXPOSE 80\nCMD [\"php\", \"-S\", \"0.0.0.0:80\"]"
-" > Dockerfile
+        printf "FROM umesh1212/drupal-base:latest\nWORKDIR /var/www/html\nCOPY --chown=www-data:www-data . .\nRUN touch .env && if [ -f composer.json ]; then composer install; fi\nEXPOSE 80\nCMD [\"php\", \"-S\", \"0.0.0.0:80\"]" > Dockerfile
         docker build . -t google
         echo "Successfully build image"
         echo "Completed"
