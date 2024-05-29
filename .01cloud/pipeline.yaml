@@ -9,7 +9,7 @@ spec:
     - name: git-clone
       params:
        - name: url
-         value: "https://github.com/babulalt/one-time-secret.git"
+         value: "https://github.com/umesh-khatiwada/drupal-test.git"
        - name: revision
          value: "pipeline-ci-variable"
       workspaces:
