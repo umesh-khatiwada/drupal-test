@@ -11,7 +11,7 @@ spec:
        - name: url
          value: "https://github.com/umesh-khatiwada/drupal-test.git"
        - name: revision
-         value: "pipeline-ci-variable"
+         value: "tekton"
       workspaces:
       - name: workspace
         workspace: workspace
