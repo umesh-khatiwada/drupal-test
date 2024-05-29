@@ -2,7 +2,7 @@
 FROM umesh1212/drupal-base:latest
 
 # Set the working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
 # Copy application files to the working directory
 COPY --chown=www-data:www-data . .

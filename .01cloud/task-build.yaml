@@ -1,0 +1,57 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: build-push
+spec:
+  workspaces:
+    - name: workspace
+  params:
+    - name: dockerignore
+      description: Content of Docker Ignore
+      default: ".git"
+      type: string
+  steps:
+    - name: build
+      image: docker
+      script: |
+        #!/bin/sh
+        cd $(workspaces.workspace.path)/app
+        until docker ps; do sleep 3; done;
+        if [[ ! -z "$(params.dockerignore)" ]] && [[ ! -f ".dockerignore" ]]; then echo "$(params.dockerignore)" > .dockerignore; fi
+        docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
+        docker build . -t "${DOCKER_URL}" || exit 1
+        echo "Successfully built"
+      volumeMounts:
+      - mountPath: /var/run/
+        name: dind-socket
+      - mountPath: /var/lib/docker
+        name: dind-storage
+    - name: push
+      image: docker
+      script: |
+        #!/bin/sh
+        cd $(workspaces.workspace.path)/app
+        until docker ps; do sleep 3; done;
+        docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
+        docker push "${DOCKER_URL}" || exit 1
+        echo "Successfully pushed"
+      volumeMounts:
+      - mountPath: /var/run/
+        name: dind-socket
+      - mountPath: /var/lib/docker
+        name: dind-storage
+  sidecars:
+    - image: docker:20.10-dind
+      name: server
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - mountPath: /var/lib/docker
+          name: dind-storage
+        - mountPath: /var/run/
+          name: dind-socket
+  volumes:
+    - name: dind-storage
+      emptyDir: {}
+    - name: dind-socket
+      emptyDir: {}

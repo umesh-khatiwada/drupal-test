@@ -9,19 +9,30 @@ spec:
     - name: git-clone
       params:
        - name: url
-         value: "https://github.com/umesh-khatiwada/drupal-test.git"
+         value: "https://github.com/babulalt/one-time-secret.git"
        - name: revision
-         value: "tekton"
+         value: "pipeline-ci-variable"
       workspaces:
       - name: workspace
         workspace: workspace
       taskRef:
         name: git-clone
-    - name: docker
+    - name: list
       workspaces:
       - name: workspace
         workspace: workspace
+      taskRef:
+        name: list
       runAfter: 
         - git-clone
+    - name: build-push
       taskRef:
-        name: docker-run
+        name: build-push
+      params:
+        - name: dockerignore
+          value: ".git"
+      runAfter:
+        - list
+      workspaces:
+        - name: workspace
+          workspace: workspace
