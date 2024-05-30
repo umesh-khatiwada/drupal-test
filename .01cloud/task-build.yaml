@@ -41,7 +41,7 @@ spec:
         until docker ps; do sleep 3; done;
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker push "${DOCKER_URL}$shavalue" || exit
-        curl -X POST 'https://api.test.01cloud.dev/webhook/registry/10512/245?token=kwO4eWd8kqna2NvA' -d '{"repository":"docker.io/umesh1212/drupal-test-123","tag":"$shavalue"}'
+        curl -X POST "https://api.test.01cloud.dev/webhook/registry/10512/245?token=kwO4eWd8kqna2NvA" -d "{\"repository\":\"docker.io/umesh1212/drupal-test-123\",\"tag\":\"$shavalue\"}"
         echo "Successfully pushed"
       volumeMounts:
       - mountPath: /var/run/
