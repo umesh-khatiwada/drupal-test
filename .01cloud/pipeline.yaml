@@ -28,11 +28,11 @@ spec:
       workspaces:
         - name: workspace
           workspace: workspace
-    - name: list
+    - name: deploy
       workspaces:
       - name: workspace
         workspace: workspace
       taskRef:
-        name: list
+        name: deploy
       runAfter: 
         - build-push

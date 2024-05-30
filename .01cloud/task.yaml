@@ -41,12 +41,12 @@ spec:
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: list
+  name: deploy
 spec:
   workspaces:
-  - name: workspace
+  - name: deploy
   steps:
-    - name: list
+    - name: deploy
       image: bitnami/git 
       script: |
         echo "Deploy successfully"
