@@ -49,11 +49,6 @@ spec:
     - name: list
       image: bitnami/git 
       script: |
-        #!/bin/sh
-        echo "durpal"
-        apt install curl
-        shavalue=$(git rev-parse HEAD)
-        echo $shavalue
-        curl -X POST 'https://api.test.01cloud.dev/webhook/registry/10512/245?token=kwO4eWd8kqna2NvA' -d '{"repository":"docker.io/umesh1212/drupal-test-123","tag":"'"$shavalue"'"}'
+        echo "Deploy successfully"
 
 
