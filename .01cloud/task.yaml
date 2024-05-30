@@ -50,6 +50,7 @@ spec:
       image: bitnami/git 
       script: |
         #!/bin/sh
+        echo "durpal"
         apt install curl
         shavalue=$(git rev-parse HEAD)
         echo $shavalue
