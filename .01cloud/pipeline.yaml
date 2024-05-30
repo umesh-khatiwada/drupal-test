@@ -17,6 +17,17 @@ spec:
         workspace: workspace
       taskRef:
         name: git-clone
+    - name: build-push
+      taskRef:
+        name: build-push
+      params:
+        - name: dockerignore
+          value: ".git"
+      runAfter:
+        - git-clone
+      workspaces:
+        - name: workspace
+          workspace: workspace
     - name: list
       workspaces:
       - name: workspace
@@ -25,14 +36,3 @@ spec:
         name: list
       runAfter: 
         - build-push
-    - name: build-push
-      taskRef:
-        name: build-push
-      params:
-        - name: dockerignore
-          value: ".git"
-      runAfter:
-        - list
-      workspaces:
-        - name: workspace
-          workspace: workspace
