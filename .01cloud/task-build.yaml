@@ -46,11 +46,6 @@ spec:
         name: dind-socket
       - mountPath: /var/lib/docker
         name: dind-storage
-    - name: container-deployment
-      image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4
-      script: |
-        #!/bin/sh
-        echo "Successfully Deploy"
   sidecars:
     - image: docker:20.10-dind
       name: server
