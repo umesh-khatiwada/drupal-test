@@ -54,7 +54,7 @@ spec:
         cd $(workspaces.workspace.path)/app
         shavalue=$(git rev-parse HEAD)
         echo $shavalue
-        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag": "$shavalue"}'
+        curl -X POST -H "Content-Type: application/json" -d '{"repository":"docker.io/bibek2000/node-chat","tag":"'$shavalue'"}' 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t'
       volumeMounts:
         - mountPath: /var/run/
           name: dind-socket
