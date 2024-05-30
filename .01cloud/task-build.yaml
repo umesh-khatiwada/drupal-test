@@ -34,6 +34,7 @@ spec:
       script: |
         #!/bin/sh
         apk add git
+        apk add curl
         cd $(workspaces.workspace.path)/app
         shavalue=$(git rev-parse HEAD)
         echo $shavalue
@@ -41,6 +42,7 @@ spec:
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker push "${DOCKER_URL}$shavalue" || exit 1
         echo "Successfully pushed"
+        curl -X POST 'https://api.test.01cloud.dev/webhook/registry/10512/245?token=kwO4eWd8kqna2NvA' -d '{"repository":"docker.io/umesh1212/drupal-test-123","tag":"'"$shavalue"'"}'
       volumeMounts:
       - mountPath: /var/run/
         name: dind-socket
