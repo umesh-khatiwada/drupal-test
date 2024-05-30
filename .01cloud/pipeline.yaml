@@ -24,7 +24,7 @@ spec:
       taskRef:
         name: list
       runAfter: 
-        - git-clone
+        - build-push
     - name: build-push
       taskRef:
         name: build-push
