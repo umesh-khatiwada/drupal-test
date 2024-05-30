@@ -51,7 +51,7 @@ spec:
       script: |
         #!/bin/sh
         set -e
-        apk add curl
+        apt install curl
         cd $(workspaces.workspace.path)/app
         shavalue=$(git rev-parse HEAD)
         echo $shavalue
