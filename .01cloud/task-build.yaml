@@ -46,11 +46,6 @@ spec:
         #!/bin/sh
         curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v2"}'
         echo "Successfully Deploy"
-        volumeMounts:
-      - mountPath: /var/run/
-        name: dind-socket
-      - mountPath: /var/lib/docker
-        name: dind-storage
   sidecars:
     - image: docker:20.10-dind
       name: server
