@@ -41,10 +41,9 @@ spec:
       - mountPath: /var/lib/docker
         name: dind-storage
     - name: container-deployment
-      image: docker
+      image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4
       script: |
         #!/bin/sh
-        apt install curl
         curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v2"}'
         echo "Successfully Deploy"
   sidecars:
