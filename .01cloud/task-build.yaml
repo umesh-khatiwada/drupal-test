@@ -34,24 +34,19 @@ spec:
         until docker ps; do sleep 3; done;
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker push "${DOCKER_URL}" || exit 1
-        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v1"}'
         echo "Successfully pushed"
       volumeMounts:
       - mountPath: /var/run/
         name: dind-socket
       - mountPath: /var/lib/docker
         name: dind-storage
-    - name: push
+    - name: container-deployment
       image: docker
       script: |
         #!/bin/sh
-        cd $(workspaces.workspace.path)/app
-        until docker ps; do sleep 3; done;
-        docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
-        docker push "${DOCKER_URL}" || exit 1
-        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v1"}'
-        echo "Successfully pushed"
-      volumeMounts:
+        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v2"}'
+        echo "Successfully Deploy"
+        volumeMounts:
       - mountPath: /var/run/
         name: dind-socket
       - mountPath: /var/lib/docker
