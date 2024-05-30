@@ -41,14 +41,23 @@ spec:
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: list
+  name: deploy
 spec:
   workspaces:
   - name: workspace
   steps:
-    - name: list
-      image: alpine
+    - name: deploy
+      image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4
       script: |
-        echo "project from path $(workspaces.workspace.path)/app"
-        ls $(workspaces.workspace.path)/app
-        sleep 1
+        #!/bin/sh
+        cd $(workspaces.workspace.path)/app
+        shavalue=$(git rev-parse HEAD)
+        echo $shavalue
+        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag": "$shavalue"}'
+      volumeMounts:
+        - mountPath: /var/run/
+          name: dind-socket
+        - mountPath: /var/lib/docker
+          name: dind-storage
+      securityContext:
+        runAsUser: 0

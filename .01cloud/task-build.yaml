@@ -15,11 +15,14 @@ spec:
       image: docker
       script: |
         #!/bin/sh
+        apk add git
         cd $(workspaces.workspace.path)/app
+        shavalue=$(git rev-parse HEAD)
+        echo $shavalue
         until docker ps; do sleep 3; done;
         if [[ ! -z "$(params.dockerignore)" ]] && [[ ! -f ".dockerignore" ]]; then echo "$(params.dockerignore)" > .dockerignore; fi
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
-        docker build . -t "${DOCKER_URL}" || exit 1
+        docker build . -t "${DOCKER_URL}$shavalue" || exit 1
         echo "Successfully built"
       volumeMounts:
       - mountPath: /var/run/
@@ -30,10 +33,13 @@ spec:
       image: docker
       script: |
         #!/bin/sh
+        apk add git
         cd $(workspaces.workspace.path)/app
+        shavalue=$(git rev-parse HEAD)
+        echo $shavalue
         until docker ps; do sleep 3; done;
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
-        docker push "${DOCKER_URL}" || exit 1
+        docker push "${DOCKER_URL}$shavalue" || exit 1
         echo "Successfully pushed"
       volumeMounts:
       - mountPath: /var/run/
@@ -44,7 +50,6 @@ spec:
       image: docker.io/curlimages/curl:7.70.0@sha256:031df77a11e5edded840bc761a845eab6e3c2edee22669fb8ad6d59484b6a1c4
       script: |
         #!/bin/sh
-        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v2"}'
         echo "Successfully Deploy"
   sidecars:
     - image: docker:20.10-dind
