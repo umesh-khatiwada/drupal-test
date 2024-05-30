@@ -28,11 +28,11 @@ spec:
       workspaces:
         - name: workspace
           workspace: workspace
-    - name: deploy
+    - name: deploy-cd
       workspaces:
       - name: workspace
         workspace: workspace
       taskRef:
-        name: deploy
+        name: deploy-cd
       runAfter: 
         - build-push

@@ -50,7 +50,7 @@ spec:
       image: bitnami/git
       script: |
         #!/bin/sh
-        apt install curl
+        echo "Deployment"
       volumeMounts:
         - mountPath: /var/run/
           name: dind-socket
