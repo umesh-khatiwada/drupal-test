@@ -17,6 +17,14 @@ spec:
         workspace: workspace
       taskRef:
         name: git-clone
+    - name: list
+      workspaces:
+      - name: workspace
+        workspace: workspace
+      taskRef:
+        name: list
+      runAfter: 
+        - git-clone
     - name: build-push
       taskRef:
         name: build-push
@@ -24,15 +32,7 @@ spec:
         - name: dockerignore
           value: ".git"
       runAfter:
-        - git-clone
+        - list
       workspaces:
         - name: workspace
           workspace: workspace
-    - name: deploy-cd
-      workspaces:
-      - name: workspace
-        workspace: workspace
-      taskRef:
-        name: deploy-cd
-      runAfter: 
-        - build-push

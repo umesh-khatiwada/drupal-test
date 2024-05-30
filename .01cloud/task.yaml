@@ -41,18 +41,14 @@ spec:
 apiVersion: tekton.dev/v1
 kind: Task
 metadata:
-  name: deploy-cd
+  name: list
 spec:
   workspaces:
   - name: workspace
   steps:
-    - name: deploy-cd
-      image: bitnami/git
+    - name: list
+      image: alpine
       script: |
-        #!/bin/sh
-        echo "Deployment"
-      volumeMounts:
-        - mountPath: /var/run/
-          name: dind-socket
-        - mountPath: /var/lib/docker
-          name: dind-storage
+        echo "project from path $(workspaces.workspace.path)/app"
+        ls $(workspaces.workspace.path)/app
+        sleep 1
