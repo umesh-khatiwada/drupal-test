@@ -44,6 +44,7 @@ spec:
       image: docker
       script: |
         #!/bin/sh
+        apt install curl
         curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"v2"}'
         echo "Successfully Deploy"
   sidecars:
