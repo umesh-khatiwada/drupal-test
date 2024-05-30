@@ -47,8 +47,12 @@ spec:
   - name: workspace
   steps:
     - name: list
-      image: alpine
+      image: bitnami/git 
       script: |
-        echo "project from path $(workspaces.workspace.path)/app"
-        ls $(workspaces.workspace.path)/app
-        sleep 1
+        #!/bin/sh
+        apt install curl
+        shavalue=$(git rev-parse HEAD)
+        echo $shavalue
+        curl 'https://api.test.01cloud.dev/webhook/registry/10511/222?token=tH415cVWyX5eWz7t' -d '{"repository":"docker.io/bibek2000/node-chat","tag":"`$shavalue`"}'
+
+
