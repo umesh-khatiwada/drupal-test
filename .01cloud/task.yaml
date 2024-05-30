@@ -44,7 +44,7 @@ metadata:
   name: deploy
 spec:
   workspaces:
-  - name: deploy
+  - name: workspace
   steps:
     - name: deploy
       image: bitnami/git 
