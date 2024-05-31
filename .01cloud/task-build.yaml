@@ -22,7 +22,7 @@ spec:
         until docker ps; do sleep 3; done;
         if [[ ! -z "$(params.dockerignore)" ]] && [[ ! -f ".dockerignore" ]]; then echo "$(params.dockerignore)" > .dockerignore; fi
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
-        docker build . -t "${DOCKER_URL}$shavalue" || exit 1
+        docker build . -t "${DOCKER_URL}:$shavalue" || exit 1
         echo "Successfully built"
       volumeMounts:
       - mountPath: /var/run/
