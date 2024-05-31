@@ -41,7 +41,7 @@ spec:
         until docker ps; do sleep 3; done;
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker push "${DOCKER_URL}:$shavalue" || exit
-        curl -X POST "https://api.test.01cloud.dev/webhook/registry/10512/245?token=u8s61DzCe42BNFjG" -d "{\"repository\":\"${DOCKER_URL}\",\"tag\":\"$shavalue\"}"
+        curl -X POST "${01CLOUD_WEBHOOK}" -d "{\"repository\":\"${DOCKER_URL}\",\"tag\":\"$shavalue\"}"
         #curl -X POST "${01CLOUD_HOOKS}" -d "{\"repository\":\"docker.io/${DOCKER_URL}\",\"tag\":\"$shavalue\"}"
         echo "Successfully pushed"
       volumeMounts:
