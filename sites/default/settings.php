@@ -890,8 +890,10 @@ $database_prefix = $_ENV['DATABASE_PREFIX'] ?? getenv('DATABASE_PREFIX');
 $database_host = $_ENV['DATABASE_HOST'] ?? getenv('DATABASE_HOST');
 $database_port = $_ENV['DATABASE_PORT'] ?? getenv('DATABASE_PORT');
 
-// Check if any of the environment variables are missing
-
+// Redis variable
+$redis_host = $_ENV['REDIS_HOST'] ?? getenv('REDIS_HOST');
+$redis_port = $_ENV['REDIS_PORT'] ?? getenv('REDIS_PORT');
+$redis_password = $_ENV['REDIS_PASSWORD'] ?? getenv('REDIS_PASSWORD');
 
 // Create the database configuration array
 $databases['default']['default'] = array(
@@ -908,9 +910,9 @@ $databases['default']['default'] = array(
 );
 
 $conf['redis_client_interface'] = 'default';
-$conf['redis_client_host'] = 'redis-13802.c294.ap-northeast-1-2.ec2.redns.redis-cloud.com';
-$conf['redis_client_port'] = 13802;
-$conf['redis_client_password'] = 'ZNEYe5NXXJqoPzIcSBbv5NLgKEXxJKcx';
+$conf['redis_client_host'] = $redis_host;
+$conf['redis_client_port'] = $redis_port;
+$conf['redis_client_password'] = $redis_password;
 $conf['lock_inc'] = 'sites/all/modules/contrib/redis/redis.lock.inc';
 $conf['cache_backends'][] = 'sites/all/modules/contrib/redis/redis.autoload.inc';
 $conf['cache_default_class'] = 'Redis_Cache';
