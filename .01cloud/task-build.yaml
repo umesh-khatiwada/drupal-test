@@ -37,7 +37,8 @@ spec:
         apk add curl
         cd $(workspaces.workspace.path)/app
         shavalue=$(git rev-parse HEAD)
-        echo ${CLOUD_WEBHOOK}
+        echo $shavalue
+        echo ${DOCKER_FILE}
         until docker ps; do sleep 3; done;
         docker login -u "${DOCKER_USER}" -p "${DOCKER_TOKEN}" "${DOCKER_SERVICE}" 2>/dev/null || exit 1
         docker push "${DOCKER_URL}:$shavalue" || exit
