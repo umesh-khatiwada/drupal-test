@@ -15,6 +15,9 @@ spec:
   - name: sub_directory
     description: subdirectory change
     default: "/"
+  workspaces:
+  - name: workspace
+  steps:
   - name: git-clone
     image: alpine/git
     script: |
