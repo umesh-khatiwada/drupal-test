@@ -38,7 +38,7 @@ spec:
         cd $(workspaces.workspace.path)/app
         shavalue=$(git rev-parse HEAD)
         docker_url=docker.io/${DOCKER_URL}
-        docker_with_tag=${docker_url}${shavalue}
+        docker_with_tag=$docker_url${shavalue}
         echo $shavalue
         echo $docker_url
         until docker ps; do sleep 3; done;
